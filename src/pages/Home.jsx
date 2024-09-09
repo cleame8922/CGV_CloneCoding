@@ -14,33 +14,33 @@ export default function Home() {
     };
 
     return (
-        <div>
-            <div id="video" className='flex justify-center bg-[#000] relative'>
-                <video autoPlay loop muted className='w-[900px]'>
+        <div className='flex flex-col items-center'>
+            <div id="video" className='flex flex-col items-center w-[100%] bg-[#000] relative'>
+                <video autoPlay loop muted className='w-[980px] mx-[181px]'>
                     <source src="img/video.mp4" type="video/mp4" />
                 </video>
                 <div className='flex flex-col absolute justify-center left-0 top-0 inset-0 bg-black bg-opacity-50 text-white'>
-                    <div className='ml-[100px]'>
+                    <div className='ml-[100px] absolute left-[350px]'>
                         <div className='font-[700] text-[40px]'>트랜스포머 ONE</div>
                         <div className='text-[20px]'>역대급 트랜스포머</div>
                         <div className='text-[20px]'>극장에서 확인하라!</div>
                     </div>
                 </div>
-                <div className='flex items-center absolute left-[100px] top-[330px] bg-white bg-opacity-80 rounded-[15px] p-[5px_15px] text-[14px] text-[#343434]'>
+                <div className='flex items-center absolute left-[450px] top-[350px] bg-white bg-opacity-80 rounded-[15px] p-[5px_15px] text-[14px] text-[#343434]'>
                     상세보기
                     <img src="img/arrowR.png" alt="arrow" className='flex left-[180px] top-[330px] size-3 ml-3' />
                 </div>
-                <div className='absolute left-[210px] top-[330px]'>
+                <div className='absolute left-[570px] top-[350px]'>
                     <img src="img/play.png" alt="play" className='size-7 border-[1px] border-[#979797] rounded-[50%] p-1' />
                 </div>
-                <div className='absolute left-[245px] top-[330px]'>
+                <div className='absolute left-[610px] top-[350px]'>
                     <img src="img/soundOff.png" alt="soundOff" className='size-7 border-[1px] border-[#979797] rounded-[50%] p-1' />
                 </div>
             </div>
 
-            <div id="movie" className='h-[300px] bg-[#f8f8f8]'></div>
+            <div id="movie" className='flex h-[300px] bg-[#f8f8f8]'></div>
 
-            <div id="event" className='mx-[100px] p-[60px_0_6px]'>
+            <div id="event" className='flex flex-col justify-center w-[980px] mx-[181px] p-[60px_0_6px]'>
                 <div className='font-[700] text-[26px] text-[#222]'>EVENT</div>
                 <div className='mt-[19px]'>
                     <img src="img/eventImg.jpg" alt="eventImg" className='rounded-[10px] w-[310px] h-[207px]' />
@@ -49,7 +49,7 @@ export default function Home() {
                 </div>
             </div>
 
-            <div id="special" className='mx-[100px] p-[60px_0_21px]'>
+            <div id="special" className='flex flex-col w-[980px] mx-[181px] p-[60px_0_21px]'>
                 <div className='flex justify-between'>
                     <div className='flex font-[700] text-[26px] text-[#222]'>특별관</div>
                     <div className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[13px] h-8 text-[14px] text-[#222]'>
@@ -90,7 +90,7 @@ export default function Home() {
                 </div>
             </div>
 
-            <div id="etc" className='grid grid-cols-3 gap-9 mx-[100px] pt-[60px]'>
+            <div id="etc" className='grid grid-cols-3 gap-9 w-[980px] mx-[181px] pt-[60px]'>
                 <div id="package" className='grid border-[1px] rounded-[10px] px-3 py-4'>
                     <div className='flex justify-between items-center'>
                         <div className='flex font-[500] text-[20px] text-[#222]'>패키지</div>
@@ -174,30 +174,32 @@ export default function Home() {
                 </div>
             </div>
 
-            <div id="last" className='flex items-center p-[30px_0_120px] mx-[100px]'>
-                <div id="notice" className='flex justify-center items-center h-[238px] border-[1px] rounded-[10px]'>
-                    <div className='flex'>
-                        <div id="leftN" className='flex flex-col px-3'>
-                            <div id="info" className='flex w-fit border-b-[1px] px-3 py-4'>
+            <div id="last" className='flex border-box w-[980px] p-[30px_0_120px] mx-[181px]'>
+                <div id="notice" className='flex items-center w-[100%] h-[238px] border-[1px] rounded-[10px]'>
+                    <div className='flex w-fit'>
+                        <div id="leftN" className='flex flex-col justify-center px-3 py-[15px]'>
+                            <div className='flex w-fit border-b-[1px] py-[15px]'>
                                 <div className='flex font-[500] text-[16px] text-[#222]'>공지사항</div>
-                                <div className='flex overflow-hidden w-[210px] mt-[2px] ml-[28px] text-[14px] text-[#222] whitespace-nowrap'>{`[극장] [CGV] <블랙핑크 월드투어 [본 핑크] 인 시네마> 무대인사 회차 휠체어석 유의사항 안내`}</div>
+                                <div className='flex overflow-hidden w-[50%] mt-[2px] ml-[28px] text-[14px] text-[#222] whitespace-nowrap'>{`[극장] [CGV] <블랙핑크 월드투어 [본 핑크] 인 시네마> 무대인사 회차 휠체어석 유의사항 안내`}</div>
                                 <div className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[10px] h-6 text-[14px] text-[#222] ml-8'>더보기</div>
                             </div>
-                            <div id="client" className='flex px-3 py-4'>
-                                <div className='flex font-[500] text-[16px] text-[#222]'>고객센터</div>
-                                <div className='flex flex-col mt-[2px] ml-[28px]'>
-                                    <div className='flex font-[700] text-[14px] text-[#222]'>1544-1122</div>
-                                    <div className='text-[14px] text-[#222]'>고객센터 운영시간 (평일 09:00 ~ 18:00)</div>
-                                    <div className='text-[14px] text-[#666]'>업무시간 외 자동응답 안내 가능합니다.</div>
+                            <div id="client" className='flex flex-col flex-wrap px-4 py-3'>
+                                <div className='flex p-[15px_0px]'>
+                                    <div className='flex font-[500] text-[16px] text-[#222]'>고객센터</div>
+                                    <div className='flex flex-col mt-[2px] ml-[28px]'>
+                                        <div className='flex font-[700] text-[14px] text-[#222]'>1544-1122</div>
+                                        <div className='text-[14px] text-[#222]'>고객센터 운영시간 (평일 09:00 ~ 18:00)</div>
+                                        <div className='text-[14px] text-[#666]'>업무시간 외 자동응답 안내 가능합니다.</div>
+                                    </div>
+                                </div>
+                                <div className='flex px-3 py-4'>
+                                    <div className='p-[7px_14px] ml-[10px] text-[14px] text-[#222] bg-[#f6f6f6] rounded-[5px]'>FAQ</div>
+                                    <div className='p-[7px_14px] ml-[10px] text-[14px] text-[#222] bg-[#f6f6f6] rounded-[5px]'>1:1 문의</div>
+                                    <div className='p-[7px_14px] ml-[10px] text-[14px] text-[#222] bg-[#f6f6f6] rounded-[5px]'>대관/단체 문의</div>
                                 </div>
                             </div>
-                            <div className='flex px-3 py-4'>
-                                <div className='p-[7px_14px] ml-[10px] text-[14px] text-[#222] bg-[#f6f6f6] rounded-[5px]'>FAQ</div>
-                                <div className='p-[7px_14px] ml-[10px] text-[14px] text-[#222] bg-[#f6f6f6] rounded-[5px]'>1:1 문의</div>
-                                <div className='p-[7px_14px] ml-[10px] text-[14px] text-[#222] bg-[#f6f6f6] rounded-[5px]'>대관/단체 문의</div>
-                            </div>
                         </div>
-                        <div id="rightN" className='flex flex-col justify-center items-center border-l-[1px]'>
+                        <div id="rightN" className='flex flex-col justify-center items-center h-fit border-l-[1px]'>
                             <div className='flex flex-col justify-center'>
                                 <div className='flex justify-center font-[500] text-[16px] text-[#222]'>앱 다운로드</div>
                                 <div className='flex justify-center text-[12px] text-[#222]'>CGV앱에서 더 편리하게 이용하세요</div>
