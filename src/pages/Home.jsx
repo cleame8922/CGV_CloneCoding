@@ -19,7 +19,7 @@ export default function Home() {
                 <video autoPlay loop muted className='w-[980px] mx-[181px]'>
                     <source src="img/video.mp4" type="video/mp4" />
                 </video>
-                <div className='flex flex-col absolute justify-center left-0 top-0 inset-0 bg-black bg-opacity-50 text-white'>
+                <div className='absolute inset-0 top-0 left-0 flex flex-col justify-center text-white bg-black bg-opacity-50'>
                     <div className='ml-[100px] absolute left-[350px]'>
                         <div className='font-[700] text-[40px]'>트랜스포머 ONE</div>
                         <div className='text-[20px]'>역대급 트랜스포머</div>
@@ -92,25 +92,25 @@ export default function Home() {
 
             <div id="etc" className='grid grid-cols-3 gap-9 w-[980px] mx-[181px] pt-[60px]'>
                 <div id="package" className='grid border-[1px] rounded-[10px] px-3 py-4'>
-                    <div className='flex justify-between items-center'>
+                    <div className='flex items-center justify-between'>
                         <div className='flex font-[500] text-[20px] text-[#222]'>패키지</div>
                         <div className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[10px] h-6 text-[14px] text-[#222]'>더보기</div>
                     </div>
-                    <div className='flex px-2 py-5 items-center'>
+                    <div className='flex items-center px-2 py-5'>
                         <img src="img/breadposter.jpg" alt="breadposter" className='flex w-[55px] h-[76px] rounded-[5px]'/>
                         <div className='flex flex-col ml-5'>
                             <div className='flex flex-wrap font-[500] text-[14px] text-[#222]'>{`<브레드이발소:빵스타의탄생> 얼리버드관람권`}</div>
                             <div className='flex font-[700] text-[16px] text-[#222]'>14000원</div>
                         </div>
                     </div>
-                    <div className='flex px-2 pb-5 items-center'>
+                    <div className='flex items-center px-2 pb-5'>
                         <img src="img/wepkg.jpg" alt="breadposter" className='flex w-[75px] h-[76px]'/>
                         <div className='flex flex-col ml-5'>
                             <div className='flex flex-wrap font-[500] text-[14px] text-[#222]'>{`우리 패키지`}</div>
                             <div className='flex font-[700] text-[16px] text-[#222]'>62000원</div>
                         </div>
                     </div>
-                    <div className='flex px-2 items-center'>
+                    <div className='flex items-center px-2'>
                         <img src="img/wepkg.jpg" alt="breadposter" className='flex w-[75px] h-[76px]'/>
                         <div className='flex flex-col ml-5'>
                             <div className='flex flex-wrap font-[500] text-[14px] text-[#222]'>{`나랑 너 패키지`}</div>
@@ -119,25 +119,25 @@ export default function Home() {
                     </div>
                 </div>
                 <div id="ticket" className='grid border-[1px] rounded-[10px] px-3 py-4'>
-                    <div className='flex justify-between items-center'>
+                    <div className='flex items-center justify-between'>
                         <div className='flex font-[500] text-[20px] text-[#222]'>영화관람권</div>
                         <div className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[10px] h-6 text-[14px] text-[#222]'>더보기</div>
                     </div>
-                    <div className='flex px-2 py-5 items-center'>
+                    <div className='flex items-center px-2 py-5'>
                         <img src="img/cgv.jpg" alt="cgv" className='flex w-[75px] h-[76px]'/>
                         <div className='flex flex-col ml-5'>
                             <div className='flex flex-wrap font-[500] text-[14px] text-[#222]'>{`CGV 영화관람권`}</div>
                             <div className='flex font-[700] text-[16px] text-[#222]'>13000원</div>
                         </div>
                     </div>
-                    <div className='flex px-2 pb-5 items-center'>
+                    <div className='flex items-center px-2 pb-5'>
                         <img src="img/imax.jpg" alt="imax" className='flex w-[75px] h-[76px]'/>
                         <div className='flex flex-col ml-5'>
                             <div className='flex flex-wrap font-[500] text-[14px] text-[#222]'>{`IMAX 영화관람권`}</div>
                             <div className='flex font-[700] text-[16px] text-[#222]'>18000원</div>
                         </div>
                     </div>
-                    <div className='flex px-2 items-center'>
+                    <div className='flex items-center px-2'>
                         <img src="img/4dx.jpg" alt="4dx" className='flex w-[75px] h-[76px]'/>
                         <div className='flex flex-col ml-5'>
                             <div className='flex flex-wrap font-[500] text-[14px] text-[#222]'>{`4DX 영화관람권`}</div>
@@ -146,25 +146,25 @@ export default function Home() {
                     </div>
                 </div>
                 <div id="giftcard" className='grid border-[1px] rounded-[10px] px-3 py-4'>
-                    <div className='flex justify-between items-center'>
+                    <div className='flex items-center justify-between'>
                         <div className='flex font-[500] text-[20px] text-[#222]'>기프트카드</div>
                         <div className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[10px] h-6 text-[14px] text-[#222]'>더보기</div>
                     </div>
-                    <div className='flex px-2 py-5 items-center'>
+                    <div className='flex items-center px-2 py-5'>
                         <img src="img/a.jpg" alt="a" className='flex w-[75px] h-[76px]'/>
                         <div className='flex flex-col ml-5'>
                             <div className='flex flex-wrap font-[500] text-[14px] text-[#222]'>{`PACONNIE A형`}</div>
                             <div className='flex font-[700] text-[16px] text-[#222]'>금액충전형</div>
                         </div>
                     </div>
-                    <div className='flex px-2 pb-5 items-center'>
+                    <div className='flex items-center px-2 pb-5'>
                         <img src="img/b.jpg" alt="b" className='flex w-[75px] h-[76px]'/>
                         <div className='flex flex-col ml-5'>
                             <div className='flex flex-wrap font-[500] text-[14px] text-[#222]'>{`PACONNIE B형`}</div>
                             <div className='flex font-[700] text-[16px] text-[#222]'>금액충전형</div>
                         </div>
                     </div>
-                    <div className='flex px-2 items-center'>
+                    <div className='flex items-center px-2'>
                         <img src="img/c.jpg" alt="c" className='flex w-[75px] h-[76px]'/>
                         <div className='flex flex-col ml-5'>
                             <div className='flex flex-wrap font-[500] text-[14px] text-[#222]'>{`PACONNIE C형`}</div>
@@ -176,9 +176,9 @@ export default function Home() {
 
             <div id="last" className='flex border-box w-[980px] p-[30px_0_120px] mx-[181px]'>
                 <div id="notice" className='flex items-center w-[100%] h-[238px] border-[1px] rounded-[10px]'>
-                    <div className='flex w-fit'>
-                        <div id="leftN" className='flex flex-col justify-center px-3 py-[15px]'>
-                            <div className='flex w-fit border-b-[1px] py-[15px]'>
+                    <div className='flex'>
+                        <div id="leftN" className='flex flex-col justify-center p-[15px]'>
+                            <div className='flex border-b-[1px] py-[15px]'>
                                 <div className='flex font-[500] text-[16px] text-[#222]'>공지사항</div>
                                 <div className='flex overflow-hidden w-[50%] mt-[2px] ml-[28px] text-[14px] text-[#222] whitespace-nowrap'>{`[극장] [CGV] <블랙핑크 월드투어 [본 핑크] 인 시네마> 무대인사 회차 휠체어석 유의사항 안내`}</div>
                                 <div className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[10px] h-6 text-[14px] text-[#222] ml-8'>더보기</div>
@@ -207,7 +207,7 @@ export default function Home() {
                             <div className='flex justify-center'>
                                 <img src="img/qr.gif" alt="qr" className='flex size-[60px] items-center' />
                             </div>
-                            <div className='flex justify-center items-center'>
+                            <div className='flex items-center justify-center'>
                                 <div id="12" className='flex text-[12px] text-[#666] text-center'>QR코드를 스캔하고 <br /> 앱설치 페이지로 바로 이동하세요</div>
                             </div>
                         </div>
