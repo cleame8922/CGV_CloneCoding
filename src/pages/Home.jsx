@@ -175,15 +175,15 @@ export default function Home() {
             </div>
 
             <div id="last" className='flex border-box w-[980px] p-[30px_0_120px] mx-[181px]'>
-                <div id="notice" className='flex items-center w-[100%] h-[238px] border-[1px] rounded-[10px]'>
-                    <div className='flex'>
-                        <div id="leftN" className='flex flex-col justify-center p-[15px]'>
-                            <div className='flex border-b-[1px] py-[15px]'>
-                                <div className='flex font-[500] text-[16px] text-[#222]'>공지사항</div>
+                <div id="notice" className='flex items-center h-[238px] border-[1px] rounded-[10px]'>
+                    <div id="leftN" className='flex px-4'>
+                        <div className='flex flex-col justify-center w-[500px] p-[24px_26px_20px_30px]'>
+                            <div className='flex border-b-[1px] border-b-[##f4f4f4]'>
+                                <div className='flex font-[500] text-[16px] text-[#222] mb-[15px]'>공지사항</div>
                                 <div className='flex overflow-hidden w-[50%] mt-[2px] ml-[28px] text-[14px] text-[#222] whitespace-nowrap'>{`[극장] [CGV] <블랙핑크 월드투어 [본 핑크] 인 시네마> 무대인사 회차 휠체어석 유의사항 안내`}</div>
                                 <div className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[10px] h-6 text-[14px] text-[#222] ml-8'>더보기</div>
                             </div>
-                            <div id="client" className='flex flex-col flex-wrap px-4 py-3'>
+                            <div id="client" className='flex flex-col flex-wrap'>
                                 <div className='flex p-[15px_0px]'>
                                     <div className='flex font-[500] text-[16px] text-[#222]'>고객센터</div>
                                     <div className='flex flex-col mt-[2px] ml-[28px]'>
@@ -192,29 +192,29 @@ export default function Home() {
                                         <div className='text-[14px] text-[#666]'>업무시간 외 자동응답 안내 가능합니다.</div>
                                     </div>
                                 </div>
-                                <div className='flex px-3 py-4'>
+                                <div className='flex px-3 py-3'>
                                     <div className='p-[7px_14px] ml-[10px] text-[14px] text-[#222] bg-[#f6f6f6] rounded-[5px]'>FAQ</div>
                                     <div className='p-[7px_14px] ml-[10px] text-[14px] text-[#222] bg-[#f6f6f6] rounded-[5px]'>1:1 문의</div>
                                     <div className='p-[7px_14px] ml-[10px] text-[14px] text-[#222] bg-[#f6f6f6] rounded-[5px]'>대관/단체 문의</div>
                                 </div>
                             </div>
                         </div>
-                        <div id="rightN" className='flex flex-col justify-center items-center h-fit border-l-[1px]'>
-                            <div className='flex flex-col justify-center'>
-                                <div className='flex justify-center font-[500] text-[16px] text-[#222]'>앱 다운로드</div>
-                                <div className='flex justify-center text-[12px] text-[#222]'>CGV앱에서 더 편리하게 이용하세요</div>
-                            </div>
-                            <div className='flex justify-center'>
-                                <img src="img/qr.gif" alt="qr" className='flex size-[60px] items-center' />
-                            </div>
-                            <div className='flex items-center justify-center'>
-                                <div id="12" className='flex text-[12px] text-[#666] text-center'>QR코드를 스캔하고 <br /> 앱설치 페이지로 바로 이동하세요</div>
-                            </div>
+                    </div>
+                    <div id="rightN" className='flex flex-col w-[222px] justify-center items-center h-full border-l-[1px]'>
+                        <div className='flex flex-col justify-center file'>
+                            <div className='flex justify-center font-[500] text-[16px] text-[#222]'>앱 다운로드</div>
+                            <div className='flex justify-center text-[12px] text-[#222]'>CGV앱에서 더 편리하게 이용하세요</div>
+                        </div>
+                        <div className='flex justify-center py-5'>
+                            <img src="img/qr.gif" alt="qr" className='flex size-[60px] items-center' />
+                        </div>
+                        <div className='flex items-center justify-center'>
+                            <div className='flex text-[12px] text-[#666] text-center'>QR코드를 스캔하고 <br /> 앱설치 페이지로 바로 이동하세요</div>
                         </div>
                     </div>
                 </div>
-                <div className='flex w-[40%]'>
-                    <img src="img/bugs.png" alt="bugs" className='flex ml-8 rounded-[10px] w-[211px] h-[238px]'/>
+                <div className='flex pl-[20px]'>
+                    <img src="img/bugs.png" alt="bugs" className='flex rounded-[10px] w-[211px] h-[238px]'/>
                 </div>
             </div>
         </div>

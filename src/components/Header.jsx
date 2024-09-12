@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 
 export default function Header() {
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+    const [isNavFixed, setIsNavFixed] = useState(false); // 네비게이션 고정 상태
+    const navRef = useRef(null); // 네비게이션 위치를 참조하기 위한 ref
 
     const handleMouseEnter = () => {
         setIsDropdownVisible(true);
@@ -11,6 +13,25 @@ export default function Header() {
     const handleMouseLeave = () => {
         setIsDropdownVisible(false);
     };
+
+    // 스크롤 이벤트 핸들러
+    const handleScroll = () => {
+        if (navRef.current) {
+            // 네비게이션이 상단에 도달하면 고정
+            if (window.scrollY >= navRef.current.offsetTop) {
+                setIsNavFixed(true);
+            } else {
+                setIsNavFixed(false);
+            }
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll); // 스크롤 이벤트 등록
+        return () => {
+            window.removeEventListener('scroll', handleScroll); // 컴포넌트 언마운트 시 이벤트 제거
+        };
+    }, []);
 
     return (
         <div className='min-h-fit'>
@@ -49,52 +70,67 @@ export default function Header() {
                 </div>
                 <div className='border-b-[1px]'></div>
             </div>
+
+            {/* 네비게이션 바 */}
             <div
                 id="nav"
-                className='flex justify-between mx-[400px] py-[5px] relative group'
+                ref={navRef}
+                className={`flex flex-col group transition-all duration-300 ${
+                    isNavFixed ? 'fixed top-0 left-0 w-full bg-white shadow-lg z-50' : ''
+                }`}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
             >
-                <div id="content" className='relative'>
+                <div className='flex justify-between mx-[400px] py-[5px]'>
                     <ul id="navList" className='flex'>
-                        <li className='mx-4 my-2 font-semibold'>영화</li>
-                        <li className='mx-4 my-2 font-semibold'>극장</li>
-                        <li className='mx-4 my-2 font-semibold'>예매</li>
-                        <li className='mx-4 my-2 font-semibold'>스토어</li>
-                        <li className='mx-4 my-2 font-semibold'>이벤트</li>
-                        <li className='mx-4 my-2 font-semibold'>혜택</li>
+                        <img src="img/lo" alt="" />
+                        <li className='my-2 font-semibold mx-7'>영화</li>
+                        <li className='my-2 font-semibold mx-7'>극장</li>
+                        <li className='my-2 font-semibold mx-7'>예매</li>
+                        <li className='my-2 font-semibold mx-7'>스토어</li>
+                        <li className='my-2 font-semibold mx-7'>이벤트</li>
+                        <li className='my-2 font-semibold mx-7'>혜택</li>
                     </ul>
-                    {/* 드롭다운 메뉴 */}
-                    {isDropdownVisible && (
-                        <div className='absolute left-0 z-10 flex bg-white border border-gray-200'>
-                            <div className='grid grid-rows-6 gap-4 p-4'>
-                                {['영화', '극장', '예매', '스토어', '이벤트', '혜택'].map((item) => (
-                                    <div key={item} className='flex flex-col'>
-                                        <div className='flex font-[500]'>{item}</div>
-                                        <ul className='flex flex-col list-none'> {/* Changed list-disc to list-none */}
-                                            {getSubMenu(item).map(subItem => (
-                                                <li key={subItem}>{subItem}</li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                ))}
-                            </div>
+                    <div id="nR" className='flex items-center'>
+                        <div className='flex items-center border-x-[1px] h-6 p-[0px_10px_0px_10px]'>
+                            <div className='flex text-[16px] pr-[7px] text-[#222] w-[150px]'>추석엔 빵스타!</div>
+                            <img src="img/search.png" alt="search" className='size-[26px] flex justify-end' />
                         </div>
-                    )}
-                </div>
-                <div id="nR" className='flex items-center'>
-                    <div className='flex items-center border-x-[1px] h-6 p-[0px_10px_0px_10px]'>
-                        <div className='flex text-[16px] pr-[7px] text-[#222] w-[150px]'>추석엔 빵스타!</div>
-                        <img src="img/search.png" alt="search" className='size-[26px] flex justify-end' />
                     </div>
                 </div>
             </div>
+
             <div className='border-t-2 border-t-[#fb4357]'></div>
+
+            {isDropdownVisible && (
+                <div className='absolute z-10 w-[100%] bg-white border-t border-gray-200'>
+                    <div className='flex mx-[400px] py-4'>
+                        <div className='grid flex-1 grid-cols-6 gap-3'>
+                            {['영화', '극장', '예매', '스토어', '이벤트', '혜택'].map((item, index) => (
+                                <div
+                                    key={item}
+                                    className={`relative flex flex-col ${index > 0 ? 'pl-3' : ''}`}
+                                >
+                                    {index > 0 && (
+                                        <div className='absolute left-0 top-0 h-[75%] border-l-[1px] border-gray-200'></div>
+                                    )}
+                                    <div className='mb-3 font-[700] text-[15px]'>{item}</div>
+                                    <ul className='mb-2 list-none font-[500] text-[14px] text-[#222]'>
+                                        {getSubMenu(item).map(subItem => (
+                                            <li key={subItem} className='mb-1'>{subItem}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
 
-// `item`에 따라 서브 메뉴 항목을 반환하는 함수
+// 서브 메뉴 항목을 반환하는 함수
 const getSubMenu = (item) => {
     switch (item) {
         case '영화':
