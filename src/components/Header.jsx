@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 export default function Header() {
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
     const [isNavFixed, setIsNavFixed] = useState(false); // 네비게이션 고정 상태
+    const [navTop, setNavTop] = useState(0); // 네비게이션의 초기 위치 저장
     const navRef = useRef(null); // 네비게이션 위치를 참조하기 위한 ref
 
     const handleMouseEnter = () => {
@@ -14,19 +15,26 @@ export default function Header() {
         setIsDropdownVisible(false);
     };
 
-    // 스크롤 이벤트 핸들러
     const handleScroll = () => {
         if (navRef.current) {
-            // 네비게이션이 상단에 도달하면 고정
-            if (window.scrollY >= navRef.current.offsetTop) {
+            const scrollY = window.scrollY;
+            const navHeight = navRef.current.offsetHeight;
+            const stickyThreshold = navTop + navHeight;
+
+            // 네비게이션 바가 화면 상단에 고정되어야 하는 지점
+            if (scrollY > stickyThreshold) {
                 setIsNavFixed(true);
             } else {
-                setIsNavFixed(false);
+                setIsNavFixed(false); // 스크롤을 다시 올렸을 때 고정 해제
             }
         }
     };
 
     useEffect(() => {
+        if (navRef.current) {
+            setNavTop(navRef.current.offsetTop); // 네비게이션의 초기 위치를 저장
+        }
+
         window.addEventListener('scroll', handleScroll); // 스크롤 이벤트 등록
         return () => {
             window.removeEventListener('scroll', handleScroll); // 컴포넌트 언마운트 시 이벤트 제거
@@ -53,10 +61,10 @@ export default function Header() {
                                 <img src="img/loginPassword.png" alt="loginPassword" className='size-[36px]' />
                                 <div className='flex text-[13px] text-[#666] leading-5 whitespace-nowrap'>로그인</div>
                             </NavLink>
-                            <div className='flex flex-col items-center ml-7'>
+                            <NavLink to='/join' className='flex flex-col items-center ml-7'>
                                 <img src="img/loginJoin.png" alt="loginJoin" className='size-[36px]' />
                                 <div className='flex text-[13px] text-[#666] leading-5 whitespace-nowrap'>회원가입</div>
-                            </div>
+                            </NavLink>
                             <div className='flex flex-col items-center ml-7'>
                                 <img src="img/loginMember.png" alt="loginMember" className='size-[36px]' />
                                 <div className='flex text-[13px] text-[#666] leading-5 whitespace-nowrap'>MY CGV</div>
@@ -76,14 +84,14 @@ export default function Header() {
                 id="nav"
                 ref={navRef}
                 className={`flex flex-col group transition-all duration-300 ${
-                    isNavFixed ? 'fixed top-0 left-0 w-full bg-white shadow-lg z-50' : ''
+                    isNavFixed ? 'fixed top-0 left-0 w-full bg-gradient-to-r from-[#d74357] via-[#f14f3a] to-[#ef642f] text-white z-50' : ''
                 }`}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
             >
                 <div className='flex justify-between mx-[400px] py-[5px]'>
                     <ul id="navList" className='flex'>
-                        <img src="img/lo" alt="" />
+                        <img src="img/logoWhite.png" alt="logoWhite" className='w-[70px] h-[32px]' />
                         <li className='my-2 font-semibold mx-7'>영화</li>
                         <li className='my-2 font-semibold mx-7'>극장</li>
                         <li className='my-2 font-semibold mx-7'>예매</li>
@@ -93,7 +101,7 @@ export default function Header() {
                     </ul>
                     <div id="nR" className='flex items-center'>
                         <div className='flex items-center border-x-[1px] h-6 p-[0px_10px_0px_10px]'>
-                            <div className='flex text-[16px] pr-[7px] text-[#222] w-[150px]'>추석엔 빵스타!</div>
+                            <div className={`flex text-[16px] pr-[7px] w-[150px] ${isNavFixed ? 'text-white' : 'text-[#222]'}`}>추석엔 빵스타!</div>
                             <img src="img/search.png" alt="search" className='size-[26px] flex justify-end' />
                         </div>
                     </div>

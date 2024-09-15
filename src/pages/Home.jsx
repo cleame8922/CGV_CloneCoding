@@ -1,16 +1,39 @@
 import React, { useState } from 'react';
 
 export default function Home() {
-    const [selectedImage, setSelectedImage] = useState('img/suiteCinema.png'); // 기본 이미지 설정
+    const [selectedImage, setSelectedImage] = useState('img/suiteCinema.png');
     const [hoveredItem, setHoveredItem] = useState(null);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [hoveredIndex, setHoveredIndex] = useState(null);
 
     const handleMouseEnter = (image, index) => {
         setSelectedImage(image);
-        setHoveredItem(index); // 마우스 오버된 항목 설정
+        setHoveredItem(index);
     };
 
     const handleMouseLeave = () => {
-        setHoveredItem(null); // 마우스 오버된 항목 해제
+        setHoveredItem(null);
+    };
+
+    const movies = Array.from({ length: 10 }, (_, index) => ({
+        id: index,
+        title: `정국: 아이 엠 스틸 ${index + 1}`,
+        poster: 'img/moviePoster.jpg',
+        reservationRate: '예매율: 50%',
+    }));
+
+    const moviesToShow = movies.slice(currentIndex, currentIndex + 5);
+
+    const handleNext = () => {
+        if (currentIndex < movies.length - 5) {
+            setCurrentIndex(prev => prev + 5);
+        }
+    };
+
+    const handlePrev = () => {
+        if (currentIndex > 0) {
+            setCurrentIndex(prev => prev - 5);
+        }
     };
 
     return (
@@ -38,7 +61,72 @@ export default function Home() {
                 </div>
             </div>
 
-            <div id="movie" className='flex h-[300px] bg-[#f8f8f8]'></div>
+            <div id="movie" className='flex justify-center items-center h-[460px] w-full bg-[#f8f8f8] p-[50px_30px_60px]'>
+                <div id="container" className='flex flex-col items-center justify-center w-[980px]'>
+                <div className='flex items-center justify-between w-full mb-4'>
+                    <div id="chart" className='flex justify-between w-[248px] items-center'>
+                        <div className='flex font-[700] text-[#222] text-[26px]'>무비차트</div>
+                        <div className='flex border-l-[1px] border-[#d8d8d8] h-[20px]'></div>
+                        <div className='flex font-[400] text-[#666666] text-[26px]'>상영예정작</div>
+                    </div>
+                    <div className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[13px] h-8 text-[14px] text-[#222]'>
+                        전체보기
+                    </div>
+                </div>
+                    <div id="movieList" className='flex overflow-hidden'>
+                        {moviesToShow.map((movie, index) => (
+                            <div 
+                                key={movie.id} 
+                                id="movie" 
+                                className='relative flex flex-col items-center m-2'
+                                onMouseEnter={() => setHoveredIndex(index)}
+                                onMouseLeave={() => setHoveredIndex(null)}
+                            >
+                                <div className='relative'>
+                                    <img src={movie.poster} alt={movie.title} className='w-[170px] h-[234px] rounded-[15px]' />
+                                    <div className={`absolute inset-0 bg-black opacity-50 transition-opacity duration-300 ${hoveredIndex === index ? 'opacity-50' : 'opacity-0'}`}></div>
+                                    
+                                    <div className={`absolute px-2 italic text-[40px] text-[#fff] bg-transparent rounded bottom-0 left-2 transition-opacity duration-300 ${hoveredIndex === index ? 'opacity-0' : 'opacity-100'}`}>
+                                        {currentIndex + index + 1}
+                                    </div>
+
+                                    <div className={`flex flex-col justify-center items-center w-[170px] absolute bottom-20 left-0 transition-opacity duration-300 ${hoveredIndex === index ? 'opacity-100' : 'opacity-0'}`}>
+                                        <button className='flex justify-center items-center font-[500] w-[120px] h-[34px] bg-[#ffffff] text-[14px] text-[#666666] rounded-[5px]'>상세보기</button>
+                                        <button className='flex justify-center items-center font-[500] w-[120px] h-[34px] bg-[#fb4357] text-[14px] text-[#fff] rounded-[5px] mt-2'>예매하기</button>
+                                    </div>
+                                </div>
+                                <div className='font-[600] text-[18px] text-[#222]'>{movie.title}</div>
+                                <div className='font-[400] text-[14px] text-[#444444]'>{movie.reservationRate}</div>
+                            </div>
+                        ))}
+                    </div>
+                    <div id="arrow" className='absolute flex items-center justify-between w-[980px] mt-2'>
+                        {/* 이전 화살표 */}
+                        <img 
+                            src="img/arrowL.png" 
+                            alt="arrowL" 
+                            className='bg-[#ffffffcc] size-[40px] rounded-full p-[10px] shadow-xl' 
+                            onClick={() => {
+                                if (currentIndex > 0) {
+                                    setCurrentIndex(prev => Math.max(prev - 5, 0));
+                                }
+                            }} 
+                        />
+                        {/* 다음 화살표 */}
+                        <img 
+                            src="img/arrowL.png" 
+                            alt="arrowR" 
+                            className='bg-[#ffffffcc] size-[40px] rounded-full p-[10px] shadow-xl rotate-180' 
+                            onClick={() => {
+                                if (currentIndex < movies.length - 5) {
+                                    setCurrentIndex(prev => Math.min(prev + 5, movies.length - 5));
+                                }
+                            }} 
+                        />
+                    </div>
+                </div>
+            </div>
+
 
             <div id="event" className='flex flex-col justify-center w-[980px] mx-[181px] p-[60px_0_6px]'>
                 <div className='font-[700] text-[26px] text-[#222]'>EVENT</div>
