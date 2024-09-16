@@ -42,6 +42,24 @@ export default function Header() {
         };
     }, [navTop]);
 
+    const [isSearching, setIsSearching] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const handleSearchClick = () => {
+        setIsSearching(true);
+    };
+
+    const handleInputChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+    const handleSearchSubmit = (e) => {
+        e.preventDefault();
+        // 검색어를 사용하여 검색 처리
+        console.log('Searching for:', searchTerm);
+        // 실제 검색 로직을 여기에 추가
+    };
+
     return (
         <div className='min-h-fit'>
             <div id="top" ref={navRef} className='flex flex-col items-center'>
@@ -110,12 +128,12 @@ export default function Header() {
                             </li>
                         ))}
                     </ul>
-                    <div id="nR" className='flex items-center'>
-                        <div className='flex items-center border-x-[1px] h-6 p-[0px_10px_0px_10px]'>
-                            <div className={`flex text-[16px] pr-[7px] w-[150px] ${isNavFixed ? 'text-white' : 'text-[#222]'}`}>추석엔 빵스타!</div>
-                            <img src="img/search.png" alt="search" className='size-[26px] flex justify-end' />
-                        </div>
-                    </div>
+                    <div id="nR" className='flex items-center'> 
+                        <div className='flex items-center border-x-[1px] h-6 p-[0px_10px_0px_10px]'> 
+                            <div className={`flex text-[16px] pr-[7px] w-[150px] ${isNavFixed ? 'text-white' : 'text-[#222]'}`}>추석엔 빵스타!</div> 
+                            <img src="img/search.png" alt="search" className='size-[26px] flex justify-end' /> 
+                        </div> 
+                    </div> 
                 </div>
             </div>
 
