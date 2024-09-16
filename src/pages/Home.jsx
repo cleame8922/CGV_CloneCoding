@@ -17,7 +17,7 @@ export default function Home() {
 
     const movies = Array.from({ length: 10 }, (_, index) => ({
         id: index,
-        title: `정국: 아이 엠 스틸 ${index + 1}`,
+        title: `베테랑2`,
         poster: 'img/moviePoster.jpg',
         reservationRate: '예매율: 50%',
     }));
@@ -39,24 +39,24 @@ export default function Home() {
     return (
         <div className='flex flex-col items-center'>
             <div id="video" className='flex flex-col items-center w-[100%] bg-[#000] relative'>
-                <video autoPlay loop muted className='w-[980px] mx-[181px]'>
+                <video autoPlay loop muted className='mx-[181px]'>
                     <source src="img/video.mp4" type="video/mp4" />
                 </video>
                 <div className='absolute inset-0 top-0 left-0 flex flex-col justify-center text-white bg-black bg-opacity-50'>
-                    <div className='ml-[100px] absolute left-[350px]'>
+                    <div className='ml-[100px] absolute left-[450px]'>
                         <div className='font-[700] text-[40px]'>트랜스포머 ONE</div>
                         <div className='text-[20px]'>역대급 트랜스포머</div>
                         <div className='text-[20px]'>극장에서 확인하라!</div>
                     </div>
                 </div>
-                <div className='flex items-center absolute left-[450px] top-[350px] bg-white bg-opacity-80 rounded-[15px] p-[5px_15px] text-[14px] text-[#343434]'>
+                <div className='flex items-center absolute left-[550px] top-[370px] bg-white bg-opacity-80 rounded-[15px] p-[5px_15px] text-[14px] text-[#343434]'>
                     상세보기
                     <img src="img/arrowR.png" alt="arrow" className='flex left-[180px] top-[330px] size-3 ml-3' />
                 </div>
-                <div className='absolute left-[570px] top-[350px]'>
+                <div className='flex items-center absolute left-[665px] top-[370px]'>
                     <img src="img/play.png" alt="play" className='size-7 border-[1px] border-[#979797] rounded-[50%] p-1' />
                 </div>
-                <div className='absolute left-[610px] top-[350px]'>
+                <div className='flex items-center absolute left-[700px] top-[370px]'>
                     <img src="img/soundOff.png" alt="soundOff" className='size-7 border-[1px] border-[#979797] rounded-[50%] p-1' />
                 </div>
             </div>
@@ -82,41 +82,39 @@ export default function Home() {
                                 onMouseEnter={() => setHoveredIndex(index)}
                                 onMouseLeave={() => setHoveredIndex(null)}
                             >
-                                <div className='relative'>
+                                <div className='relative mb-2'>
                                     <img src={movie.poster} alt={movie.title} className='w-[170px] h-[234px] rounded-[15px]' />
-                                    <div className={`absolute inset-0 bg-black opacity-50 transition-opacity duration-300 ${hoveredIndex === index ? 'opacity-50' : 'opacity-0'}`}></div>
+                                    <div className={`absolute inset-0 bg-black transition-opacity duration-300 rounded-[15px] ${hoveredIndex === index ? 'opacity-50' : 'opacity-0'}`}></div>
                                     
                                     <div className={`absolute px-2 italic text-[40px] text-[#fff] bg-transparent rounded bottom-0 left-2 transition-opacity duration-300 ${hoveredIndex === index ? 'opacity-0' : 'opacity-100'}`}>
                                         {currentIndex + index + 1}
                                     </div>
 
                                     <div className={`flex flex-col justify-center items-center w-[170px] absolute bottom-20 left-0 transition-opacity duration-300 ${hoveredIndex === index ? 'opacity-100' : 'opacity-0'}`}>
-                                        <button className='flex justify-center items-center font-[500] w-[120px] h-[34px] bg-[#ffffff] text-[14px] text-[#666666] rounded-[5px]'>상세보기</button>
-                                        <button className='flex justify-center items-center font-[500] w-[120px] h-[34px] bg-[#fb4357] text-[14px] text-[#fff] rounded-[5px] mt-2'>예매하기</button>
+                                        <div className='flex justify-center items-center font-[500] w-[120px] h-[34px] bg-[#ffffff] text-[14px] text-[#666666] rounded-[5px]'>상세보기</div>
+                                        <div className='flex justify-center items-center font-[500] w-[120px] h-[34px] bg-[#fb4357] text-[14px] text-[#fff] rounded-[5px] mt-2'>예매하기</div>
                                     </div>
                                 </div>
-                                <div className='font-[600] text-[18px] text-[#222]'>{movie.title}</div>
+                                <div className='py-2 font-[600] text-[18px] text-[#222]'>{movie.title}</div>
                                 <div className='font-[400] text-[14px] text-[#444444]'>{movie.reservationRate}</div>
                             </div>
                         ))}
                     </div>
                     <div id="arrow" className='absolute flex items-center justify-between w-[980px] mt-2'>
-                        {/* 이전 화살표 */}
-                        <img 
-                            src="img/arrowL.png" 
-                            alt="arrowL" 
-                            className='bg-[#ffffffcc] size-[40px] rounded-full p-[10px] shadow-xl' 
-                            onClick={() => {
-                                if (currentIndex > 0) {
+                        {currentIndex > 0 && (
+                            <img 
+                                src="img/arrowL.png" 
+                                alt="arrowL" 
+                                className='bg-[#ffffffcc] size-[40px] rounded-full p-[10px] shadow-xl' 
+                                onClick={() => {
                                     setCurrentIndex(prev => Math.max(prev - 5, 0));
-                                }
-                            }} 
-                        />
-                        {/* 다음 화살표 */}
+                                }} 
+                            />
+                        )}
                         <img 
                             src="img/arrowL.png" 
                             alt="arrowR" 
-                            className='bg-[#ffffffcc] size-[40px] rounded-full p-[10px] shadow-xl rotate-180' 
+                            className='bg-[#ffffffcc] size-[40px] rounded-full p-[10px] shadow-xl rotate-180 ml-auto' 
                             onClick={() => {
                                 if (currentIndex < movies.length - 5) {
                                     setCurrentIndex(prev => Math.min(prev + 5, movies.length - 5));
@@ -124,6 +122,9 @@ export default function Home() {
                             }} 
                         />
                     </div>
+
+
+
                 </div>
             </div>
 

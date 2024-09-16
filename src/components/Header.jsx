@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 export default function Header() {
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-    const [isNavFixed, setIsNavFixed] = useState(false); // 네비게이션 고정 상태
-    const [navTop, setNavTop] = useState(0); // 네비게이션의 초기 위치 저장
-    const navRef = useRef(null); // 네비게이션 위치를 참조하기 위한 ref
+    const [isNavFixed, setIsNavFixed] = useState(false);
+    const [navTop, setNavTop] = useState(0);
+    const navRef = useRef(null);
+    const navigate = useNavigate();
 
     const handleMouseEnter = () => {
         setIsDropdownVisible(true);
@@ -15,39 +16,39 @@ export default function Header() {
         setIsDropdownVisible(false);
     };
 
-    const handleScroll = () => {
-        if (navRef.current) {
-            const scrollY = window.scrollY;
-            const navHeight = navRef.current.offsetHeight;
-            const stickyThreshold = navTop + navHeight;
+    const handleDropdownMouseEnter = () => {
+        setIsDropdownVisible(true);
+    };
 
-            // 네비게이션 바가 화면 상단에 고정되어야 하는 지점
-            if (scrollY > stickyThreshold) {
-                setIsNavFixed(true);
-            } else {
-                setIsNavFixed(false); // 스크롤을 다시 올렸을 때 고정 해제
-            }
-        }
+    const handleDropdownMouseLeave = () => {
+        setIsDropdownVisible(false);
+    };
+
+    const handleScroll = () => {
+        const scrollY = window.scrollY;
+        // Check if the scroll position is greater than the navTop
+        setIsNavFixed(scrollY > navTop);
     };
 
     useEffect(() => {
         if (navRef.current) {
-            setNavTop(navRef.current.offsetTop); // 네비게이션의 초기 위치를 저장
+            // Save the nav's top offset
+            setNavTop(navRef.current.offsetTop);
         }
 
-        window.addEventListener('scroll', handleScroll); // 스크롤 이벤트 등록
+        window.addEventListener('scroll', handleScroll);
         return () => {
-            window.removeEventListener('scroll', handleScroll); // 컴포넌트 언마운트 시 이벤트 제거
+            window.removeEventListener('scroll', handleScroll);
         };
-    }, []);
+    }, [navTop]);
 
     return (
         <div className='min-h-fit'>
-            <div id="top">
-                <div id="banner" className='flex justify-center bg-[#1E0D44]'>
+            <div id="top" ref={navRef} className='flex flex-col items-center'>
+                <div id="banner" className='flex justify-center w-full bg-[#1E0D44]'>
                     <img src="img/banner.jpg" alt="banner" className='flex' />
                 </div>
-                <div className='flex justify-between p-[30px_6px_25px_5px] mx-[400px]'>
+                <div className='flex items-center justify-between p-[30px_6px_25px_5px] w-[980px]'>
                     <NavLink to='/' id="bLeft" className='flex'>
                         <img src="img/logoRed.png" alt="logoRed" className='flex w-[117px] h-[53px]' />
                         <p className='flex items-end tracking-[0.313em] text-[16px] text-[#222]'>DEEP DIVE SPACE</p>
@@ -79,25 +80,35 @@ export default function Header() {
                 <div className='border-b-[1px]'></div>
             </div>
 
-            {/* 네비게이션 바 */}
             <div
                 id="nav"
-                ref={navRef}
-                className={`flex flex-col group transition-all duration-300 ${
+                className={`flex flex-col transition-all duration-300 border-t-[1px] border-b-[2px] border-b-[#fb4357] ${
                     isNavFixed ? 'fixed top-0 left-0 w-full bg-gradient-to-r from-[#d74357] via-[#f14f3a] to-[#ef642f] text-white z-50' : ''
                 }`}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
+                onMouseEnter={handleMouseEnter} 
+                onMouseLeave={handleMouseLeave} 
             >
-                <div className='flex justify-between mx-[400px] py-[5px]'>
-                    <ul id="navList" className='flex'>
-                        <img src="img/logoWhite.png" alt="logoWhite" className='w-[70px] h-[32px]' />
-                        <li className='my-2 font-semibold mx-7'>영화</li>
-                        <li className='my-2 font-semibold mx-7'>극장</li>
-                        <li className='my-2 font-semibold mx-7'>예매</li>
-                        <li className='my-2 font-semibold mx-7'>스토어</li>
-                        <li className='my-2 font-semibold mx-7'>이벤트</li>
-                        <li className='my-2 font-semibold mx-7'>혜택</li>
+                <div className='flex justify-between py-[5px] w-[980px] mx-auto'>
+                    <ul id="navList" className='flex items-center'>
+                        {isNavFixed && (
+                            <img src="img/logoWhite.png" alt="logoWhite" className='w-[70px] h-[32px]' />
+                        )}
+                        {['영화', '극장', '예매', '스토어', '이벤트', '혜택'].map((item) => (
+                            <li 
+                                key={item}
+                                className={`my-2 font-semibold flex justify-between w-[100px] ${item === '예매' ? (isNavFixed ? 'text-white' : 'text-[#fb4357] font-bold') : ''}`}
+                                onMouseEnter={handleMouseEnter}
+                                onClick={() => {
+                                    if (item === '영화') {
+                                        navigate('/Movie');
+                                    } else if (item === '예매') {
+                                        navigate('/Ticketing');
+                                    }
+                                }}
+                            >
+                                {item}
+                            </li>
+                        ))}
                     </ul>
                     <div id="nR" className='flex items-center'>
                         <div className='flex items-center border-x-[1px] h-6 p-[0px_10px_0px_10px]'>
@@ -108,22 +119,25 @@ export default function Header() {
                 </div>
             </div>
 
-            <div className='border-t-2 border-t-[#fb4357]'></div>
-
+            {/* 드롭다운 메뉴 */}
             {isDropdownVisible && (
-                <div className='absolute z-10 w-[100%] bg-white border-t border-gray-200'>
-                    <div className='flex mx-[400px] py-4'>
+                <div
+                    className={`${
+                        isNavFixed ? 'fixed top-[50px] left-0 w-full z-50 opacity-100 transition-opacity duration-300' 
+                                : 'absolute top-[245px] z-10 w-full opacity-100 transition-opacity duration-300'
+                    } flex flex-col items-center bg-white border-t border-gray-200`}
+                    onMouseEnter={handleDropdownMouseEnter}
+                    onMouseLeave={handleDropdownMouseLeave}
+                >
+                    <div className='flex w-[980px] mx-auto py-4'>
                         <div className='grid flex-1 grid-cols-6 gap-3'>
                             {['영화', '극장', '예매', '스토어', '이벤트', '혜택'].map((item, index) => (
-                                <div
-                                    key={item}
-                                    className={`relative flex flex-col ${index > 0 ? 'pl-3' : ''}`}
-                                >
+                                <div key={item} className={`relative flex flex-col ${index > 0 ? 'pl-3' : ''}`}>
                                     {index > 0 && (
                                         <div className='absolute left-0 top-0 h-[75%] border-l-[1px] border-gray-200'></div>
                                     )}
-                                    <div className='mb-3 font-[700] text-[15px]'>{item}</div>
-                                    <ul className='mb-2 list-none font-[500] text-[14px] text-[#222]'>
+                                    <div className='mb-3 font-[700] text-[15px] text-[#222]'>{item}</div>
+                                    <ul className='mb-2 list-none font-[400] text-[14px] text-[#666]'>
                                         {getSubMenu(item).map(subItem => (
                                             <li key={subItem} className='mb-1'>{subItem}</li>
                                         ))}
@@ -141,19 +155,19 @@ export default function Header() {
 // 서브 메뉴 항목을 반환하는 함수
 const getSubMenu = (item) => {
     switch (item) {
-        case '영화':
-            return ['무비차트', '아트하우스', 'ICECON'];
-        case '극장':
-            return ['CGV 극장', '특별관'];
-        case '예매':
-            return ['빠른예매', '상영스케줄', 'English Ticketing', 'English Schedule'];
-        case '스토어':
-            return ['패키지', '영화관람권', '기프트카드', '콤보', '팝콘', '음료', '스낵', '플레이존', '준비중', '씨네샵 >'];
-        case '이벤트':
-            return ['SPECIAL', '영화/예매', '멤버십/CLUB', 'CGV 극장별', '패키지', '당첨자 발표', '종료된 이벤트'];
-        case '혜택':
-            return ['CGV 할인정보', 'CLUB 서비스', 'VIP 라운지'];
-        default:
-            return [];
+    case '영화':
+        return ['무비차트', '아트하우스', 'ICECON'];
+    case '극장':
+        return ['CGV 극장', '특별관'];
+    case '예매':
+        return ['빠른예매', '상영스케줄', 'English Ticketing', 'English Schedule'];
+    case '스토어':
+        return ['패키지', '영화관람권', '기프트카드', '콤보', '팝콘', '음료', '스낵', '플레이존', '준비중', '씨네샵 >'];
+    case '이벤트':
+        return ['SPECIAL', '영화/예매', '멤버십/CLUB', 'CGV 극장별', '패키지', '당첨자 발표', '종료된 이벤트'];
+    case '혜택':
+        return ['CGV 할인정보', 'CLUB 서비스', 'VIP 라운지'];
+    default:
+        return [];
     }
 };

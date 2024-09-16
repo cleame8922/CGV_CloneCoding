@@ -6,6 +6,9 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Join from "./pages/Join";
 import Footer from "./components/Footer";
+import Ticketing from "./pages/Ticketing";
+import Click from "./components/Click";
+import Movie from "./pages/Movie"
 
 function App() {
   return (
@@ -16,7 +19,10 @@ function App() {
             <Route path='/' element={<Home />} />
             <Route path='/login' element={<Login />} />
             <Route path='/join' element={<Join />} />
+            <Route path='/movie' element={<Movie />} />
+            <Route path='/ticketing' element={<Ticketing />} />
           </Routes>
+          <Click />
           <Footer />
         </BrowserRouter>
     </div>
