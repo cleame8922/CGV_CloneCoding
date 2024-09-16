@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 
 export default function Home() {
     const [selectedImage, setSelectedImage] = useState('img/suiteCinema.png');
@@ -69,9 +70,9 @@ export default function Home() {
                         <div className='flex border-l-[1px] border-[#d8d8d8] h-[20px]'></div>
                         <div className='flex font-[400] text-[#666666] text-[26px]'>상영예정작</div>
                     </div>
-                    <div className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[13px] h-8 text-[14px] text-[#222]'>
+                    <NavLink to='/movie' className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[13px] h-8 text-[14px] text-[#222]'>
                         전체보기
-                    </div>
+                    </NavLink>
                 </div>
                     <div id="movieList" className='flex overflow-hidden'>
                         {moviesToShow.map((movie, index) => (
@@ -131,11 +132,11 @@ export default function Home() {
 
             <div id="event" className='flex flex-col justify-center w-[980px] mx-[181px] p-[60px_0_6px]'>
                 <div className='font-[700] text-[26px] text-[#222]'>EVENT</div>
-                <div className='mt-[19px]'>
-                    <img src="img/eventImg.jpg" alt="eventImg" className='rounded-[10px] w-[310px] h-[207px]' />
-                    <div className='mt-[16px] font-[600] text-[#222] text-[18px]'>가을만큼 풍성한무비추천템</div>
-                    <div className='mt-[4px] text-[14px] text-[#666]'>2024.08.30 ~ 2024.09.15</div>
-                </div>
+                <a href='http://www.cgv.co.kr/culture-event/event/detailViewUnited.aspx?seq=41925' className='mt-[19px]'>
+                    <img src="img/eventImg.jpg" alt="eventImg" className='rounded-[10px] w-[310px] h-[207px] transition-transform duration-300 ease-in-out transform hover:scale-105' />
+                    <div className='mt-[16px] font-[600] text-[#222] text-[18px]'>{`[브레드이발소]서프라이즈 온리 쿠폰`}</div>
+                    <div className='mt-[4px] text-[14px] text-[#666]'>2024.09.12~2024.09.18</div>
+                </a>
             </div>
 
             <div id="special" className='flex flex-col w-[980px] mx-[181px] p-[60px_0_21px]'>
@@ -154,25 +155,25 @@ export default function Home() {
                         <div className={`flex justify-between content-center border-t-[1px] p-[19px_25px_19px_19px] ${hoveredItem === 1 ? 'border-black border-[1.5px] rounded-[10px]' : ''}`}
                             onMouseEnter={() => handleMouseEnter('img/suiteCinema.png', 1)}
                             onMouseLeave={handleMouseLeave}>
-                            <div className={`font-[400] text-[#222] text-[18px] ${hoveredItem === 1 ? 'font-bold' : ''}`} onMouseLeave={handleMouseLeave}>SUITE CINEMA</div>
+                            <a href='http://www.cgv.co.kr/theaters/special/defaultDetailNew.aspx?idx=7' className={`font-[400] text-[#222] text-[18px] ${hoveredItem === 1 ? 'font-bold' : ''}`} onMouseLeave={handleMouseLeave}>SUITE CINEMA</a>
                             <div className='text-[14px] text-[#666] p-[2px_7px] bg-[#f6f6f6] rounded-[4px]'>#호텔 컨셉의 프리미엄관</div>
                         </div>
                         <div className={`flex justify-between content-center border-t-[1px] p-[19px_25px_19px_19px] ${hoveredItem === 2 ? 'border-black border-[1.5px] rounded-[10px]' : ''}`}
                             onMouseEnter={() => handleMouseEnter('img/cineLivingroom.png', 2)}
                             onMouseLeave={handleMouseLeave}>
-                            <div className={`font-[400] text-[#222] text-[18px] ${hoveredItem === 2 ? 'font-bold' : ''}`} onMouseLeave={handleMouseLeave}>CINE & LIVINGROOM</div>
+                            <a href='http://www.cgv.co.kr/theaters/special/defaultDetailNew.aspx?idx=14' className={`font-[400] text-[#222] text-[18px] ${hoveredItem === 2 ? 'font-bold' : ''}`} onMouseLeave={handleMouseLeave}>CINE & LIVINGROOM</a>
                             <div className='text-[14px] text-[#666] p-[2px_7px] bg-[#f6f6f6] rounded-[4px]'>#신개념 소셜 상영관</div>
                         </div>
                         <div className={`flex justify-between content-center border-t-[1px] p-[19px_25px_19px_19px] ${hoveredItem === 3 ? 'border-black border-[1.5px] rounded-[10px]' : ''}`}
                             onMouseEnter={() => handleMouseEnter('img/4dx.png', 3)}
                             onMouseLeave={handleMouseLeave}>
-                            <div className={`font-[400] text-[#222] text-[18px] ${hoveredItem === 3 ? 'font-bold' : ''}`} onMouseLeave={handleMouseLeave}>4DX</div>
+                            <a href='http://www.cgv.co.kr/theaters/special/defaultDetailNew.aspx?idx=2' className={`font-[400] text-[#222] text-[18px] ${hoveredItem === 3 ? 'font-bold' : ''}`} onMouseLeave={handleMouseLeave}>4DX</a>
                             <div className='text-[14px] text-[#666] p-[2px_7px] bg-[#f6f6f6] rounded-[4px]'>#모션시트 #오감체험</div>
                         </div>
                         <div className={`flex justify-between content-center border-t-[1px] p-[19px_25px_19px_19px] ${hoveredItem === 4 ? 'border-black border-[1.5px] rounded-[10px]' : ''}`}
                             onMouseEnter={() => handleMouseEnter('img/cineDeChef.png', 4)}
                             onMouseLeave={handleMouseLeave}>
-                            <div className={`font-[400] text-[#222] text-[18px] ${hoveredItem === 4 ? 'font-bold' : ''}`} onMouseLeave={handleMouseLeave}>CINE de CHEF</div>
+                            <a href='http://www.cgv.co.kr/theaters/special/defaultDetailNew.aspx?idx=8' className={`font-[400] text-[#222] text-[18px] ${hoveredItem === 4 ? 'font-bold' : ''}`} onMouseLeave={handleMouseLeave}>CINE de CHEF</a>
                             <div className='text-[14px] text-[#666] p-[2px_7px] bg-[#f6f6f6] rounded-[4px]'>#쉐프가 있는 영화관</div>
                         </div>
                     </div>
@@ -183,7 +184,7 @@ export default function Home() {
                 <div id="package" className='grid border-[1px] rounded-[10px] px-3 py-4'>
                     <div className='flex items-center justify-between'>
                         <div className='flex font-[500] text-[20px] text-[#222]'>패키지</div>
-                        <div className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[10px] h-6 text-[14px] text-[#222]'>더보기</div>
+                        <a href='https://www.cgv.co.kr/culture-event/popcorn-store/store-category.aspx?CategoryIdx=1' className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[10px] h-6 text-[14px] text-[#222]'>더보기</a>
                     </div>
                     <div className='flex items-center px-2 py-5'>
                         <img src="img/breadposter.jpg" alt="breadposter" className='flex w-[55px] h-[76px] rounded-[5px]'/>
@@ -210,7 +211,7 @@ export default function Home() {
                 <div id="ticket" className='grid border-[1px] rounded-[10px] px-3 py-4'>
                     <div className='flex items-center justify-between'>
                         <div className='flex font-[500] text-[20px] text-[#222]'>영화관람권</div>
-                        <div className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[10px] h-6 text-[14px] text-[#222]'>더보기</div>
+                        <a href='https://www.cgv.co.kr/culture-event/popcorn-store/store-category.aspx?CategoryIdx=2' className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[10px] h-6 text-[14px] text-[#222]'>더보기</a>
                     </div>
                     <div className='flex items-center px-2 py-5'>
                         <img src="img/cgv.jpg" alt="cgv" className='flex w-[75px] h-[76px]'/>
@@ -237,7 +238,7 @@ export default function Home() {
                 <div id="giftcard" className='grid border-[1px] rounded-[10px] px-3 py-4'>
                     <div className='flex items-center justify-between'>
                         <div className='flex font-[500] text-[20px] text-[#222]'>기프트카드</div>
-                        <div className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[10px] h-6 text-[14px] text-[#222]'>더보기</div>
+                        <a href='https://www.cgv.co.kr/culture-event/popcorn-store/store-category.aspx?CategoryIdx=3' className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[10px] h-6 text-[14px] text-[#222]'>더보기</a>
                     </div>
                     <div className='flex items-center px-2 py-5'>
                         <img src="img/a.jpg" alt="a" className='flex w-[75px] h-[76px]'/>
@@ -270,7 +271,7 @@ export default function Home() {
                             <div className='flex border-b-[1px] border-b-[##f4f4f4]'>
                                 <div className='flex font-[500] text-[16px] text-[#222] mb-[15px]'>공지사항</div>
                                 <div className='flex overflow-hidden w-[50%] mt-[2px] ml-[28px] text-[14px] text-[#222] whitespace-nowrap'>{`[극장] [CGV] <블랙핑크 월드투어 [본 핑크] 인 시네마> 무대인사 회차 휠체어석 유의사항 안내`}</div>
-                                <div className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[10px] h-6 text-[14px] text-[#222] ml-8'>더보기</div>
+                                <a href='http://www.cgv.co.kr/support/news/default.aspx' className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[10px] h-6 text-[14px] text-[#222] ml-8'>더보기</a>
                             </div>
                             <div id="client" className='flex flex-col flex-wrap'>
                                 <div className='flex p-[15px_0px]'>
@@ -282,9 +283,9 @@ export default function Home() {
                                     </div>
                                 </div>
                                 <div className='flex px-3 py-3'>
-                                    <div className='p-[7px_14px] ml-[10px] text-[14px] text-[#222] bg-[#f6f6f6] rounded-[5px]'>FAQ</div>
+                                    <a href='http://www.cgv.co.kr/support/faq/default.aspx' className='p-[7px_14px] ml-[10px] text-[14px] text-[#222] bg-[#f6f6f6] rounded-[5px]'>FAQ</a>
                                     <div className='p-[7px_14px] ml-[10px] text-[14px] text-[#222] bg-[#f6f6f6] rounded-[5px]'>1:1 문의</div>
-                                    <div className='p-[7px_14px] ml-[10px] text-[14px] text-[#222] bg-[#f6f6f6] rounded-[5px]'>대관/단체 문의</div>
+                                    <a href='http://www.cgv.co.kr/support/lease/default.aspx' className='p-[7px_14px] ml-[10px] text-[14px] text-[#222] bg-[#f6f6f6] rounded-[5px]'>대관/단체 문의</a>
                                 </div>
                             </div>
                         </div>
