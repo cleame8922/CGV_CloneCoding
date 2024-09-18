@@ -30,12 +30,12 @@ export default function Ticketing() {
         <div className='relative flex w-[980px]'>
             {isVisible && (
                 <>
-                    <NavLink to='/ticketing' className='flex justify-center right-[650px] bottom-[80px] fixed text-[#fff] text-[16px] font-[500] w-[136px] p-[12px_0_14px] bg-custom-gradient shadow-custom-shadow rounded-[25px]'>
+                    <NavLink to='/ticketing' className='flex justify-center right-[500px] bottom-[80px] fixed text-[#fff] text-[16px] font-[500] w-[136px] p-[12px_0_14px] bg-custom-gradient shadow-custom-shadow rounded-[25px]'>
                         예매하기
                     </NavLink>
                     <div 
                         onClick={scrollToTop} 
-                        className='size-[48px] flex justify-center p-3 fixed right-[590px] bottom-[80px] bg-[#fff] rounded-full shadow-custom-shadow border-[1px] border-[#000]'
+                        className='size-[48px] flex justify-center p-3 fixed right-[430px] bottom-[80px] bg-[#fff] rounded-full shadow-custom-shadow border-[1px] border-[#000]'
                     >
                         <img src="img/gotoTop.png" alt="gotoTop" />
                     </div>
