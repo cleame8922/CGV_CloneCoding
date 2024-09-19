@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import Ticketing from "./pages/Ticketing";
 import Click from "./components/Click";
 import Movie from "./pages/Movie"
+import MyPage from "./pages/MyPage"
 import MovieDetail from "./pages/MovieDetail"
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
             <Route path='/movie' element={<Movie />} />
             <Route path='/movieDetail' element={<MovieDetail />} />
             <Route path='/ticketing' element={<Ticketing />} />
+            <Route path='/myPage' element={<MyPage />} />
           </Routes>
           <Click />
           <Footer />

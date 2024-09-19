@@ -15,10 +15,10 @@ export default function Login() {
                         w-[541px] h-[298px]'>
                             <div className='flex font-[500] text-[#666] text-[14px]'>아이디 비밀번호를 입력하신 후, 로그인 버튼을 클릭해 주세요.</div>
                             <div id="id" className='mt-[13px] w-[215px] h-[35px]'>
-                                <input type="text" className='w-[264px] h-[42px] mb-[5px] border-[2px] border-[#b5b5b5] bg-[url("./images/spriteIcon.png")] bg-[8px_-230px]' />
+                                <input type="text" className='w-[264px] h-[42px] mb-[5px] border-[2px] border-[#b5b5b5] bg-[url("./images/spriteIcon.png")] bg-[8px_-230px] p-[0_5px_0_40px]' />
                             </div>
                             <div id="pw" className='mt-[13px] w-[215px] h-[35px]'>
-                                <input type="password" className='w-[264px] h-[42px] mb-[5px] border-[2px] border-[#b5b5b5] bg-[url("./images/spriteIcon.png")] bg-[8px_-260px]' />
+                                <input type="password" className='w-[264px] h-[42px] mb-[5px] border-[2px] border-[#b5b5b5] bg-[url("./images/spriteIcon.png")] bg-[8px_-260px] p-[0_5px_0_40px]' />
                             </div>
                             <div className='mt-2 w-[215px]'>
                                 <button className='bg-[#fb4357] text-[#fdfcf0] w-[264px] h-[42px] position-static mt-[5px] p-[2px] text-center'>로그인</button>
