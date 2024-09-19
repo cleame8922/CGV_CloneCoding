@@ -16,14 +16,34 @@ export default function Ticketing() {
         setActiveSort(sortType);
     };
 
-    const contentRef = useRef('null');
-
-    useEffect(() => {
-        const contentHeight = contentRef.current.offsetHeight;
-        if (contentHeight > 460) {
-            contentRef.current.style.overflowY = 'scroll';
+    // 오늘부터 30일치 날짜 생성
+    const generateDates = () => {
+        const today = new Date();
+        const dates = [];
+        const dayNames = ['일', '월', '화', '수', '목', '금', '토']; // 요일 배열
+        for (let i = 0; i < 30; i++) {
+            const date = new Date(today);
+            date.setDate(today.getDate() + i);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1; // 월은 0부터 시작하므로 1을 더함
+            const day = date.getDate();
+            const dayOfWeek = dayNames[date.getDay()]; // 요일
+            dates.push({ year, month, day, dayOfWeek });
         }
-    }, []);
+        return dates;
+    };
+
+    const dates = generateDates();
+
+    // 월별로 그룹화한 날짜 데이터 생성
+    const groupedDates = dates.reduce((acc, { year, month, day, dayOfWeek }) => {
+        const monthYearKey = `${year}-${month < 10 ? '0' : ''}${month}`;
+        if (!acc[monthYearKey]) {
+            acc[monthYearKey] = [];
+        }
+        acc[monthYearKey].push({ day, dayOfWeek });
+        return acc;
+    }, {});
 
     return (
         <div className='flex flex-col items-center'>
@@ -56,12 +76,12 @@ export default function Ticketing() {
                         </div>
                     </div>
                     <div className="flex flex-col w-[240px] h-[470px] p-1">
-                        <div className='overflow-y-scroll'>
+                        <div className='overflow-y-auto scrollbar-hide'>
                             {movies.map(movie => (
-                                <div key={movie.id} className="flex items-center w-[230px] h-[35px] mb-[1px]">
-                                    <img src="img/15year.svg" alt="15year" className="flex m-[0_6px]" />
-                                    <div className="flex font-bold text-[13px] pr-[5px]">{movie.title}</div>
-                                </div>
+                            <div key={movie.id} className="flex items-center w-[230px] h-[35px] mb-[1px]">
+                                <img src="img/15year.svg" alt="15year" className="mr-[6px]" />
+                                <div className="font-bold text-[13px] pr-[5px]">{movie.title}</div>
+                            </div>
                             ))}
                         </div>
                     </div>
@@ -80,17 +100,43 @@ export default function Ticketing() {
                 </div>
                 <div id="day" className='flex flex-col items-center bg-[#f2f0e5] w-[284px] border-r-[2px] border-[#d4d3c9]'>
                     <div className='flex justify-center items-center bg-[#333333] w-[91px] h-[33px] text-[#fff] text-[16px] font-[500] m-[2px]'>날짜</div>
-                    <div>
-                        <ul>
-                            <li>
-                                <div></div>
-                            </li>
-                        </ul>
-                    </div>
+                        <div className='flex justify-center overflow-y-auto scrollbar-hide w-[91px] h-[550px] mt-[20px]'>
+                            <ul className='flex flex-col'>
+                                {Object.entries(groupedDates).map(([monthYear, days], index) => {
+                                    const [year, month] = monthYear.split('-');
+                                    return (
+                                        <li key={index} className="flex flex-col items-center mb-3">
+                                            <div className="font-bold text-[11px] text-[#666] mt-[12px]">{year}</div>
+                                            <div className="font-bold text-[30px] text-[#666] mt-[3px]">{month}</div>
+                                            {days.map(({ day, dayOfWeek }, dayIndex) => {
+                                                const isWeekend = dayOfWeek === '토' || dayOfWeek === '일';
+                                                return (
+                                                    <div
+                                                        key={dayIndex}
+                                                        className={`flex items-center w-fit h-[35px] mb-[1px] ${dayOfWeek === '토' ? 'text-[#31597c]' : dayOfWeek === '일' ? 'text-[#ad2727]' : 'text-[#333]'} font-bold text-[13px] pr-[5px]`}
+                                                    >
+                                                        <div>{dayOfWeek}</div>
+                                                        <div className="ml-2 text-sm">{day}</div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
                 </div>
                 <div id="time" className='bg-[#f2f0e5]'>
                     <div className='flex justify-center items-center bg-[#333333] w-[346px] h-[33px] text-[#fff] text-[16px] font-[500] m-[2px]'>시간</div>
                 </div>
+            </div>
+            <div className='w-full bg-[#1d1d1c] h-[129px]'>
+                <div className='w-[996px]'>
+
+                </div>
+            </div>
+            <div className='flex w-[996px] m-[30px_0]'>
+                <img src="img/ticketingAd.jpg" alt="ticketingAd" />
             </div>
         </div>
     );
