@@ -84,10 +84,10 @@ export default function Header() {
                                 <img src="img/loginJoin.png" alt="loginJoin" className='size-[36px]' />
                                 <div className='flex text-[13px] text-[#666] leading-5 whitespace-nowrap'>회원가입</div>
                             </NavLink>
-                            <div className='flex flex-col items-center ml-7'>
+                            <NavLink to='/myPage' className='flex flex-col items-center ml-7'>
                                 <img src="img/loginMember.png" alt="loginMember" className='size-[36px]' />
                                 <div className='flex text-[13px] text-[#666] leading-5 whitespace-nowrap'>MY CGV</div>
-                            </div>
+                            </NavLink>
                             <div className='flex flex-col items-center ml-7'>
                                 <img src="img/loginCustomer.png" alt="loginCustomer" className='size-[36px]' />
                                 <div className='flex text-[13px] text-[#666] leading-5 whitespace-nowrap'>고객센터</div>
@@ -142,7 +142,7 @@ export default function Header() {
                 <div
                     className={`${
                         isNavFixed ? 'fixed top-[50px] left-0 w-full z-50 opacity-100 transition-opacity duration-300' 
-                                : 'absolute top-[245px] z-10 w-full opacity-100 transition-opacity duration-300'
+                                : 'absolute top-[245px] z-20 w-full opacity-100 transition-opacity duration-300'
                     } flex flex-col items-center bg-white border-t border-gray-200`}
                     onMouseEnter={handleDropdownMouseEnter}
                     onMouseLeave={handleDropdownMouseLeave}
