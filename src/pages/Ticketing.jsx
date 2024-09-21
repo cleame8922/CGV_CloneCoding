@@ -38,7 +38,7 @@ export default function Ticketing() {
                 // Set selected theater if 서울지역 exists
                 const seoulRegion = data.find(region => region.region === '서울지역');
                 if (seoulRegion) {
-                    setActiveRegion('서울지역'); // Set active region
+                    setActiveRegion('서울'); // Set active region
                     // Optionally set the selected theater to the first one in the list
                     setSelectedTheater(seoulRegion.theaters[0]);
                 }
@@ -55,7 +55,7 @@ export default function Ticketing() {
     };
 
     const handleMovieClick = (movie) => {
-        setSelectedMovie(movie); // 선택된 영화 정보 저장
+        setSelectedMovie(movie); 
     };
 
     const handleTheaterClick = (theater) => {
@@ -102,7 +102,11 @@ export default function Ticketing() {
                 <div className='flex w-[81px] h-[30px] bg-no-repeat bg-[url("./images/topButton.png")]'></div>
                 <div className='flex w-[101px] h-[30px] bg-no-repeat bg-[url("./images/topButton.png")] bg-[0_-90px] ml-2'></div>
                 <div className='flex w-[113px] h-[30px] bg-no-repeat bg-[url("./images/topButton.png")] bg-[0_-120px] ml-2' 
-                    onClick={() => setSelectedMovie(null)}
+                    onClick={() => {
+                        setSelectedMovie(null);
+                        setSelectedTheater(null);
+                        setSelectedDate(null);
+                    }}
                 ></div>
             </div>
             
