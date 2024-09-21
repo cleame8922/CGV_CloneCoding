@@ -10,8 +10,45 @@ export default function Ticketing() {
         reservationRate: '예매율: 50%',
     }));
 
+    const ListItem = ({ item, justify, onClick, customClass }) => (
+        <li
+            className={`flex items-center mb-[1px] pl-[6px] pr-[8px] w-[110px] h-[31px] ${justify} text-[#333333] cursor-pointer ${customClass}`}
+            onClick={onClick}
+        >
+            <div>{item}</div>
+        </li>
+    );
+    
     const [activeSort, setActiveSort] = useState('예매율순');
     const [selectedMovie, setSelectedMovie] = useState(null);
+    const [regions, setRegions] = useState([]);
+    const [activeRegion, setActiveRegion] = useState('서울');
+    const [selectedTheater, setSelectedTheater] = useState(null);
+    const [selectedDate, setSelectedDate] = useState('');
+
+    useEffect(() => {
+        const fetchTheaters = async () => {
+            try {
+                const response = await fetch('/theaters.json');
+                const data = await response.json();
+                setRegions(data);
+                console.log(data);
+                console.log("Active Region:", activeRegion);
+                
+                // Set selected theater if 서울지역 exists
+                const seoulRegion = data.find(region => region.region === '서울지역');
+                if (seoulRegion) {
+                    setActiveRegion('서울지역'); // Set active region
+                    // Optionally set the selected theater to the first one in the list
+                    setSelectedTheater(seoulRegion.theaters[0]);
+                }
+            } catch (error) {
+                console.error('Error fetching theaters:', error);
+            }
+        };
+        fetchTheaters();
+    }, []);
+    
 
     const handleSortChange = (sortType) => {
         setActiveSort(sortType);
@@ -19,6 +56,15 @@ export default function Ticketing() {
 
     const handleMovieClick = (movie) => {
         setSelectedMovie(movie); // 선택된 영화 정보 저장
+    };
+
+    const handleTheaterClick = (theater) => {
+        setSelectedTheater(theater);
+    };
+
+    const handleDateSelect = (day, dayOfWeek) => {
+        const formattedDate = `${new Date().getFullYear()}.${String(new Date().getMonth() + 1).padStart(2, '0')}.${String(day).padStart(2, '0')}(${dayOfWeek})`;
+        setSelectedDate(formattedDate);
     };
 
     // 오늘부터 30일치 날짜 생성
@@ -105,39 +151,68 @@ export default function Ticketing() {
                         <div className='flex justify-center w-[90px] text-[#333] text-[13px] mt-[10px] border-y-[2px] border-[#666666] p-[3px]'>아트하우스<IoIosArrowDown className='flex items-center mt-[3px] ml-1' /></div>
                         <div className='flex justify-center w-[88px] text-[#333] text-[13px] mt-[10px] border-[2px] border-[#666666] p-[3px]'>특별관<IoIosArrowDown className='flex items-center mt-[3px] ml-1' /></div>
                     </div>
-                    <div>
-                        <div id="leftContent"></div>
-                        <div id="rightContent"></div>
-                    </div>
-                </div>
-                <div id="day" className='flex flex-col items-center bg-[#f2f0e5] w-[284px] border-r-[2px] border-[#d4d3c9]'>
-                    <div className='flex justify-center items-center bg-[#333333] w-[91px] h-[33px] text-[#fff] text-[16px] font-[500] m-[2px]'>날짜</div>
-                        <div className='flex justify-center overflow-y-auto scrollbar-hide w-[91px] h-[530px] mt-[20px]'>
-                            <ul className='flex flex-col'>
-                                {Object.entries(groupedDates).map(([monthYear, days], index) => {
-                                    const [year, month] = monthYear.split('-');
-                                    return (
-                                        <li key={index} className="flex flex-col items-center mb-3">
-                                            <div className="font-bold text-[11px] text-[#666] mt-[12px]">{year}</div>
-                                            <div className="font-bold text-[30px] text-[#666] mt-[3px]">{month}</div>
-                                            {days.map(({ day, dayOfWeek }, dayIndex) => {
-                                                const isWeekend = dayOfWeek === '토' || dayOfWeek === '일';
-                                                return (
-                                                    <div
-                                                        key={dayIndex}
-                                                        className={`flex items-center w-fit h-[35px] mb-[1px] ${dayOfWeek === '토' ? 'text-[#31597c]' : dayOfWeek === '일' ? 'text-[#ad2727]' : 'text-[#333]'} font-bold text-[13px] pr-[5px]`}
-                                                    >
-                                                        <div>{dayOfWeek}</div>
-                                                        <div className="ml-2 text-sm">{day}</div>
-                                                    </div>
-                                                );
-                                            })}
-                                        </li>
-                                    );
-                                })}
+                    <div className='flex mt-[10px] h-[490px]'>
+                        <div id="leftContent" className='flex w-[110px]'>
+                            <ul>
+                                {regions.map((region) => (
+                                    <ListItem 
+                                        key={region.region} 
+                                        item={region.region} 
+                                        justify="justify-end" 
+                                        onClick={() => {
+                                            console.log("Clicked Region:", region.region);
+                                            setActiveRegion(activeRegion === region.region ? null : region.region);
+                                        }}
+                                        customClass="bg-[#e6e4d9] text-[12px]"
+                                    />
+                                ))}
                             </ul>
                         </div>
+                        <div id="rightContent" className='flex flex-col w-[114px] overflow-scroll scrollbar-hide'>
+                            <div>
+                                <ul>
+                                    {activeRegion && regions.find(r => r.region === activeRegion)?.theaters.map((theater) => (
+                                        <ListItem 
+                                            key={theater} 
+                                            item={theater} 
+                                            justify="justify-start" 
+                                            customClass="text-[13px] font-bold px-[7px]"
+                                            onClick={() => handleTheaterClick(theater)} // 클릭 핸들러 추가
+                                        />
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                
+                <div id="day" className='flex flex-col items-center bg-[#f2f0e5] w-[284px] border-r-[2px] border-[#d4d3c9]'>
+                    <div className='flex justify-center items-center bg-[#333333] w-[91px] h-[33px] text-[#fff] text-[16px] font-[500] m-[2px]'>날짜</div>
+                    <div className='flex justify-center overflow-y-auto scrollbar-hide w-[91px] h-[530px] mt-[20px]'>
+                        <ul className='flex flex-col'>
+                            {Object.entries(groupedDates).map(([monthYear, days], index) => {
+                                const [year, month] = monthYear.split('-');
+                                return (
+                                    <li key={index} className="flex flex-col items-center mb-3">
+                                        <div className="font-bold text-[11px] text-[#666] mt-[12px]">{year}</div>
+                                        <div className="font-bold text-[30px] text-[#666] mt-[3px]">{month}</div>
+                                        {days.map(({ day, dayOfWeek }, dayIndex) => (
+                                            <div
+                                                key={dayIndex}
+                                                onClick={() => handleDateSelect(day, dayOfWeek)} // 날짜 선택 처리
+                                                className={`flex items-center w-fit h-[35px] mb-[1px] ${dayOfWeek === '토' ? 'text-[#31597c]' : dayOfWeek === '일' ? 'text-[#ad2727]' : 'text-[#333]'} font-bold text-[13px] pr-[5px]`}
+                                            >
+                                                <div>{dayOfWeek}</div>
+                                                <div className="ml-2 text-sm">{day}</div>
+                                            </div>
+                                        ))}
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
+                </div>
+                
                 <div id="time" className='flex flex-col items-center w-[346px] bg-[#f2f0e5]'>
                     <div className='flex justify-center items-center bg-[#333333] w-[346px] h-[33px] text-[#fff] text-[16px] font-[500] m-[2px]'>시간</div>
                     <div className='flex flex-col w-[306px] mt-[18px] border-b-[2px] border-[#cfcdc3]'>
@@ -169,7 +244,32 @@ export default function Ticketing() {
                                 <div className='bg-[url("./images/tnbSteps.png")] bg-[30px_25px] bg-no-repeat w-full h-full'></div> // 배경 표시 (선택된 영화 없을 때)
                             )}
                         </div>
-                        <div className='flex relative h-[80px] w-[180px] pr-[2px] bg-[url("./images/tnbSteps.png")] bg-[18px_-83px] bg-no-repeat border-l-[1px] border-[#5b5b5b]'></div>
+                        <div className='flex relative h-[80px] w-[210px] pr-[2px]'>
+                            {/* 선택된 극장 표시 영역 */}
+                            {selectedTheater ? (
+                                <div>
+                                    <div className='flex mt-[2px]'>
+                                        <div className='w-[50px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>극장</div>
+                                        <div className='w-[135px] ml-4 text-[#cccccc] text-[12px] font-[700]'>CGV{selectedTheater}</div>
+                                    </div>
+                                    <div className='flex mt-[2px]'>
+                                        <div className='w-[50px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>일시</div>
+                                        <div id="dayList" className='w-[135px] ml-4 text-[#cccccc] text-[12px] font-[700]'>{selectedDate}</div>
+                                    </div>
+                                    <div className='flex mt-[2px]'>
+                                        <div className='w-[50px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>상영관</div>
+                                        <div className='w-[135px] ml-4 text-[#cccccc] text-[12px] font-[700]'></div>
+                                    </div>
+                                    <div className='flex mt-[2px]'>
+                                        <div className='w-[50px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>인원</div>
+                                        <div className='w-[135px] ml-4 text-[#cccccc] text-[12px] font-[700]'></div>
+                                    </div>
+                                </div>
+                                
+                            ) : (
+                                <div className='w-[210px] bg-[url("./images/tnbSteps.png")] h-[80px] bg-[30px_25px] bg-no-repeat border-l-[1px] border-[#5b5b5b]'></div> // 배경 표시 (선택된 극장이 없을 때)
+                            )}
+                        </div>
                         <div className='flex relative h-[80px] w-[160px] pr-[2px] bg-[url("./images/tnbSteps.png")] bg-[10px_-190px] bg-no-repeat border-l-[1px] border-[#5b5b5b]'></div>
                         <div className='flex relative h-[80px] w-[130px] pr-[2px] bg-[url("./images/tnbSteps.png")] bg-[0px_-297px] bg-no-repeat'></div>
                     </div>
