@@ -1,4 +1,5 @@
 import React from 'react'
+import { NavLink } from 'react-router-dom';
 
 export default function Movie() {
 
@@ -93,7 +94,7 @@ export default function Movie() {
                         </div>
                         <div className='mt-[10px] font-[600] text-[#222] text-[16px]'>{movie.title}</div>
                         <div className='text-[#666] text-[14px]'>평점: {movie.rating}</div>
-                        <div className='flex justify-center items-center mt-1 w-[97px] h-[25px] text-[#ffffff] font-[500] text-[14px] rounded-[5px] bg-[#fb4357]'>예매하기</div>
+                        <NavLink to='/ticketing' className='flex justify-center items-center mt-1 w-[97px] h-[25px] text-[#ffffff] font-[500] text-[14px] rounded-[5px] bg-[#fb4357]'>예매하기</NavLink>
                     </div>
                 ))}
             </div>          

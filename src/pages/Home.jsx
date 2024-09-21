@@ -64,40 +64,40 @@ export default function Home() {
 
             <div id="movie" className='flex justify-center items-center h-[460px] w-full bg-[#f8f8f8] p-[50px_30px_60px]'>
                 <div id="container" className='flex flex-col items-center justify-center w-[980px]'>
-                <div className='flex items-center justify-between w-full mb-4'>
-                    <div id="chart" className='flex justify-between w-[248px] items-center'>
-                        <div className='flex font-[700] text-[#222] text-[26px]'>무비차트</div>
-                        <div className='flex border-l-[1px] border-[#d8d8d8] h-[20px]'></div>
-                        <div className='flex font-[400] text-[#666666] text-[26px]'>상영예정작</div>
+                    <div className='flex items-center justify-between w-full mb-4'>
+                        <div id="chart" className='flex justify-between w-[248px] items-center'>
+                            <div className='flex font-[700] text-[#222] text-[26px]'>무비차트</div>
+                            <div className='flex border-l-[1px] border-[#d8d8d8] h-[20px]'></div>
+                            <div className='flex font-[400] text-[#666666] text-[26px]'>상영예정작</div>
+                        </div>
+                        <NavLink to='/movie' className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[13px] h-8 text-[14px] text-[#222]'>
+                            전체보기
+                        </NavLink>
                     </div>
-                    <NavLink to='/movie' className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[13px] h-8 text-[14px] text-[#222]'>
-                        전체보기
-                    </NavLink>
-                </div>
                     <div id="movieList" className='flex overflow-hidden'>
                         {moviesToShow.map((movie, index) => (
                             <div 
-                                key={movie.id} 
-                                id="movie" 
-                                className='relative flex flex-col items-center m-2'
-                                onMouseEnter={() => setHoveredIndex(index)}
-                                onMouseLeave={() => setHoveredIndex(null)}
+                            key={movie.id} 
+                            id="movie" 
+                            className='relative flex flex-col items-center m-2'
+                            onMouseEnter={() => setHoveredIndex(index)}
+                            onMouseLeave={() => setHoveredIndex(null)}
                             >
-                                <div className='relative mb-2'>
-                                    <img src={movie.poster} alt={movie.title} className='w-[170px] h-[234px] rounded-[15px]' />
-                                    <div className={`absolute inset-0 bg-black transition-opacity duration-300 rounded-[15px] ${hoveredIndex === index ? 'opacity-50' : 'opacity-0'}`}></div>
-                                    
-                                    <div className={`absolute px-2 italic text-[40px] text-[#fff] bg-transparent rounded bottom-0 left-2 transition-opacity duration-300 ${hoveredIndex === index ? 'opacity-0' : 'opacity-100'}`}>
-                                        {currentIndex + index + 1}
-                                    </div>
-
-                                    <div className={`flex flex-col justify-center items-center w-[170px] absolute bottom-20 left-0 transition-opacity duration-300 ${hoveredIndex === index ? 'opacity-100' : 'opacity-0'}`}>
-                                        <div className='flex justify-center items-center font-[500] w-[120px] h-[34px] bg-[#ffffff] text-[14px] text-[#666666] rounded-[5px]'>상세보기</div>
-                                        <div className='flex justify-center items-center font-[500] w-[120px] h-[34px] bg-[#fb4357] text-[14px] text-[#fff] rounded-[5px] mt-2'>예매하기</div>
-                                    </div>
+                            <div className='relative mb-2'>
+                                <img src={movie.poster} alt={movie.title} className='w-[170px] h-[234px] rounded-[15px]' />
+                                <div className={`absolute inset-0 bg-black transition-opacity duration-300 rounded-[15px] ${hoveredIndex === index ? 'opacity-50' : 'opacity-0'}`}></div>
+                                
+                                <div className={`absolute px-2 italic text-[40px] text-[#fff] bg-transparent rounded bottom-0 left-2 transition-opacity duration-300 ${hoveredIndex === index ? 'opacity-0' : 'opacity-100'}`}>
+                                {currentIndex + index + 1}
                                 </div>
-                                <div className='py-2 font-[600] text-[18px] text-[#222]'>{movie.title}</div>
-                                <div className='font-[400] text-[14px] text-[#444444]'>{movie.reservationRate}</div>
+
+                                <div className={`flex flex-col justify-center items-center w-[170px] absolute bottom-20 left-0 transition-opacity duration-300 z-10 ${hoveredIndex === index ? 'opacity-100' : 'opacity-0'}`}>
+                                <NavLink to='/movieDetail' className='flex justify-center items-center font-[500] w-[120px] h-[34px] bg-[#ffffff] text-[14px] text-[#666666] rounded-[5px]'>상세보기</NavLink>
+                                <NavLink to='/ticketing' className='flex justify-center items-center font-[500] w-[120px] h-[34px] bg-[#fb4357] text-[14px] text-[#fff] rounded-[5px] mt-2'>예매하기</NavLink>
+                                </div>
+                            </div>
+                            <div className='py-2 font-[600] text-[18px] text-[#222]'>{movie.title}</div>
+                            <div className='font-[400] text-[14px] text-[#444444]'>{movie.reservationRate}</div>
                             </div>
                         ))}
                     </div>
@@ -123,9 +123,6 @@ export default function Home() {
                             }} 
                         />
                     </div>
-
-
-
                 </div>
             </div>
 

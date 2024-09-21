@@ -126,8 +126,19 @@ export default function Ticketing() {
                             </ul>
                         </div>
                 </div>
-                <div id="time" className='bg-[#f2f0e5]'>
+                <div id="time" className='flex flex-col items-center w-[346px] bg-[#f2f0e5]'>
                     <div className='flex justify-center items-center bg-[#333333] w-[346px] h-[33px] text-[#fff] text-[16px] font-[500] m-[2px]'>시간</div>
+                    <div className='flex flex-col w-[306px] mt-[18px] border-b-[2px] border-[#cfcdc3]'>
+                        <div className='flex justify-between w-[95px] h-[22px]'>
+                            <div className='flex items-center bg-[url("./images/iconMN.png")] bg-[1px_1px] bg-no-repeat h-[14px] pl-[20px]'>
+                                <div className='flex text-[13px]'>모닝</div>
+                            </div>
+                            <div className='flex items-center bg-[url("./images/iconMN.png")] bg-[1px_-20px] bg-no-repeat h-[14px] pl-[20px]'>
+                                <div className='flex text-[13px]'>심야</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className='flex items-center justify-center h-[416px] text-[#666] text-[13px]'>영화,극장,날짜를 선택해주세요.</div>
                 </div>
             </div>
             <div className='w-full bg-[#1d1d1c] h-[129px]'>
