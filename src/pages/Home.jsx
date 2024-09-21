@@ -127,8 +127,14 @@ export default function Home() {
             </div>
 
 
-            <div id="event" className='flex flex-col justify-center w-[980px] mx-[181px] p-[60px_0_6px]'>
-                <div className='font-[700] text-[26px] text-[#222]'>EVENT</div>
+            <div id="event" className='flex flex-col w-[980px] mx-[181px] p-[60px_0_6px]'>
+                <div className='flex justify-between'>
+                    <div className='font-[700] text-[26px] text-[#222]'>EVENT</div>
+                    <a href='http://www.cgv.co.kr/culture-event/event/defaultNew.aspx#1' className='flex items-center w-fit border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[13px] h-8 text-[14px] text-[#222]'>
+                        전체보기
+                        <img src="img/arrowR.png" alt="arrow" className='flex left-[180px] top-[330px] size-3 ml-3' />
+                    </a>
+                </div>
                 <a href='http://www.cgv.co.kr/culture-event/event/detailViewUnited.aspx?seq=41925' className='mt-[19px]'>
                     <img src="img/eventImg.jpg" alt="eventImg" className='rounded-[10px] w-[310px] h-[207px] transition-transform duration-300 ease-in-out transform hover:scale-105' />
                     <div className='mt-[16px] font-[600] text-[#222] text-[18px]'>{`[브레드이발소]서프라이즈 온리 쿠폰`}</div>
@@ -139,10 +145,10 @@ export default function Home() {
             <div id="special" className='flex flex-col w-[980px] mx-[181px] p-[60px_0_21px]'>
                 <div className='flex justify-between'>
                     <div className='flex font-[700] text-[26px] text-[#222]'>특별관</div>
-                    <div className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[13px] h-8 text-[14px] text-[#222]'>
+                    <a href='http://www.cgv.co.kr/theaters/special/defaultNew.aspx' className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[13px] h-8 text-[14px] text-[#222]'>
                     전체보기
                     <img src="img/arrowR.png" alt="arrow" className='flex left-[180px] top-[330px] size-3 ml-3' />
-                    </div>
+                    </a>
                 </div>
                 <div className='flex justify-between'>
                     <div id="specialImg" className='flex mt-[19px]'>
@@ -180,84 +186,84 @@ export default function Home() {
             <div id="etc" className='grid grid-cols-3 gap-9 w-[980px] mx-[181px] pt-[60px]'>
                 <div id="package" className='grid border-[1px] rounded-[10px] px-3 py-4'>
                     <div className='flex items-center justify-between'>
-                        <div className='flex font-[500] text-[20px] text-[#222]'>패키지</div>
+                        <div className='flex font-[500] text-[20px] text-[#222] ml-[10px]'>패키지</div>
                         <a href='https://www.cgv.co.kr/culture-event/popcorn-store/store-category.aspx?CategoryIdx=1' className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[10px] h-6 text-[14px] text-[#222]'>더보기</a>
                     </div>
-                    <div className='flex items-center px-2 py-5'>
+                    <a href='https://www.cgv.co.kr/culture-event/popcorn-store/product-detail.aspx?GG_NO=100430' className='flex items-center px-2 py-5'>
                         <img src="img/breadposter.jpg" alt="breadposter" className='flex w-[55px] h-[76px] rounded-[5px]'/>
                         <div className='flex flex-col ml-5'>
                             <div className='flex flex-wrap font-[500] text-[14px] text-[#222]'>{`<브레드이발소:빵스타의탄생> 얼리버드관람권`}</div>
                             <div className='flex font-[700] text-[16px] text-[#222]'>14000원</div>
                         </div>
-                    </div>
-                    <div className='flex items-center px-2 pb-5'>
+                    </a>
+                    <a href='https://www.cgv.co.kr/culture-event/popcorn-store/product-detail.aspx?GG_NO=100429' className='flex items-center px-2 pb-5'>
                         <img src="img/wepkg.jpg" alt="breadposter" className='flex w-[75px] h-[76px]'/>
                         <div className='flex flex-col ml-5'>
                             <div className='flex flex-wrap font-[500] text-[14px] text-[#222]'>{`우리 패키지`}</div>
                             <div className='flex font-[700] text-[16px] text-[#222]'>62000원</div>
                         </div>
-                    </div>
-                    <div className='flex items-center px-2'>
+                    </a>
+                    <a href='https://www.cgv.co.kr/culture-event/popcorn-store/product-detail.aspx?GG_NO=100342' className='flex items-center px-2'>
                         <img src="img/wepkg.jpg" alt="breadposter" className='flex w-[75px] h-[76px]'/>
                         <div className='flex flex-col ml-5'>
                             <div className='flex flex-wrap font-[500] text-[14px] text-[#222]'>{`나랑 너 패키지`}</div>
                             <div className='flex font-[700] text-[16px] text-[#222]'>35000원</div>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <div id="ticket" className='grid border-[1px] rounded-[10px] px-3 py-4'>
                     <div className='flex items-center justify-between'>
-                        <div className='flex font-[500] text-[20px] text-[#222]'>영화관람권</div>
+                        <div className='flex font-[500] text-[20px] text-[#222] ml-[10px]'>영화관람권</div>
                         <a href='https://www.cgv.co.kr/culture-event/popcorn-store/store-category.aspx?CategoryIdx=2' className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[10px] h-6 text-[14px] text-[#222]'>더보기</a>
                     </div>
-                    <div className='flex items-center px-2 py-5'>
+                    <a href='https://www.cgv.co.kr/culture-event/popcorn-store/product-detail.aspx?GG_NO=100341' className='flex items-center px-2 py-5'>
                         <img src="img/cgv.jpg" alt="cgv" className='flex w-[75px] h-[76px]'/>
                         <div className='flex flex-col ml-5'>
                             <div className='flex flex-wrap font-[500] text-[14px] text-[#222]'>{`CGV 영화관람권`}</div>
                             <div className='flex font-[700] text-[16px] text-[#222]'>13000원</div>
                         </div>
-                    </div>
-                    <div className='flex items-center px-2 pb-5'>
+                    </a>
+                    <a href='https://www.cgv.co.kr/culture-event/popcorn-store/product-detail.aspx?GG_NO=100254' className='flex items-center px-2 pb-5'>
                         <img src="img/imax.jpg" alt="imax" className='flex w-[75px] h-[76px]'/>
                         <div className='flex flex-col ml-5'>
                             <div className='flex flex-wrap font-[500] text-[14px] text-[#222]'>{`IMAX 영화관람권`}</div>
                             <div className='flex font-[700] text-[16px] text-[#222]'>18000원</div>
                         </div>
-                    </div>
-                    <div className='flex items-center px-2'>
+                    </a>
+                    <a href='https://www.cgv.co.kr/culture-event/popcorn-store/product-detail.aspx?GG_NO=100255' className='flex items-center px-2'>
                         <img src="img/4dx.jpg" alt="4dx" className='flex w-[75px] h-[76px]'/>
                         <div className='flex flex-col ml-5'>
                             <div className='flex flex-wrap font-[500] text-[14px] text-[#222]'>{`4DX 영화관람권`}</div>
                             <div className='flex font-[700] text-[16px] text-[#222]'>19000원</div>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <div id="giftcard" className='grid border-[1px] rounded-[10px] px-3 py-4'>
                     <div className='flex items-center justify-between'>
-                        <div className='flex font-[500] text-[20px] text-[#222]'>기프트카드</div>
+                        <div className='flex font-[500] text-[20px] text-[#222] ml-[10px]'>기프트카드</div>
                         <a href='https://www.cgv.co.kr/culture-event/popcorn-store/store-category.aspx?CategoryIdx=3' className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[10px] h-6 text-[14px] text-[#222]'>더보기</a>
                     </div>
-                    <div className='flex items-center px-2 py-5'>
+                    <a href='https://www.cgv.co.kr/culture-event/popcorn-store/product-detail.aspx?GG_NO=100161' className='flex items-center px-2 py-5'>
                         <img src="img/a.jpg" alt="a" className='flex w-[75px] h-[76px]'/>
                         <div className='flex flex-col ml-5'>
                             <div className='flex flex-wrap font-[500] text-[14px] text-[#222]'>{`PACONNIE A형`}</div>
                             <div className='flex font-[700] text-[16px] text-[#222]'>금액충전형</div>
                         </div>
-                    </div>
-                    <div className='flex items-center px-2 pb-5'>
+                    </a>
+                    <a href='https://www.cgv.co.kr/culture-event/popcorn-store/product-detail.aspx?GG_NO=100162' className='flex items-center px-2 pb-5'>
                         <img src="img/b.jpg" alt="b" className='flex w-[75px] h-[76px]'/>
                         <div className='flex flex-col ml-5'>
                             <div className='flex flex-wrap font-[500] text-[14px] text-[#222]'>{`PACONNIE B형`}</div>
                             <div className='flex font-[700] text-[16px] text-[#222]'>금액충전형</div>
                         </div>
-                    </div>
-                    <div className='flex items-center px-2'>
+                    </a>
+                    <a href='https://www.cgv.co.kr/culture-event/popcorn-store/product-detail.aspx?GG_NO=100163' className='flex items-center px-2'>
                         <img src="img/c.jpg" alt="c" className='flex w-[75px] h-[76px]'/>
                         <div className='flex flex-col ml-5'>
                             <div className='flex flex-wrap font-[500] text-[14px] text-[#222]'>{`PACONNIE C형`}</div>
                             <div className='flex font-[700] text-[16px] text-[#222]'>금액충전형</div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
 

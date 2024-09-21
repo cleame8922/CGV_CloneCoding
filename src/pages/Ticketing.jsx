@@ -11,9 +11,14 @@ export default function Ticketing() {
     }));
 
     const [activeSort, setActiveSort] = useState('예매율순');
+    const [selectedMovie, setSelectedMovie] = useState(null);
 
     const handleSortChange = (sortType) => {
         setActiveSort(sortType);
+    };
+
+    const handleMovieClick = (movie) => {
+        setSelectedMovie(movie); // 선택된 영화 정보 저장
     };
 
     // 오늘부터 30일치 날짜 생성
@@ -50,8 +55,11 @@ export default function Ticketing() {
             <div id="etc" className='flex justify-end w-[996px] h-[74px] pt-[30px]'>
                 <div className='flex w-[81px] h-[30px] bg-no-repeat bg-[url("./images/topButton.png")]'></div>
                 <div className='flex w-[101px] h-[30px] bg-no-repeat bg-[url("./images/topButton.png")] bg-[0_-90px] ml-2'></div>
-                <div className='flex w-[113px] h-[30px] bg-no-repeat bg-[url("./images/topButton.png")] bg-[0_-120px] ml-2'></div>
+                <div className='flex w-[113px] h-[30px] bg-no-repeat bg-[url("./images/topButton.png")] bg-[0_-120px] ml-2' 
+                    onClick={() => setSelectedMovie(null)}
+                ></div>
             </div>
+            
             <div id="contents" className='flex bg-[#d4d3c9] w-[996px] h-[600px]'>
                 <div id="movie" className='flex flex-col items-center bg-[#f2f0e5] w-[284px] border-x-[2px] border-[#d4d3c9]'>
                     <div className='flex justify-center items-center bg-[#333333] w-[284px] h-[33px] text-[#fff] text-[16px] font-[500] m-[2px]'>영화</div>
@@ -78,10 +86,14 @@ export default function Ticketing() {
                     <div className="flex flex-col w-[240px] h-[470px] p-1">
                         <div className='overflow-y-auto scrollbar-hide'>
                             {movies.map(movie => (
-                            <div key={movie.id} className="flex items-center w-[230px] h-[35px] mb-[1px]">
-                                <img src="img/15year.svg" alt="15year" className="mr-[6px]" />
-                                <div className="font-bold text-[13px] pr-[5px]">{movie.title}</div>
-                            </div>
+                                <div key={movie.id} className="flex items-center w-[230px] h-[35px] mb-[1px]">
+                                    <img src="img/15year.svg" alt="15year" className="mr-[6px]" />
+                                    <div className="font-bold text-[13px] pr-[5px] cursor-pointer"
+                                        onClick={() => handleMovieClick(movie)} // 클릭 시 포스터 변경
+                                    >
+                                        {movie.title}
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     </div>
@@ -100,7 +112,7 @@ export default function Ticketing() {
                 </div>
                 <div id="day" className='flex flex-col items-center bg-[#f2f0e5] w-[284px] border-r-[2px] border-[#d4d3c9]'>
                     <div className='flex justify-center items-center bg-[#333333] w-[91px] h-[33px] text-[#fff] text-[16px] font-[500] m-[2px]'>날짜</div>
-                        <div className='flex justify-center overflow-y-auto scrollbar-hide w-[91px] h-[550px] mt-[20px]'>
+                        <div className='flex justify-center overflow-y-auto scrollbar-hide w-[91px] h-[530px] mt-[20px]'>
                             <ul className='flex flex-col'>
                                 {Object.entries(groupedDates).map(([monthYear, days], index) => {
                                     const [year, month] = monthYear.split('-');
@@ -141,9 +153,27 @@ export default function Ticketing() {
                     <div className='flex items-center justify-center h-[416px] text-[#666] text-[13px]'>영화,극장,날짜를 선택해주세요.</div>
                 </div>
             </div>
-            <div className='w-full bg-[#1d1d1c] h-[129px]'>
-                <div className='w-[996px]'>
-
+            <div className='flex w-full bg-[#1d1d1c] h-[129px] justify-center items-center'>
+                <div className='flex w-[996px] justify-between'>
+                    <div className='flex items-center'>
+                        <div className='flex relative h-[80px] w-[210px] pr-[2px]'>
+                            {/* 선택된 영화 포스터 및 제목 표시 영역 */}
+                            {selectedMovie ? (
+                                <div className='flex'>
+                                    <div className='flex items-center'>
+                                        <img src={selectedMovie.poster} alt="Selected Movie Poster" className='w-[70px]' />
+                                    </div>
+                                    <div className="ml-2 text-[#cccccc] text-[14px] font-[500]">{selectedMovie.title}</div> {/* 포스터 오른쪽에 영화 제목 표시 */}
+                                </div>
+                            ) : (
+                                <div className='bg-[url("./images/tnbSteps.png")] bg-[30px_25px] bg-no-repeat w-full h-full'></div> // 배경 표시 (선택된 영화 없을 때)
+                            )}
+                        </div>
+                        <div className='flex relative h-[80px] w-[180px] pr-[2px] bg-[url("./images/tnbSteps.png")] bg-[18px_-83px] bg-no-repeat border-l-[1px] border-[#5b5b5b]'></div>
+                        <div className='flex relative h-[80px] w-[160px] pr-[2px] bg-[url("./images/tnbSteps.png")] bg-[10px_-190px] bg-no-repeat border-l-[1px] border-[#5b5b5b]'></div>
+                        <div className='flex relative h-[80px] w-[130px] pr-[2px] bg-[url("./images/tnbSteps.png")] bg-[0px_-297px] bg-no-repeat'></div>
+                    </div>
+                    <div className='flex relative size-[106px] mr-[5px] bg-[url("./images/tnbButtons.png")] bg-[0px_-220px] bg-no-repeat'></div>
                 </div>
             </div>
             <div className='flex w-[996px] m-[30px_0]'>
