@@ -62,7 +62,7 @@ export default function Header() {
 
     return (
         <div className='min-h-fit'>
-            <div id="top" ref={navRef} className='flex flex-col items-center'>
+            <div id="top" className='flex flex-col items-center'>
                 <div id="banner" className='flex justify-center w-full bg-[#1E0D44]'>
                     <img src="img/banner.jpg" alt="banner" className='flex' />
                 </div>
@@ -106,7 +106,7 @@ export default function Header() {
                 onMouseEnter={handleMouseEnter} 
                 onMouseLeave={handleMouseLeave} 
             >
-                <div className='flex justify-between py-[5px] w-[980px] mx-auto'>
+                <div ref={navRef} className='flex justify-between py-[5px] w-[980px] mx-auto'>
                     <ul id="navList" className='flex items-center'>
                         {isNavFixed && (
                             <img src="img/logoWhite.png" alt="logoWhite" className='w-[70px] h-[32px]' />

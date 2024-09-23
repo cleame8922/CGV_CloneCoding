@@ -10,7 +10,7 @@ export default function Login() {
                         <ul id="menu" className='flex'>
                             <NavLink to='/login' className='flex items-center justify-center font-[500] bg-[#fb4357] text-[#fdfcf0] text-[13px] text-center w-[100px] h-[37px] rounded-t-[5px]'>로그인</NavLink>
                             <NavLink to='/login2' className='flex items-center justify-center font-[500] bg-[#898987] text-[#fdfcf0] text-[13px] text-center ml-[1px] w-[100px] h-[37px] rounded-t-[5px]'>비회원 예매</NavLink>
-                            <li className='flex items-center justify-center font-[500] bg-[#898987] text-[#fdfcf0] text-[13px] text-center ml-[1px] w-[100px] h-[37px] rounded-t-[5px]'>비회원 예매확인</li>
+                            <NavLink to='/login3' className='flex items-center justify-center font-[500] bg-[#898987] text-[#fdfcf0] text-[13px] text-center ml-[1px] w-[100px] h-[37px] rounded-t-[5px]'>비회원 예매확인</NavLink>
                         </ul>
                         <div id="login" className='flex flex-col items-center justify-center border-y-[2px] border-[#898987]
                         w-[541px] h-[298px]'>

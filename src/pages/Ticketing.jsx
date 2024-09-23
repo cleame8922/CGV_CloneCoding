@@ -10,12 +10,12 @@ export default function Ticketing() {
         reservationRate: '예매율: 50%',
     }));
 
-    const ListItem = ({ item, justify, onClick, customClass }) => (
+    const ListItem = ({ item, count, justify, onClick, customClass }) => (
         <li
             className={`flex items-center mb-[1px] pl-[6px] pr-[8px] w-[110px] h-[31px] ${justify} text-[#333333] cursor-pointer ${customClass}`}
             onClick={onClick}
         >
-            <div>{item}</div>
+            <div>{item}{count !== undefined ? `(${count})` : ''}</div>
         </li>
     );
     
@@ -25,6 +25,10 @@ export default function Ticketing() {
     const [activeRegion, setActiveRegion] = useState('서울');
     const [selectedTheater, setSelectedTheater] = useState(null);
     const [selectedDate, setSelectedDate] = useState('');
+    const today = new Date(); // 현재 날짜
+    const todayDay = today.getDate(); // 현재 일
+    const todayMonth = today.getMonth() + 1; // 현재 월 (0부터 시작하므로 1을 더함)
+    const todayYear = today.getFullYear(); // 현재 연도
 
     useEffect(() => {
         const fetchTheaters = async () => {
@@ -32,10 +36,7 @@ export default function Ticketing() {
                 const response = await fetch('/theaters.json');
                 const data = await response.json();
                 setRegions(data);
-                console.log(data);
-                console.log("Active Region:", activeRegion);
                 
-                // Set selected theater if 서울지역 exists
                 const seoulRegion = data.find(region => region.region === '서울지역');
                 if (seoulRegion) {
                     setActiveRegion('서울'); // Set active region
@@ -62,8 +63,9 @@ export default function Ticketing() {
         setSelectedTheater(theater);
     };
 
-    const handleDateSelect = (day, dayOfWeek) => {
-        const formattedDate = `${new Date().getFullYear()}.${String(new Date().getMonth() + 1).padStart(2, '0')}.${String(day).padStart(2, '0')}(${dayOfWeek})`;
+    const handleDateSelect = (day, dayOfWeek, monthYear) => {
+        const [year, month] = monthYear.split('-');
+        const formattedDate = `${year}.${String(month).padStart(2, '0')}.${String(day).padStart(2, '0')}(${dayOfWeek})`;
         setSelectedDate(formattedDate);
     };
 
@@ -136,11 +138,18 @@ export default function Ticketing() {
                     <div className="flex flex-col w-[240px] h-[470px] p-1">
                         <div className='overflow-y-auto scrollbar-hide'>
                             {movies.map(movie => (
-                                <div key={movie.id} className="flex items-center w-[230px] h-[35px] mb-[1px]">
+                                <div 
+                                    key={movie.id} 
+                                    className={`
+                                        flex items-center w-[230px] h-[35px] mb-[1px] cursor-pointer
+                                        ${selectedMovie && selectedMovie.id === movie.id 
+                                            ? 'bg-[#333] border-[2px] border-[#5c5c5c] text-[#fff]' 
+                                            : ''}
+                                    `}
+                                    onClick={() => handleMovieClick(movie)}
+                                >
                                     <img src="img/15year.svg" alt="15year" className="mr-[6px]" />
-                                    <div className="font-bold text-[13px] pr-[5px] cursor-pointer"
-                                        onClick={() => handleMovieClick(movie)} // 클릭 시 포스터 변경
-                                    >
+                                    <div className="font-bold text-[13px] pr-[5px]">
                                         {movie.title}
                                     </div>
                                 </div>
@@ -161,13 +170,19 @@ export default function Ticketing() {
                                 {regions.map((region) => (
                                     <ListItem 
                                         key={region.region} 
-                                        item={region.region} 
+                                        item={region.region.replace('지역', '')}  // '지역' 텍스트 제거
+                                        count={region.theaters.length}  // 극장 수 전달
                                         justify="justify-end" 
                                         onClick={() => {
                                             console.log("Clicked Region:", region.region);
                                             setActiveRegion(activeRegion === region.region ? null : region.region);
                                         }}
-                                        customClass="bg-[#e6e4d9] text-[12px]"
+                                        customClass={`
+                                            bg-[#e6e4d9] text-[12px]
+                                            ${activeRegion === region.region 
+                                                ? 'bg-transparent bg-[url("./images/theaterAreaListItemSelected.png")] bg-right bg-no-repeat font-bold' 
+                                                : ''}
+                                        `}
                                     />
                                 ))}
                             </ul>
@@ -180,8 +195,13 @@ export default function Ticketing() {
                                             key={theater} 
                                             item={theater} 
                                             justify="justify-start" 
-                                            customClass="text-[13px] font-bold px-[7px]"
-                                            onClick={() => handleTheaterClick(theater)} // 클릭 핸들러 추가
+                                            customClass={`
+                                                ml-1 text-[13px] font-bold px-[7px]
+                                                ${selectedTheater === theater 
+                                                    ? 'bg-[#333] border-[2px] border-[#5c5c5c] text-[#fff]' 
+                                                    : ''}
+                                            `}
+                                            onClick={() => handleTheaterClick(theater)}
                                         />
                                     ))}
                                 </ul>
@@ -195,21 +215,33 @@ export default function Ticketing() {
                     <div className='flex justify-center overflow-y-auto scrollbar-hide w-[91px] h-[530px] mt-[20px]'>
                         <ul className='flex flex-col'>
                             {Object.entries(groupedDates).map(([monthYear, days], index) => {
-                                const [year, month] = monthYear.split('-');
+                                const [year, month] = monthYear.split('-').map(Number);
+
                                 return (
-                                    <li key={index} className="flex flex-col items-center mb-3">
+                                    <li key={index} className='flex flex-col items-center mb-3'>
                                         <div className="font-bold text-[11px] text-[#666] mt-[12px]">{year}</div>
                                         <div className="font-bold text-[30px] text-[#666] mt-[3px]">{month}</div>
-                                        {days.map(({ day, dayOfWeek }, dayIndex) => (
-                                            <div
-                                                key={dayIndex}
-                                                onClick={() => handleDateSelect(day, dayOfWeek)} // 날짜 선택 처리
-                                                className={`flex items-center w-fit h-[35px] mb-[1px] ${dayOfWeek === '토' ? 'text-[#31597c]' : dayOfWeek === '일' ? 'text-[#ad2727]' : 'text-[#333]'} font-bold text-[13px] pr-[5px]`}
-                                            >
-                                                <div>{dayOfWeek}</div>
-                                                <div className="ml-2 text-sm">{day}</div>
-                                            </div>
-                                        ))}
+                                        {days.map(({ day, dayOfWeek }, dayIndex) => {
+                                            const isToday = day === todayDay && month === todayMonth && year === todayYear;
+                                            const isSelected = selectedDate === `${year}.${String(month).padStart(2, '0')}.${String(day).padStart(2, '0')}(${dayOfWeek})`;
+
+                                            return (
+                                                <div
+                                                    key={dayIndex}
+                                                    onClick={() => handleDateSelect(day, dayOfWeek, monthYear)}
+                                                    className={`
+                                                        flex items-center w-fit mb-[1px] cursor-pointer
+                                                        ${isToday ? 'bg-[url("./images/dateListItemToday.png")] bg-no-repeat bg-[0px_12px] pl-[7px]' : ''}
+                                                        ${isSelected ? 'bg-[#333] border-[2px] border-[#5c5c5c] w-[58px] h-[32px] m-[1px] pl-[6px] pr-[5px] text-[#fff]' : 'h-[35px]'}
+                                                        ${dayOfWeek === '토' ? 'text-[#31597c]' : dayOfWeek === '일' ? 'text-[#ad2727]' : 'text-[#333]'}
+                                                        font-bold text-[13px]
+                                                    `}
+                                                >
+                                                    <div>{dayOfWeek}</div>
+                                                    <div className="ml-2 text-sm">{day}</div>
+                                                </div>
+                                            );
+                                        })}
                                     </li>
                                 );
                             })}
@@ -232,7 +264,7 @@ export default function Ticketing() {
                     <div className='flex items-center justify-center h-[416px] text-[#666] text-[13px]'>영화,극장,날짜를 선택해주세요.</div>
                 </div>
             </div>
-            <div className='flex w-full bg-[#1d1d1c] h-[129px] justify-center items-center'>
+            <div id="bottom" className='flex w-full bg-[#1d1d1c] h-[129px] justify-center items-center'>
                 <div className='flex w-[996px] justify-between'>
                     <div className='flex items-center'>
                         <div className='flex relative h-[80px] w-[210px] pr-[2px]'>
@@ -286,3 +318,15 @@ export default function Ticketing() {
         </div>
     );
 }
+
+{/* <select>
+    <div className='flex justify-center w-[90px] text-[#333] text-[13px] mt-[10px] border-y-[2px] border-[#666666] p-[3px]'>아트하우스<IoIosArrowDown className='flex items-center mt-[3px] ml-1' /></div>
+    <option>전체</option>
+    <option>최신작</option>
+    <option>시네마톡</option>
+    <option>아트 온 시네마</option>
+    <option>STAGE</option>
+    <option>이원 생중계</option>
+    <option>라이브러리톡</option>
+    <option>경기인디시네마 PICK</option>
+</select> */}
