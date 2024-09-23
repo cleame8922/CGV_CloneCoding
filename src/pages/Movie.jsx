@@ -3,48 +3,17 @@ import { NavLink } from 'react-router-dom';
 
 export default function Movie() {
 
-    const movies = [
-        {
-            title: "영화 제목 1",
-            rating: "8.5",
-            poster: "img/moviePoster.jpg",
-        },
-        {
-            title: "영화 제목 2",
-            rating: "7.0",
-            poster: "img/moviePoster.jpg",
-        },
-        {
-            title: "영화 제목 3",
-            rating: "9.0",
-            poster: "img/moviePoster.jpg",
-        },
-        {
-            title: "영화 제목 4",
-            rating: "9.0",
-            poster: "img/moviePoster.jpg",
-        },
-        {
-            title: "영화 제목 5",
-            rating: "8.5",
-            poster: "img/moviePoster.jpg",
-        },
-        {
-            title: "영화 제목 6",
-            rating: "7.0",
-            poster: "img/moviePoster.jpg",
-        },
-        {
-            title: "영화 제목 3",
-            rating: "9.0",
-            poster: "img/moviePoster.jpg",
-        },
-        {
-            title: "영화 제목 4",
-            rating: "9.0",
-            poster: "img/moviePoster.jpg",
-        },
-    ];
+    const posterUrl = "img/moviePoster.jpg";
+    
+    const getRandomRating = () => {
+        return (Math.floor(Math.random() * 19) + 2) / 2;
+    };
+    
+    const movies = Array.from({ length: 11 }, () => ({
+        title: "베테랑 2",
+        rating: getRandomRating().toFixed(1),
+        poster: posterUrl,
+    }));
 
     return (
         <div id="chart" className='flex flex-col items-center'>

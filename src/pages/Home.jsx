@@ -16,13 +16,17 @@ export default function Home() {
         setHoveredItem(null);
     };
 
-    const movies = Array.from({ length: 10 }, (_, index) => ({
-        id: index,
-        title: `베테랑2`,
-        poster: 'img/moviePoster.jpg',
-        reservationRate: '예매율: 50%',
-    }));
-
+    const [movies] = useState(() => 
+        Array.from({ length: 10 }, (_, index) => {
+            const randomRate = (Math.random() * 100).toFixed(1); // 0~100 사이의 소수점 1자리 숫자 생성
+            return {
+                id: index,
+                title: `베테랑2`,
+                poster: 'img/moviePoster.jpg',
+                reservationRate: `예매율: ${randomRate}%`,
+            };
+        })
+    );
     const moviesToShow = movies.slice(currentIndex, currentIndex + 5);
 
     const handleNext = () => {

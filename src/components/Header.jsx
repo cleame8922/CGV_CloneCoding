@@ -72,9 +72,9 @@ export default function Header() {
                         <p className='flex items-end tracking-[0.313em] text-[16px] text-[#222]'>DEEP DIVE SPACE</p>
                     </NavLink>
                     <div id="bRight" className='flex items-center'>
-                        <div className='flex'>
+                        <a href='http://www.cgv.co.kr/culture-event/event/detailViewUnited.aspx?seq=31426&menu=006' className='flex'>
                             <img src="img/point.png" alt="point" className='w-[136px] h-[39px]' />
-                        </div>
+                        </a>
                         <div id="icon" className='flex'>
                             <NavLink to='/login' className='flex flex-col items-center ml-7'>
                                 <img src="img/loginPassword.png" alt="loginPassword" className='size-[36px]' />
@@ -88,10 +88,10 @@ export default function Header() {
                                 <img src="img/loginMember.png" alt="loginMember" className='size-[36px]' />
                                 <div className='flex text-[13px] text-[#666] leading-5 whitespace-nowrap'>MY CGV</div>
                             </NavLink>
-                            <div className='flex flex-col items-center ml-7'>
+                            <a href='http://www.cgv.co.kr/support/default.aspx' className='flex flex-col items-center ml-7'>
                                 <img src="img/loginCustomer.png" alt="loginCustomer" className='size-[36px]' />
                                 <div className='flex text-[13px] text-[#666] leading-5 whitespace-nowrap'>고객센터</div>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </div>

@@ -3,12 +3,15 @@ import { IoIosArrowDown } from "react-icons/io";
 import { useEffect, useRef } from 'react';
 
 export default function Ticketing() {
-    const movies = Array.from({ length: 20 }, (_, index) => ({
-        id: index,
-        title: `베테랑2`,
-        poster: 'img/moviePoster.jpg',
-        reservationRate: '예매율: 50%',
-    }));
+    const movies = Array.from({ length: 10 }, (_, index) => {
+        const randomRate = (Math.random() * 100).toFixed(1); // 0~100 사이의 소수점 1자리 숫자 생성
+        return {
+            id: index,
+            title: `베테랑2`,
+            poster: 'img/moviePoster.jpg',
+            reservationRate: `예매율: ${randomRate}%`,
+        };
+    });
 
     const ListItem = ({ item, count, justify, onClick, customClass }) => (
         <li
@@ -170,8 +173,8 @@ export default function Ticketing() {
                                 {regions.map((region) => (
                                     <ListItem 
                                         key={region.region} 
-                                        item={region.region.replace('지역', '')}  // '지역' 텍스트 제거
-                                        count={region.theaters.length}  // 극장 수 전달
+                                        item={region.region.replace('지역', '')}
+                                        count={region.theaters.length}
                                         justify="justify-end" 
                                         onClick={() => {
                                             console.log("Clicked Region:", region.region);
@@ -318,15 +321,3 @@ export default function Ticketing() {
         </div>
     );
 }
-
-{/* <select>
-    <div className='flex justify-center w-[90px] text-[#333] text-[13px] mt-[10px] border-y-[2px] border-[#666666] p-[3px]'>아트하우스<IoIosArrowDown className='flex items-center mt-[3px] ml-1' /></div>
-    <option>전체</option>
-    <option>최신작</option>
-    <option>시네마톡</option>
-    <option>아트 온 시네마</option>
-    <option>STAGE</option>
-    <option>이원 생중계</option>
-    <option>라이브러리톡</option>
-    <option>경기인디시네마 PICK</option>
-</select> */}
