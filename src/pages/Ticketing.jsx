@@ -1,15 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IoIosArrowDown } from "react-icons/io";
-import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Ticketing() {
-    const movies = Array.from({ length: 10 }, (_, index) => {
+    const movies = Array.from({ length: 14 }, (_, index) => {
         const randomRate = (Math.random() * 100).toFixed(1); // 0~100 사이의 소수점 1자리 숫자 생성
         return {
             id: index,
             title: `베테랑2`,
             poster: 'img/moviePoster.jpg',
             reservationRate: `예매율: ${randomRate}%`,
+            time: `13:00`,
+            floor: `1관 2층`,
+            seatCount: `80`,
+            seatSum: `100`,
+            screen: `2D`,
         };
     });
 
@@ -28,6 +33,8 @@ export default function Ticketing() {
     const [activeRegion, setActiveRegion] = useState('서울');
     const [selectedTheater, setSelectedTheater] = useState(null);
     const [selectedDate, setSelectedDate] = useState('');
+    const [selectedTime, setSelectedTime] = useState(null);
+    const navigate = useNavigate();
     const today = new Date(); // 현재 날짜
     const todayDay = today.getDate(); // 현재 일
     const todayMonth = today.getMonth() + 1; // 현재 월 (0부터 시작하므로 1을 더함)
@@ -53,6 +60,20 @@ export default function Ticketing() {
         fetchTheaters();
     }, []);
     
+    const handleReservationClick =() =>{
+        if(selectedMovie && selectedTheater && selectedDate && selectedTime) {
+        const queryParams = new URLSearchParams({
+        movie:selectedMovie.title,
+        theater: selectedTheater,
+        date: selectedDate,
+        time: selectedTime,
+        floor:selectedMovie.floor,
+        poster :selectedMovie.poster
+        }).toString();
+        
+        navigate(`/reservation?${queryParams}`);
+        }
+        }; 
 
     const handleSortChange = (sortType) => {
         setActiveSort(sortType);
@@ -264,7 +285,28 @@ export default function Ticketing() {
                             </div>
                         </div>
                     </div>
-                    <div className='flex items-center justify-center h-[416px] text-[#666] text-[13px]'>영화,극장,날짜를 선택해주세요.</div>
+                    <div id="select">
+                        {selectedMovie && selectedTheater && selectedDate ? (
+                            <div className='flex flex-col justify-start w-[300px] mt-[16px]'>
+                                <div className='flex'>
+                                    <div className='flex text-[#b54d15] text-[12px] font-bold mr-[5px]'>{selectedMovie.screen}</div>
+                                    <div className='flex text-[#333] text-[12px] font-bold mr-[5px]'>{selectedMovie.floor}</div>
+                                    <div className='flex text-[12px] text-[#666]'>총{selectedMovie.seatSum}석</div>
+                                </div>
+                                <div className='flex mt-[10px] mb-[6px]'>
+                                    <div 
+                                        className={`flex border-[2px] border-[#d6d3ce] text-[14px] font-semibold py-[2px] px-[5px] mr-[5px] justify-center items-center ${selectedTime === selectedMovie.time ? 'border-[#000] bg-[#333] text-[#fff]' : ''}`}
+                                        onClick={() => setSelectedTime(selectedMovie.time)} // 클릭 시 선택된 시간 상태 업데이트
+                                    >
+                                        {selectedMovie.time}
+                                    </div>
+                                    <div className='flex text-[12px] text-[#3d7c35] items-center'>{selectedMovie.seatCount}석</div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div id="noSelect" className='flex items-center justify-center h-[416px] text-[#666] text-[13px]'>영화,극장,날짜를 선택해주세요.</div>
+                        )}
+                    </div>
                 </div>
             </div>
             <div id="bottom" className='flex w-full bg-[#1d1d1c] h-[129px] justify-center items-center'>
@@ -293,18 +335,26 @@ export default function Ticketing() {
                                     </div>
                                     <div className='flex mt-[2px]'>
                                         <div className='w-[50px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>일시</div>
-                                        <div id="dayList" className='w-[135px] ml-4 text-[#cccccc] text-[12px] font-[700]'>{selectedDate}</div>
+                                        <div className='flex w-[135px] ml-4'>
+                                            <div id="dayList" className='mr-1 first-line:text-[#cccccc] text-[12px] font-[700]'>
+                                                {selectedMovie && selectedTheater && selectedDate ? `${selectedDate}` : ''}
+                                            </div>
+                                            <div className='text-[#cccccc] text-[12px] font-[700]'>
+                                            {selectedMovie && selectedTheater && selectedDate && selectedTime ? `${selectedTime}` : ''}
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className='flex mt-[2px]'>
                                         <div className='w-[50px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>상영관</div>
-                                        <div className='w-[135px] ml-4 text-[#cccccc] text-[12px] font-[700]'></div>
+                                        <div id="floorList" className='w-[135px] ml-4 text-[#cccccc] text-[12px] font-[700]'>
+                                            {selectedMovie && selectedTheater && selectedDate && selectedTime ? selectedMovie.floor : ''}
+                                        </div>
                                     </div>
                                     <div className='flex mt-[2px]'>
                                         <div className='w-[50px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>인원</div>
                                         <div className='w-[135px] ml-4 text-[#cccccc] text-[12px] font-[700]'></div>
                                     </div>
                                 </div>
-                                
                             ) : (
                                 <div className='w-[210px] bg-[url("./images/tnbSteps.png")] h-[80px] bg-[30px_25px] bg-no-repeat border-l-[1px] border-[#5b5b5b]'></div> // 배경 표시 (선택된 극장이 없을 때)
                             )}
@@ -312,7 +362,14 @@ export default function Ticketing() {
                         <div className='flex relative h-[80px] w-[160px] pr-[2px] bg-[url("./images/tnbSteps.png")] bg-[10px_-190px] bg-no-repeat border-l-[1px] border-[#5b5b5b]'></div>
                         <div className='flex relative h-[80px] w-[130px] pr-[2px] bg-[url("./images/tnbSteps.png")] bg-[0px_-297px] bg-no-repeat'></div>
                     </div>
+                    {selectedMovie && selectedTheater && selectedDate && selectedTime? (
+                    <div 
+                    className='flex relative size-[106px] mr-[5px] bg-[url("./images/tnbButtons.png")] bg-[-150px_-220px] bg-no-repeat cursor-pointer'
+                    onClick={handleReservationClick}
+                    ></div>
+                    ) : (
                     <div className='flex relative size-[106px] mr-[5px] bg-[url("./images/tnbButtons.png")] bg-[0px_-220px] bg-no-repeat'></div>
+                    )}
                 </div>
             </div>
             <div className='flex w-[996px] m-[30px_0]'>
