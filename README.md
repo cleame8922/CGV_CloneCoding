@@ -1,5 +1,5 @@
 <div>
-  <h2>해야할 것</h2>
+  <h2>남은 개발</h2>
   <ol>
     <li>HOME 영화부분</li>
     <li>MovieDetail</li>
