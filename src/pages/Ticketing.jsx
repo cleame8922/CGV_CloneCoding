@@ -12,7 +12,7 @@ export default function Ticketing() {
             reservationRate: `예매율: ${randomRate}%`,
             time: `13:00`,
             floor: `1관 2층`,
-            seatCount: `80`,
+            seatCount: `93`,
             seatSum: `100`,
             screen: `2D`,
         };
@@ -67,8 +67,10 @@ export default function Ticketing() {
         theater: selectedTheater,
         date: selectedDate,
         time: selectedTime,
-        floor:selectedMovie.floor,
-        poster :selectedMovie.poster
+        floor: selectedMovie.floor,
+        poster : selectedMovie.poster,
+        seat: selectedMovie.seatSum,
+        seatCount: selectedMovie.seatCount
         }).toString();
         
         navigate(`/reservation?${queryParams}`);
