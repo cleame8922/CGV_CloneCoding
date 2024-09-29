@@ -32,7 +32,7 @@ export default function Ticketing() {
 
     const handleReset = () => {
         setSelectedNums({ 일반: 0, 청소년: 0, 경로: 0, 우대: 0 });
-        setSelectedSeats([]); // 선택된 좌석도 초기화
+        setSelectedSeats([]);
     };
 
     const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
@@ -41,28 +41,28 @@ export default function Ticketing() {
     const [selectedSeats, setSelectedSeats] = useState([]);
 
     const handleSeatClick = (seat) => {
-        const selectedCount = totalSelected; // 현재 선택된 인원 수
-        const canSelectTwo = selectedCount < maxSelectable;
-
         if (blockedSeats.includes(seat)) {
             return;
         }
 
-        // 2인씩 선택할 수 있는 경우
-        if (canSelectTwo) {
-            if (selectedSeats.includes(seat)) {
-                // 선택 해제
-                setSelectedSeats(prev => prev.filter(s => s !== seat));
-            } else {
-                // 선택된 좌석 수가 선택 가능한 인원 수(num)보다 적을 때 선택
-                const newSelectedCount = selectedSeats.length + 1; // 새로 선택할 좌석 추가
-                if (newSelectedCount <= selectedNums.일반 + selectedNums.청소년 + selectedNums.경로 + selectedNums.우대) {
-                    setSelectedSeats(prev => [...prev, seat]);
-                }
-            }
+        const selectedCount = totalSelected;
+        if (selectedSeats.includes(seat)) {
+            setSelectedSeats(prev => prev.filter(s => s !== seat));
+        } else if (selectedSeats.length < selectedCount) {
+            setSelectedSeats(prev => [...prev, seat]);
         }
     };
 
+    const getSeatType = (seatIndex) => {
+        let count = 0;
+        for (const [type, num] of Object.entries(selectedNums)) {
+            count += num;
+            if (seatIndex < count) {
+                return type;
+            }
+        }
+        return '';
+    };
 
     return (
         <div className='flex flex-col items-center'>
@@ -176,7 +176,7 @@ export default function Ticketing() {
                                 <div className="ml-2 text-[#cccccc] text-[14px] font-[500]">{movie}</div>
                             </div>
                         </div>
-                        <div id='bottom' className='flex flex-col relative h-[80px] w-[210px] pr-[2px]'>
+                        <div id="bottom" className='flex flex-col relative h-[80px] w-[210px] pr-[2px]'>
                             <div className='flex mt-[2px]'>
                                 <div className='w-[50px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>극장</div>
                                 <div className='w-[135px] ml-4 text-[#cccccc] text-[12px] font-[700]'>CGV{theater}</div>
@@ -217,8 +217,33 @@ export default function Ticketing() {
                             </div>
                         </div>
                     </div>
-                    <div className='flex relative h-[80px] w-[160px] pr-[2px] bg-[url("./images/tnbSteps.png")] bg-[10px_-185px] bg-no-repeat border-l-[1px] border-[#5b5b5b]'></div>
-                    <div className='flex relative h-[80px] w-[130px] pr-[2px] bg-[url("./images/tnbSteps.png")] bg-[0px_-293px] bg-no-repeat'></div>
+                    <div className='flex mt-[2px] pt-[10px]'>
+                        <div className='flex flex-col '>
+                            {selectedSeats.length > 0 ? (
+                                <>
+                                    <div className='flex'>
+                                        <div className='flex w-[60px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>좌석명</div>
+                                        <div className='flex w-[130px] ml-4 text-[#cccccc] text-[12px] font-[700] whitespace-nowrap overflow-hidden text-ellipsis'>{(() => {
+                                            const seatTypes = new Set();
+
+                                            selectedSeats.forEach((seat, index) => {
+                                                seatTypes.add(getSeatType(index));  // 좌석 종류를 Set에 추가
+                                            });
+
+                                            return Array.from(seatTypes).join(', ');  // 중복 제거된 종류명 반환
+                                        })()}석</div>
+                                    </div>
+                                    <div className='flex'>
+                                        <div className='flex w-[60px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>좌석번호</div>
+                                        <div className='flex w-[120px] ml-4 text-[#cccccc] text-[12px] font-[700] whitespace-nowrap overflow-hidden text-ellipsis'>{selectedSeats.join(', ')}</div>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className='w-[140px] bg-[url("./images/tnbSteps.png")] bg-[10px_-190px] bg-no-repeat h-[80px]'></div>
+                            )}
+                        </div>
+                    </div>
+                    <div className='flex relative h-[80px] w-[130px] pr-[2px] bg-[url("./images/tnbSteps.png")] bg-[-30px_-285px] bg-no-repeat'></div>
                     <div className='flex relative size-[106px] mr-[5px] bg-[url("./images/tnbButtons.png")] bg-[0px_-220px] bg-no-repeat'></div>
                 </div>
             </div>
