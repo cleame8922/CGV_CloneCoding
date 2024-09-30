@@ -1,18 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { IoIosArrowDown } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 export default function Payment() {
 
     const [selectedNums, setSelectedNums] = useState({ 일반: 0, 청소년: 0, 경로: 0, 우대: 0 });
-    const [selectedSeats, setSelectedSeats] = useState([]);
     const [selectedPayment, setSelectedPayment] = useState('credit');
     const [selectedEasyPayment, setSelectedEasyPayment] = useState('naver');
+    
     const navigate = useNavigate();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+
+    const movie = queryParams.get('movie');
+    const theater = queryParams.get('theater');
+    const date = queryParams.get('date');
+    const time = queryParams.get('time');
+    const floor = queryParams.get('floor');
+    const poster = queryParams.get('poster');
+    const people = queryParams.get('people');
+    const seats = queryParams.get('seats');
+    const seatTypeInfo = queryParams.get('seatTypeInfo');
+    const totalAmount = queryParams.get('totalAmount');
 
     const handleReset = () => {
         setSelectedNums({ 일반: 0, 청소년: 0, 경로: 0, 우대: 0 });
-        setSelectedSeats([]);
     };
     
     const handlePaymentChange = (e) => {
@@ -328,27 +341,75 @@ export default function Payment() {
                         </div>
                     </div>
                 </div>
-                <div className='fixed top-[330px] right-[630px]'>
-                    <div id="right" className='flex flex-col bg-[#fff] pb-[15px] pt-[19px] shadow-md w-[216px] h-[396px]'>
+                <div id="right" className='sticky top-0'>
+                    <div className='flex flex-col bg-[#fff] pb-[15px] pt-[19px] shadow-md w-[216px] h-[396px]'>
                         <div className='w-[187px] h-fit my-auto border-[2px] border-[#202020] rounded-md mx-auto'>
                             <div className='h-[32px] bg-[#fff] text-[14px] font-semibold rounded-md flex justify-center items-center'>결제하실 금액</div>
-                            <div className='h-[40px] bg-[#474747] text-[#fff] text-[12px] pr-4 flex justify-end items-center'>-원</div>
+                            <div className='h-[40px] bg-[#474747] text-[#fff] text-[12px] pr-4 flex justify-end items-center'>
+                                <div className='text-[20px] font-bold mr-1'>{totalAmount}</div>원
+                            </div>
                         </div>
                         <div className='w-[187px] h-fit my-auto border-[2px] border-[#202020] rounded-md mx-auto'>
                             <div className='h-[32px] bg-[#d9e7eb] text-[14px] rounded-md font-semibold flex justify-center items-center'>할인내역</div>
                             <div className='h-[34px] bg-[#fff] text-[14px] border-y-[2px] border-[#202020] font-semibold flex justify-center items-center'>총 할인금액</div>
-                            <div className='h-[40px] bg-[#3c464f] text-[#89e5ff]  text-[12px] pr-4 flex justify-end items-center'>-원</div>
+                            <div className='h-[40px] bg-[#3c464f] text-[#89e5ff]  text-[12px] pr-4 flex justify-end items-center'>
+                                <div className='text-[20px] font-bold mr-1'>0</div>원
+                            </div>
                         </div>
                         <div className='w-[187px] h-fit my-auto border-[2px] border-[#202020] rounded-md mx-auto'>
                             <div className='h-[27px] bg-[#f0ebd2] text-[14px] rounded-md font-semibold flex justify-center items-center'>결제내역</div>
                             <div className='h-[36px] bg-[#fff] text-[12px] border-t-[2px] border-[#dde2e3] px-[10px] flex justify-between items-center'>
                                 <div>신용카드</div>
-                                <div>-원</div>
+                                <div>{totalAmount}원</div>
                             </div>
                             <div className='h-[34px] bg-[#fff] text-[14px] border-y-[2px] border-[#202020] font-semibold flex justify-center items-center'>남은 결제금액</div>
-                            <div className='h-[40px] bg-[#443128] text-[#ffe56b]  text-[12px] pr-4 flex justify-end items-center'>-원</div>
+                            <div className='h-[40px] bg-[#443128] text-[#ffe56b]  text-[12px] pr-4 flex justify-end items-center'>
+                                <div className='text-[20px] font-bold mr-1'>{totalAmount}</div>원
+                            </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div id="bottom" className='flex w-full bg-[#1d1d1c] h-[129px] justify-center items-center'>
+                <div className='flex w-[996px] justify-between'>
+                    <div className='flex items-center'>
+                        <div className='flex'>
+                            <div className='flex items-center'>
+                                <img src={poster} alt="Selected Movie Poster" className='w-[70px]' />
+                            </div>
+                            <div className='w-[100px] ml-4 text-[#cccccc] text-[12px] font-[700]'>{movie}</div>
+                        </div>
+                        <div className='flex flex-col relative h-[80px] w-[230px] pr-[2px] border-l-[1px] border-[#5b5b5b] text-[#fff]'>
+                            <div className='flex'>
+                                <div className='flex w-[50px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>극장</div>
+                                <div className='flex w-[135px] ml-4 text-[#cccccc] text-[12px] font-[700]'>CGV {theater}</div>
+                            </div>
+                            <div className='flex'>
+                                <div className='flex w-[50px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>일시</div>
+                                <div className='flex w-[135px] ml-4 text-[#cccccc] text-[12px] font-[700]'>{date} {time}</div>
+                            </div>
+                            <div className='flex'>
+                                <div className='flex w-[50px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>상영관</div>
+                                <div className='flex w-[135px] ml-4 text-[#cccccc] text-[12px] font-[700]'>{floor}</div>
+                            </div>
+                            <div className='flex'>
+                                <div className='flex w-[50px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>인원</div>
+                                <div className='flex w-[135px] ml-4 text-[#cccccc] text-[12px] font-[700]'>{people}</div>
+                            </div>
+                        </div>
+                        <div className='flex flex-col relative h-[80px] w-[200px] pr-[2px] border-l-[1px] border-[#5b5b5b] text-[#fff]'>
+                            <div className='flex'>
+                                <div className='flex w-[80px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>좌석명</div>
+                                <div className='flex w-[135px] ml-4 text-[#cccccc] text-[12px] font-[700]'>{seatTypeInfo}</div>
+                            </div>
+                            <div className='flex'>
+                                <div className='flex w-[80px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>좌석번호</div>
+                                <div className='flex w-[135px] ml-4 text-[#cccccc] text-[12px] font-[700]'>{seats}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className='flex relative w-[250px] h-[106px] mr-[5px] bg-[url("./images/tnbButtons.png")] bg-[0px_-550px] bg-no-repeat'></div>
                 </div>
             </div>
         </div>

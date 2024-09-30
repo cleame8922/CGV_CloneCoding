@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-export default function Ticketing() {
+export default function Reservation() {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     
@@ -72,36 +72,65 @@ export default function Ticketing() {
         '우대': 5000,
     };
 
-    // 선택한 좌석 종류별 금액 계산 함수
     const calculateMoneyByType = () => {
         return Object.entries(selectedNums).map(([type, count]) => {
-            if (count > 0) {
+            if (count > 0 && moneys[type]) {
                 return {
                     type,
-                    amount: moneys[type] * count,
+                    price: moneys[type],
                     count
                 };
             }
             return null;
         }).filter(Boolean);
     };
+
     // 총 금액 계산 함수
-    const SumMoney = () => {
+    const calculateTotalMoney = () => {
         return Object.entries(selectedNums).reduce((total, [type, count]) => {
-            return total + moneys[type] * count;
+            return total + (moneys[type] || 0) * count;
         }, 0);
     };
 
-    const sumMoney = SumMoney();
     const moneyByType = calculateMoneyByType();
-
+    const totalMoney = calculateTotalMoney();
+    
     const isSelectionComplete = () => {
         return totalSelected > 0 && selectedSeats.length === totalSelected;
     };
 
     const handlePaymentClick = () => {
         if (isSelectionComplete()) {
-            navigate(`/payment?movie=${movie}&theater=${theater}&date=${date}&time=${time}&floor=${floor}&poster=${poster}&seat=${seat}&seatCount=${seatCount}`);
+            const selectedSeatList = selectedSeats.join(',');
+            
+            // 좌석 유형별로 정보를 생성
+            const seatTypes = new Set(selectedSeats.map((_, index) => getSeatType(index)));
+            const seatTypeInfo = Array.from(seatTypes).join(',');
+
+            const peopleInfo = Object.entries(selectedNums)
+                .filter(([_, count]) => count > 0)
+                .map(([type, count]) => `${type} ${count}명`)
+                .join(', ');
+
+
+            const queryParams = new URLSearchParams({
+                movie,
+                theater,
+                date,
+                time,
+                floor,
+                poster,
+                seat,
+                seatCount,
+                totalSelected,
+                people: peopleInfo,
+                seats: selectedSeats.join(','),
+                selectedSeats: selectedSeatList,
+                seatTypeInfo: seatTypeInfo,
+                totalAmount: totalMoney,
+            }).toString();
+    
+            navigate(`/payment?${queryParams}`);
         }
     };
 
@@ -254,7 +283,7 @@ export default function Ticketing() {
                             </div>
                         </div>
                     </div>
-                    <div className='flex mt-[2px] pt-[10px]'>
+                    <div className='flex mt-[15px] pt-[10px]'>
                         <div className='flex flex-col '>
                             {selectedSeats.length > 0 ? (
                                 <>
@@ -281,7 +310,7 @@ export default function Ticketing() {
                             )}
                         </div>
                     </div>
-                    <div className='flex mt-[2px] pt-[10px]'>
+                    <div className='flex mt-[15px] pt-[10px]'>
                         <div className='flex flex-col'>
                             {totalSelected > 0 ? (
                                 <div className='flex flex-col'>
@@ -291,14 +320,14 @@ export default function Ticketing() {
                                                 {item.type}
                                             </div>
                                             <div className='flex w-[120px] text-[#cccccc] text-[12px] font-[700] whitespace-nowrap overflow-hidden text-ellipsis'>
-                                                {item.amount.toLocaleString()} * {item.count}
+                                                {item.price?.toLocaleString() ?? '0'} * {item.count}
                                             </div>
                                         </div>
                                     ))}
                                     <div className='flex justify-between mt-2'>
                                         <div className='flex w-[60px] text-[#cccccc] text-[12px] font-[500]'>총 금액</div>
                                         <div className='flex w-[120px] text-[#bf2828] text-[12px] font-[700] whitespace-nowrap overflow-hidden text-ellipsis'>
-                                            {sumMoney.toLocaleString()}원
+                                            {totalMoney.toLocaleString()}원
                                         </div>
                                     </div>
                                 </div>
