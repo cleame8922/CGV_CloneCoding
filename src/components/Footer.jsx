@@ -51,7 +51,7 @@ export default function Footer() {
                 <section className='flex absolute top-[320px] right-[30px]'>
                     <select
                         className='h-[34px] text-[12px] text-[#666] bg-transparent border-[1px] border-[#d8d8d8]'
-                        onChange={handleSelectChange} // 옵션 변경시 URL 업데이트
+                        onChange={handleSelectChange}
                     >
                         <option value="">계열사 바로가기</option>
                         <optgroup label='CJ그룹' className='text-[12px] text-[#666]'>

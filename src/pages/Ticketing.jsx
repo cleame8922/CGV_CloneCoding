@@ -28,9 +28,9 @@ export default function Ticketing() {
     );
     
     const [activeSort, setActiveSort] = useState('예매율순');
-    const [selectedMovie, setSelectedMovie] = useState(null);
     const [regions, setRegions] = useState([]);
     const [activeRegion, setActiveRegion] = useState('서울');
+    const [selectedMovie, setSelectedMovie] = useState(null);
     const [selectedTheater, setSelectedTheater] = useState(null);
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTime, setSelectedTime] = useState(null);
