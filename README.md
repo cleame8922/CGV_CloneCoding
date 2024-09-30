@@ -6,6 +6,5 @@
     <li>Movie</li>
     <li>Ticketing</li>
     <li>Login</li>
-    <li>결제 페이지 bottom 정보 받아오기</li>
   </ol>
 </div>
