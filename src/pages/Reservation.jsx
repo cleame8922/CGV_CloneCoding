@@ -40,20 +40,53 @@ export default function Reservation() {
     const seatsPerRow = 10;
 
     const [selectedSeats, setSelectedSeats] = useState([]);
+    const [tempSeat, setTempSeat] = useState(null);
 
-    const handleSeatClick = (seat) => {
-        if (blockedSeats.includes(seat)) {
+    const handleSeatClick = (seatNumber) => {
+        if (blockedSeats.includes(seatNumber)) {
             return;
         }
-
-        const selectedCount = totalSelected;
-        if (selectedSeats.includes(seat)) {
-            setSelectedSeats(prev => prev.filter(s => s !== seat));
-        } else if (selectedSeats.length < selectedCount) {
-            setSelectedSeats(prev => [...prev, seat]);
+    
+        const totalSelectedCount = Object.values(selectedNums).reduce((sum, num) => sum + num, 0);
+        const remainingSeats = totalSelectedCount - selectedSeats.length;
+    
+        if (selectedSeats.includes(seatNumber)) {
+            // 이미 선택된 좌석 클릭 시 선택 해제
+            setSelectedSeats(prev => prev.filter(seat => seat !== seatNumber));
+        } else if (remainingSeats > 0) {
+            // 인원 수에 맞게 좌석 선택
+            if (remainingSeats === 1) {
+                // 마지막 한 명의 경우 개별적으로 선택
+                setSelectedSeats(prev => [...prev, seatNumber]);
+            } else if (remainingSeats > 1) {
+                // 첫 두 명의 경우 연속으로 선택
+                const adjacentSeat = getAdjacentSeat(seatNumber);
+                if (adjacentSeat) {
+                    setSelectedSeats(prev => [...prev, seatNumber, adjacentSeat]);
+                } else {
+                    setSelectedSeats(prev => [...prev, seatNumber]); // 인접 좌석이 없으면 현재 좌석만 선택
+                }
+            }
         }
     };
+    
+    const getAdjacentSeat = (seatNumber) => {
+        const [row, num] = seatNumber.split(/(?<=^[A-Z])/);
+        const adjacentNum = parseInt(num) + 1; // 오른쪽 좌석
+        const adjacentSeat = `${row}${adjacentNum}`;
+    
+        // 인접 좌석이 범위 내에 있고, 차단되지 않았는지 확인
+        return adjacentNum <= seatsPerRow && !blockedSeats.includes(adjacentSeat) ? adjacentSeat : null;
+    };
+    
+    
 
+    const isAdjacentSeat = (seat1, seat2) => {
+        const [row1, num1] = seat1.split(/(?<=^[A-Z])/);
+        const [row2, num2] = seat2.split(/(?<=^[A-Z])/);
+        return row1 === row2 && Math.abs(parseInt(num1) - parseInt(num2)) === 1;
+    };
+    
     const getSeatType = (seatIndex) => {
         let count = 0;
         for (const [type, num] of Object.entries(selectedNums)) {
@@ -64,6 +97,7 @@ export default function Reservation() {
         }
         return '';
     };
+    
 
     const moneys = {
         '일반': 15000,
@@ -218,7 +252,9 @@ export default function Reservation() {
                                                 key={seatNumber}
                                                 onClick={() => handleSeatClick(seatNumber)}
                                                 className={`w-[20px] h-[20px] mx-[1px] text-[12px] p-[1px] flex items-center justify-center border 
-                                                    ${selectedSeats.includes(seatNumber) ? 'bg-[red] text-[#fff]' : (blockedSeats.includes(seatNumber) ? 'bg-[#d6d3ce] text-[#fff]' : 'bg-[#666] text-[#fff]')} 
+                                                    ${selectedSeats.includes(seatNumber) ? 'bg-[red] text-[#fff]' : 
+                                                    (tempSeat === seatNumber ? 'bg-[orange] text-[#fff]' :
+                                                    (blockedSeats.includes(seatNumber) ? 'bg-[#d6d3ce] text-[#fff]' : 'bg-[#666] text-[#fff]'))} 
                                                     cursor-pointer`}>
                                                 {i + 1}
                                             </div>
