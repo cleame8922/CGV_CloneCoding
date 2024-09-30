@@ -64,6 +64,40 @@ export default function Ticketing() {
         return '';
     };
 
+    const moneys = {
+        '일반': 15000,
+        '청소년': 12000,
+        '경로': 7000,
+        '우대': 5000,
+    };
+
+    // 선택한 좌석 종류별 금액 계산 함수
+   const calculateMoneyByType = () => {
+        return Object.entries(selectedNums).map(([type, count]) => {
+            if (count > 0) {
+                return {
+                    type,
+                    amount: moneys[type] * count,
+                    count
+                };
+            }
+            return null;
+        }).filter(Boolean);
+    };
+    // 총 금액 계산 함수
+    const SumMoney = () => {
+        return Object.entries(selectedNums).reduce((total, [type, count]) => {
+            return total + moneys[type] * count;
+        }, 0);
+    };
+
+    const sumMoney = SumMoney();
+    const moneyByType = calculateMoneyByType();
+
+    const isSelectionComplete = () => {
+        return totalSelected > 0 && selectedSeats.length === totalSelected;
+    };
+
     return (
         <div className='flex flex-col items-center'>
             <div id="etc" className='flex justify-end w-[996px] h-[74px] pt-[30px]'>
@@ -223,7 +257,8 @@ export default function Ticketing() {
                                 <>
                                     <div className='flex'>
                                         <div className='flex w-[60px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>좌석명</div>
-                                        <div className='flex w-[130px] ml-4 text-[#cccccc] text-[12px] font-[700] whitespace-nowrap overflow-hidden text-ellipsis'>{(() => {
+                                        <div className='flex w-[130px] ml-4 text-[#cccccc] text-[12px] font-[700] whitespace-nowrap overflow-hidden text-ellipsis'>
+                                        {(() => {
                                             const seatTypes = new Set();
 
                                             selectedSeats.forEach((seat, index) => {
@@ -243,8 +278,35 @@ export default function Ticketing() {
                             )}
                         </div>
                     </div>
-                    <div className='flex relative h-[80px] w-[130px] pr-[2px] bg-[url("./images/tnbSteps.png")] bg-[-30px_-285px] bg-no-repeat'></div>
-                    <div className='flex relative size-[106px] mr-[5px] bg-[url("./images/tnbButtons.png")] bg-[0px_-220px] bg-no-repeat'></div>
+                    <div className='flex mt-[2px] pt-[10px]'>
+                        <div className='flex flex-col'>
+                            {totalSelected > 0 ? (
+                                <div className='flex flex-col'>
+                                    {moneyByType.map((item, index) => (
+                                        <div key={index} className='flex justify-between'>
+                                            <div className='flex w-[60px] text-[#cccccc] text-[12px] font-[500]'>
+                                                {item.type}
+                                            </div>
+                                            <div className='flex w-[120px] text-[#cccccc] text-[12px] font-[700] whitespace-nowrap overflow-hidden text-ellipsis'>
+                                                {item.amount.toLocaleString()} * {item.count}
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <div className='flex justify-between mt-2'>
+                                        <div className='flex w-[60px] text-[#cccccc] text-[12px] font-[500]'>총 금액</div>
+                                        <div className='flex w-[120px] text-[#bf2828] text-[12px] font-[700] whitespace-nowrap overflow-hidden text-ellipsis'>
+                                            {sumMoney.toLocaleString()}원
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className='flex relative h-[80px] w-[130px] pr-[2px] bg-[url("./images/tnbSteps.png")] bg-[-30px_-295px] bg-no-repeat'></div>
+                            )}
+                        </div>
+                    </div>
+                    <div className={`flex relative size-[106px] mr-[5px] bg-[url("./images/tnbButtons.png")] 
+                    ${isSelectionComplete() ? 'bg-[-150px_-330px]' : 'bg-[0px_-330px]'
+                } bg-no-repeat`}></div>
                 </div>
             </div>
             <div className='flex w-[996px] m-[30px_0]'>
