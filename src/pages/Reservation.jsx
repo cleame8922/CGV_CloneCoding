@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function Ticketing() {
     const location = useLocation();
@@ -13,6 +13,7 @@ export default function Ticketing() {
     const poster = queryParams.get('poster');
     const seat = queryParams.get('seat');
     const seatCount = queryParams.get('seatCount');
+    const navigate = useNavigate();
 
     const [selectedNums, setSelectedNums] = useState({ 일반: 0, 청소년: 0, 경로: 0, 우대: 0 });
     const maxSelectable = 8;
@@ -72,7 +73,7 @@ export default function Ticketing() {
     };
 
     // 선택한 좌석 종류별 금액 계산 함수
-   const calculateMoneyByType = () => {
+    const calculateMoneyByType = () => {
         return Object.entries(selectedNums).map(([type, count]) => {
             if (count > 0) {
                 return {
@@ -98,16 +99,18 @@ export default function Ticketing() {
         return totalSelected > 0 && selectedSeats.length === totalSelected;
     };
 
+    const handlePaymentClick = () => {
+        if (isSelectionComplete()) {
+            navigate(`/payment?movie=${movie}&theater=${theater}&date=${date}&time=${time}&floor=${floor}&poster=${poster}&seat=${seat}&seatCount=${seatCount}`);
+        }
+    };
+
     return (
         <div className='flex flex-col items-center'>
             <div id="etc" className='flex justify-end w-[996px] h-[74px] pt-[30px]'>
                 <div className='flex w-[81px] h-[30px] bg-no-repeat bg-[url("./images/topButton.png")]'></div>
                 <div className='flex w-[101px] h-[30px] bg-no-repeat bg-[url("./images/topButton.png")] bg-[0_-90px] ml-2'></div>
-                <div className='flex w-[113px] h-[30px] bg-no-repeat bg-[url("./images/topButton.png")] bg-[0_-120px] ml-2' 
-                    onClick={() => {
-                        setSelectedNums({ 일반: 0, 청소년: 0, 경로: 0, 우대: 0 });
-                    }}
-                ></div>
+                <div className='flex w-[113px] h-[30px] bg-no-repeat bg-[url("./images/topButton.png")] bg-[0_-120px] ml-2' onClick={() => {navigate('/ticketing'); }}></div>
             </div>
             
             <div id="contents" className='flex flex-col bg-[#f2f0e5] w-[996px] h-[600px]'>
@@ -304,9 +307,16 @@ export default function Ticketing() {
                             )}
                         </div>
                     </div>
-                    <div className={`flex relative size-[106px] mr-[5px] bg-[url("./images/tnbButtons.png")] 
-                    ${isSelectionComplete() ? 'bg-[-150px_-330px]' : 'bg-[0px_-330px]'
-                } bg-no-repeat`}></div>
+                    <div className='flex w-full bg-[#1d1d1c] h-[129px] justify-center items-center'>
+                        <div className='flex w-[996px] justify-between'>
+                            <div 
+                                className={`flex relative size-[106px] mr-[5px] bg-[url("./images/tnbButtons.png")] 
+                                    ${isSelectionComplete() ? 'bg-[-150px_-330px]' : 'bg-[0px_-330px]'
+                                } bg-no-repeat cursor-pointer`}
+                                onClick={handlePaymentClick}
+                            ></div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div className='flex w-[996px] m-[30px_0]'>

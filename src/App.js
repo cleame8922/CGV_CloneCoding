@@ -11,6 +11,7 @@ import Footer from "./components/Footer";
 import Ticketing from "./pages/Ticketing";
 import Click from "./components/Click";
 import Movie from "./pages/Movie";
+import Payment from "./pages/Payment";
 import MyPage from "./pages/MyPage";
 import MovieDetail from "./pages/MovieDetail";
 import Reservation from "./pages/Reservation";
@@ -41,6 +42,7 @@ function App() {
             path='/reservation' 
             element={<Reservation selectedTicket={selectedTicket} />} 
           />
+          <Route path='/payment' element={<Payment />} />
           <Route path='/myPage' element={<MyPage />} />
         </Routes>
         <Click />
