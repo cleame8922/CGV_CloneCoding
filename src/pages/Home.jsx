@@ -68,25 +68,25 @@ export default function Home() {
                     loop 
                     muted 
                     className='mx-[181px] shadow-inner' 
-                    onEnded={() => setIsPlaying(false)} // 비디오가 끝났을 때 상태 업데이트
+                    onEnded={() => setIsPlaying(false)}
                 >
                     <source src="img/video.mp4" type="video/mp4" />
                 </video>
-                <div className='absolute inset-0 top-0 left-0 flex flex-col justify-center text-white bg-black bg-opacity-50'>
-                    <div className='ml-[100px] absolute left-[480px]'>
+                <div className='w-[1080px] absolute inset-0 top-0 left-[572.5px] flex flex-col items-center justify-center text-white bg-[linear-gradient(to_right,#000_0%,rgba(0,0,0,0.25)_25%,rgba(0,0,0,0)_50%,rgba(0,0,0,0.25)_75%,#000_100%)] bg-opacity-50'>
+                    <div className='ml-[100px] absolute left-[50px]'>
                         <div className='font-[700] text-[40px]'>6시간 후 너는 죽는다</div>
                         <div className='text-[20px]'>정재현 x 박주현 x 곽시양</div>
                         <div className='text-[20px]'>예고된 죽음, 결말은? 10 / 16 개봉</div>
                     </div>
                 </div>
-                <div className='flex items-center absolute left-[580px] top-[370px] bg-white bg-opacity-80 rounded-[15px] p-[5px_15px] text-[14px] text-[#343434]'>
+                <div className='flex items-center absolute left-[720px] top-[380px] bg-white bg-opacity-80 rounded-[15px] p-[5px_15px] text-[14px] text-[#343434]'>
                     상세보기
                     <img src="img/arrowR.png" alt="arrow" className='flex left-[180px] top-[330px] size-3 ml-3' />
                 </div>
-                <div className='flex items-center absolute left-[700px] top-[370px]' onClick={handlePlayClick}>
+                <div className='flex items-center absolute left-[840px] top-[382px]' onClick={handlePlayClick}>
                     <img src={isPlaying ? "img/pause.png" : "img/play.png"} alt="soundToggle" className='size-7 border-[1px] border-[#979797] rounded-[50%] p-1' />
                 </div>
-                <div className='flex items-center absolute left-[740px] top-[370px]' onClick={handleMuteClick}>
+                <div className='flex items-center absolute left-[880px] top-[382px]' onClick={handleMuteClick}>
                     <img src={isMuted ? "img/soundOff.png" : "img/soundOn.png"} alt="soundToggle" className='size-7 border-[1px] border-[#979797] rounded-[50%] p-1' />
                 </div>
             </div>

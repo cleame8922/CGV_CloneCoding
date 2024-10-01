@@ -406,14 +406,14 @@ export default function Payment() {
                                 <div className='flex w-[135px] ml-4 text-[#cccccc] text-[12px] font-[700]'>{people}</div>
                             </div>
                         </div>
-                        <div className='flex flex-col relative h-[80px] w-[200px] pr-[2px] border-l-[1px] border-[#5b5b5b] text-[#fff]'>
+                        <div className='flex flex-col relative h-[80px] w-[210px] overflow-hidden pr-[2px] border-l-[1px] border-[#5b5b5b] text-[#fff]'>
                             <div className='flex'>
-                                <div className='flex w-[80px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>좌석명</div>
-                                <div className='flex w-[135px] ml-4 text-[#cccccc] text-[12px] font-[700]'>{seatTypeInfo}</div>
+                                <div className='flex w-[70px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>좌석명</div>
+                                <div className='flex w-[135px] text-[#cccccc] text-[12px] font-[700]'>{seatTypeInfo}</div>
                             </div>
                             <div className='flex'>
-                                <div className='flex w-[80px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>좌석번호</div>
-                                <div className='flex w-[135px] ml-4 text-[#cccccc] text-[12px] font-[700]'>{seats}</div>
+                                <div className='flex w-[53px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>좌석번호</div>
+                                <div className='flex w-[100px] ml-4 text-[#cccccc] text-[12px] font-[700]'>{seats}</div>
                             </div>
                         </div>
                     </div>

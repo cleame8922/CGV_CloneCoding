@@ -95,12 +95,11 @@ export default function Ticketing() {
         setSelectedDate(formattedDate);
     };
 
-    // 오늘부터 30일치 날짜 생성
     const generateDates = () => {
         const today = new Date();
         const dates = [];
         const dayNames = ['일', '월', '화', '수', '목', '금', '토']; // 요일 배열
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 50; i++) {
             const date = new Date(today);
             date.setDate(today.getDate() + i);
             const year = date.getFullYear();

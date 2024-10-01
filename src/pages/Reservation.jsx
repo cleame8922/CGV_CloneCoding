@@ -350,7 +350,7 @@ export default function Reservation() {
                                     </div>
                                 </>
                             ) : (
-                                <div className='w-[140px] bg-[url("./images/tnbSteps.png")] bg-[10px_-190px] bg-no-repeat h-[80px]'></div>
+                                <div className='w-[200px] bg-[url("./images/tnbSteps.png")] bg-[10px_-190px] bg-no-repeat h-[80px]'></div>
                             )}
                         </div>
                     </div>
@@ -376,11 +376,11 @@ export default function Reservation() {
                                     </div>
                                 </div>
                             ) : (
-                                <div className='flex relative h-[80px] w-[130px] pr-[2px] bg-[url("./images/tnbSteps.png")] bg-[-30px_-295px] bg-no-repeat'></div>
+                                <div className='flex relative h-[80px] w-[200px] pr-[2px] bg-[url("./images/tnbSteps.png")] bg-[-30px_-295px] bg-no-repeat'></div>
                             )}
                         </div>
                     </div>
-                    <div className='flex w-full bg-[#1d1d1c] h-[129px] justify-center items-center'>
+                    <div className='flex w-[130px] bg-[#1d1d1c] h-[129px] justify-center items-center'>
                         <div className='flex w-[996px] justify-between'>
                             <div 
                                 className={`flex relative size-[106px] mr-[5px] bg-[url("./images/tnbButtons.png")] 
