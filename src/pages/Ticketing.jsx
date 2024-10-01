@@ -137,180 +137,188 @@ export default function Ticketing() {
                     }}
                 ></div>
             </div>
-            
-            <div id="contents" className='flex bg-[#d4d3c9] w-[996px] h-[600px]'>
-                <div id="movie" className='flex flex-col items-center bg-[#f2f0e5] w-[284px] border-x-[2px] border-[#d4d3c9]'>
-                    <div className='flex justify-center items-center bg-[#333333] w-[284px] h-[33px] text-[#fff] text-[16px] font-[500] m-[2px]'>영화</div>
-                    <div className='flex w-[244px] justify-center p-[4px_3px_0px_3px]'>
-                        <div className='flex justify-center w-[58px] text-[#333] text-[13px] mt-[10px] border-[2px] border-[#666666] p-[3px]'>전체</div>
-                        <div className='flex justify-center w-[90px] text-[#333] text-[13px] mt-[10px] border-y-[2px] border-[#666666] p-[3px]'>아트하우스<IoIosArrowDown className='flex items-center mt-[3px] ml-1' /></div>
-                        <div className='flex justify-center w-[88px] text-[#333] text-[13px] mt-[10px] border-[2px] border-[#666666] p-[3px]'>특별관<IoIosArrowDown className='flex items-center mt-[3px] ml-1' /></div>
-                    </div>
-                    <div className='flex w-[235px] mt-[2px] border-b-[0.6px] border-[#d4d3c9] relative'>
-                        <div className={`absolute inset-x-0 bottom-0 h-[2px] bg-[#d4d3c9] z-0`} />
-                        <div
-                            className={`flex justify-center items-center w-[60px] h-[32px] text-[13px] text-[#333] relative z-10 ${activeSort === '예매율순' ? 'bg-[url("./images/sortmenuBtnOn.png")] bg-[50%_100%] bg-no-repeat' : ''}`}
-                            onClick={() => handleSortChange('예매율순')}
-                        >
-                            예매율순
-                        </div>
-                        <div
-                            className={`flex justify-center items-center w-[60px] h-[32px] text-[13px] text-[#333] relative z-10 ${activeSort === '가나다순' ? 'bg-[url("./images/sortmenuBtnOn.png")] bg-[50%_100%] bg-no-repeat' : ''}`}
-                            onClick={() => handleSortChange('가나다순')}
-                        >
-                            가나다순
-                        </div>
-                    </div>
-                    <div className="flex flex-col w-[240px] h-[470px] p-1">
-                        <div className='overflow-y-auto scrollbar-hide'>
-                            {movies.map(movie => (
-                                <div 
-                                    key={movie.id} 
-                                    className={`
-                                        flex items-center w-[230px] h-[35px] mb-[1px] cursor-pointer
-                                        ${selectedMovie && selectedMovie.id === movie.id 
-                                            ? 'bg-[#333] border-[2px] border-[#5c5c5c] text-[#fff]' 
-                                            : ''}
-                                    `}
-                                    onClick={() => handleMovieClick(movie)}
-                                >
-                                    <img src="img/15year.svg" alt="15year" className="mr-[6px]" />
-                                    <div className="font-bold text-[13px] pr-[5px]">
-                                        {movie.title}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+
+            <div className='flex justify-center'>
+                <div className='flex w-[160px] h-[300px] mr-1 mt-[2px]'>
+                    <img src="img/sideAd.jpg" alt="sideAd" />
                 </div>
-                <div id="theater" className='flex flex-col items-center bg-[#f2f0e5] w-[284px] border-r-[2px] border-[#d4d3c9]'>
-                    <div className='flex justify-center items-center bg-[#333333] w-[265px] h-[33px] text-[#fff] text-[16px] font-[500] m-[2px]'>극장</div>
-                    <div className='flex w-[244px] justify-center p-[4px_3px_0px_3px]'>
-                        <div className='flex justify-center w-[58px] text-[#333] text-[13px] mt-[10px] border-[2px] border-[#666666] p-[3px]'>전체</div>
-                        <div className='flex justify-center w-[90px] text-[#333] text-[13px] mt-[10px] border-y-[2px] border-[#666666] p-[3px]'>아트하우스<IoIosArrowDown className='flex items-center mt-[3px] ml-1' /></div>
-                        <div className='flex justify-center w-[88px] text-[#333] text-[13px] mt-[10px] border-[2px] border-[#666666] p-[3px]'>특별관<IoIosArrowDown className='flex items-center mt-[3px] ml-1' /></div>
-                    </div>
-                    <div className='flex mt-[10px] h-[490px]'>
-                        <div id="leftContent" className='flex w-[110px]'>
-                            <ul>
-                                {regions.map((region) => (
-                                    <ListItem 
-                                        key={region.region} 
-                                        item={region.region.replace('지역', '')}
-                                        count={region.theaters.length}
-                                        justify="justify-end" 
-                                        onClick={() => {
-                                            console.log("Clicked Region:", region.region);
-                                            setActiveRegion(activeRegion === region.region ? null : region.region);
-                                        }}
-                                        customClass={`
-                                            bg-[#e6e4d9] text-[12px]
-                                            ${activeRegion === region.region 
-                                                ? 'bg-transparent bg-[url("./images/theaterAreaListItemSelected.png")] bg-right bg-no-repeat font-bold' 
+                <div id="contents" className='flex bg-[#d4d3c9] w-[996px] h-[600px]'>
+                    <div id="movie" className='flex flex-col items-center bg-[#f2f0e5] w-[284px] border-x-[2px] border-[#d4d3c9]'>
+                        <div className='flex justify-center items-center bg-[#333333] w-[284px] h-[33px] text-[#fff] text-[16px] font-[500] m-[2px]'>영화</div>
+                        <div className='flex w-[244px] justify-center p-[4px_3px_0px_3px]'>
+                            <div className='flex justify-center w-[58px] text-[#333] text-[13px] mt-[10px] border-[2px] border-[#666666] p-[3px]'>전체</div>
+                            <div className='flex justify-center w-[90px] text-[#333] text-[13px] mt-[10px] border-y-[2px] border-[#666666] p-[3px]'>아트하우스<IoIosArrowDown className='flex items-center mt-[3px] ml-1' /></div>
+                            <div className='flex justify-center w-[88px] text-[#333] text-[13px] mt-[10px] border-[2px] border-[#666666] p-[3px]'>특별관<IoIosArrowDown className='flex items-center mt-[3px] ml-1' /></div>
+                        </div>
+                        <div className='flex w-[235px] mt-[2px] border-b-[0.6px] border-[#d4d3c9] relative'>
+                            <div className={`absolute inset-x-0 bottom-0 h-[2px] bg-[#d4d3c9] z-0`} />
+                            <div
+                                className={`flex justify-center items-center w-[60px] h-[32px] text-[13px] text-[#333] relative z-10 ${activeSort === '예매율순' ? 'bg-[url("./images/sortmenuBtnOn.png")] bg-[50%_100%] bg-no-repeat' : ''}`}
+                                onClick={() => handleSortChange('예매율순')}
+                            >
+                                예매율순
+                            </div>
+                            <div
+                                className={`flex justify-center items-center w-[60px] h-[32px] text-[13px] text-[#333] relative z-10 ${activeSort === '가나다순' ? 'bg-[url("./images/sortmenuBtnOn.png")] bg-[50%_100%] bg-no-repeat' : ''}`}
+                                onClick={() => handleSortChange('가나다순')}
+                            >
+                                가나다순
+                            </div>
+                        </div>
+                        <div className="flex flex-col w-[240px] h-[470px] p-1">
+                            <div className='overflow-y-auto scrollbar-hide'>
+                                {movies.map(movie => (
+                                    <div 
+                                        key={movie.id} 
+                                        className={`
+                                            flex items-center w-[230px] h-[35px] mb-[1px] cursor-pointer
+                                            ${selectedMovie && selectedMovie.id === movie.id 
+                                                ? 'bg-[#333] border-[2px] border-[#5c5c5c] text-[#fff]' 
                                                 : ''}
                                         `}
-                                    />
+                                        onClick={() => handleMovieClick(movie)}
+                                    >
+                                        <img src="img/15year.svg" alt="15year" className="mr-[6px]" />
+                                        <div className="font-bold text-[13px] pr-[5px]">
+                                            {movie.title}
+                                        </div>
+                                    </div>
                                 ))}
-                            </ul>
+                            </div>
                         </div>
-                        <div id="rightContent" className='flex flex-col w-[114px] overflow-scroll scrollbar-hide'>
-                            <div>
+                    </div>
+                    <div id="theater" className='flex flex-col items-center bg-[#f2f0e5] w-[284px] border-r-[2px] border-[#d4d3c9]'>
+                        <div className='flex justify-center items-center bg-[#333333] w-[265px] h-[33px] text-[#fff] text-[16px] font-[500] m-[2px]'>극장</div>
+                        <div className='flex w-[244px] justify-center p-[4px_3px_0px_3px]'>
+                            <div className='flex justify-center w-[58px] text-[#333] text-[13px] mt-[10px] border-[2px] border-[#666666] p-[3px]'>전체</div>
+                            <div className='flex justify-center w-[90px] text-[#333] text-[13px] mt-[10px] border-y-[2px] border-[#666666] p-[3px]'>아트하우스<IoIosArrowDown className='flex items-center mt-[3px] ml-1' /></div>
+                            <div className='flex justify-center w-[88px] text-[#333] text-[13px] mt-[10px] border-[2px] border-[#666666] p-[3px]'>특별관<IoIosArrowDown className='flex items-center mt-[3px] ml-1' /></div>
+                        </div>
+                        <div className='flex mt-[10px] h-[490px]'>
+                            <div id="leftContent" className='flex w-[110px]'>
                                 <ul>
-                                    {activeRegion && regions.find(r => r.region === activeRegion)?.theaters.map((theater) => (
+                                    {regions.map((region) => (
                                         <ListItem 
-                                            key={theater} 
-                                            item={theater} 
-                                            justify="justify-start" 
+                                            key={region.region} 
+                                            item={region.region.replace('지역', '')}
+                                            count={region.theaters.length}
+                                            justify="justify-end" 
+                                            onClick={() => {
+                                                console.log("Clicked Region:", region.region);
+                                                setActiveRegion(activeRegion === region.region ? null : region.region);
+                                            }}
                                             customClass={`
-                                                ml-1 text-[13px] font-bold px-[7px]
-                                                ${selectedTheater === theater 
-                                                    ? 'bg-[#333] border-[2px] border-[#5c5c5c] text-[#fff]' 
+                                                bg-[#e6e4d9] text-[12px]
+                                                ${activeRegion === region.region 
+                                                    ? 'bg-transparent bg-[url("./images/theaterAreaListItemSelected.png")] bg-right bg-no-repeat font-bold' 
                                                     : ''}
                                             `}
-                                            onClick={() => handleTheaterClick(theater)}
                                         />
                                     ))}
                                 </ul>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="day" className='flex flex-col items-center bg-[#f2f0e5] w-[284px] border-r-[2px] border-[#d4d3c9]'>
-                    <div className='flex justify-center items-center bg-[#333333] w-[91px] h-[33px] text-[#fff] text-[16px] font-[500] m-[2px]'>날짜</div>
-                    <div className='flex justify-center overflow-y-auto scrollbar-hide w-[91px] h-[530px] mt-[20px]'>
-                        <ul className='flex flex-col'>
-                            {Object.entries(groupedDates).map(([monthYear, days], index) => {
-                                const [year, month] = monthYear.split('-').map(Number);
-
-                                return (
-                                    <li key={index} className='flex flex-col items-center mb-3'>
-                                        <div className="font-bold text-[11px] text-[#666] mt-[12px]">{year}</div>
-                                        <div className="font-bold text-[30px] text-[#666] mt-[3px]">{month}</div>
-                                        {days.map(({ day, dayOfWeek }, dayIndex) => {
-                                            const isToday = day === todayDay && month === todayMonth && year === todayYear;
-                                            const isSelected = selectedDate === `${year}.${String(month).padStart(2, '0')}.${String(day).padStart(2, '0')}(${dayOfWeek})`;
-
-                                            return (
-                                                <div
-                                                    key={dayIndex}
-                                                    onClick={() => handleDateSelect(day, dayOfWeek, monthYear)}
-                                                    className={`
-                                                        flex items-center w-fit mb-[1px] cursor-pointer
-                                                        ${isToday ? 'bg-[url("./images/dateListItemToday.png")] bg-no-repeat bg-[0px_12px] pl-[7px]' : ''}
-                                                        ${isSelected ? 'bg-[#333] border-[2px] border-[#5c5c5c] w-[58px] h-[32px] m-[1px] pl-[6px] pr-[5px] text-[#fff]' : 'h-[35px]'}
-                                                        ${dayOfWeek === '토' ? 'text-[#31597c]' : dayOfWeek === '일' ? 'text-[#ad2727]' : 'text-[#333]'}
-                                                        font-bold text-[13px]
-                                                    `}
-                                                >
-                                                    <div>{dayOfWeek}</div>
-                                                    <div className="ml-2 text-sm">{day}</div>
-                                                </div>
-                                            );
-                                        })}
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    </div>
-                </div>
-                
-                <div id="time" className='flex flex-col items-center w-[346px] bg-[#f2f0e5]'>
-                    <div className='flex justify-center items-center bg-[#333333] w-[346px] h-[33px] text-[#fff] text-[16px] font-[500] m-[2px]'>시간</div>
-                    <div className='flex flex-col w-[306px] mt-[18px] border-b-[2px] border-[#cfcdc3]'>
-                        <div className='flex justify-between w-[95px] h-[22px]'>
-                            <div className='flex items-center bg-[url("./images/iconMN.png")] bg-[1px_1px] bg-no-repeat h-[14px] pl-[20px]'>
-                                <div className='flex text-[13px]'>모닝</div>
-                            </div>
-                            <div className='flex items-center bg-[url("./images/iconMN.png")] bg-[1px_-20px] bg-no-repeat h-[14px] pl-[20px]'>
-                                <div className='flex text-[13px]'>심야</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="select">
-                        {selectedMovie && selectedTheater && selectedDate ? (
-                            <div className='flex flex-col justify-start w-[300px] mt-[16px]'>
-                                <div className='flex'>
-                                    <div className='flex text-[#b54d15] text-[12px] font-bold mr-[5px]'>{selectedMovie.screen}</div>
-                                    <div className='flex text-[#333] text-[12px] font-bold mr-[5px]'>{selectedMovie.floor}</div>
-                                    <div className='flex text-[12px] text-[#666]'>총{selectedMovie.seatSum}석</div>
+                            <div id="rightContent" className='flex flex-col w-[114px] overflow-scroll scrollbar-hide'>
+                                <div>
+                                    <ul>
+                                        {activeRegion && regions.find(r => r.region === activeRegion)?.theaters.map((theater) => (
+                                            <ListItem 
+                                                key={theater} 
+                                                item={theater} 
+                                                justify="justify-start" 
+                                                customClass={`
+                                                    ml-1 text-[13px] font-bold px-[7px]
+                                                    ${selectedTheater === theater 
+                                                        ? 'bg-[#333] border-[2px] border-[#5c5c5c] text-[#fff]' 
+                                                        : ''}
+                                                `}
+                                                onClick={() => handleTheaterClick(theater)}
+                                            />
+                                        ))}
+                                    </ul>
                                 </div>
-                                <div className='flex mt-[10px] mb-[6px]'>
-                                    <div 
-                                        className={`flex border-[2px] border-[#d6d3ce] text-[14px] font-semibold py-[2px] px-[5px] mr-[5px] justify-center items-center ${selectedTime === selectedMovie.time ? 'border-[#000] bg-[#333] text-[#fff]' : ''}`}
-                                        onClick={() => setSelectedTime(selectedMovie.time)} // 클릭 시 선택된 시간 상태 업데이트
-                                    >
-                                        {selectedMovie.time}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="day" className='flex flex-col items-center bg-[#f2f0e5] w-[284px] border-r-[2px] border-[#d4d3c9]'>
+                        <div className='flex justify-center items-center bg-[#333333] w-[91px] h-[33px] text-[#fff] text-[16px] font-[500] m-[2px]'>날짜</div>
+                        <div className='flex justify-center overflow-y-auto scrollbar-hide w-[91px] h-[530px] mt-[20px]'>
+                            <ul className='flex flex-col'>
+                                {Object.entries(groupedDates).map(([monthYear, days], index) => {
+                                    const [year, month] = monthYear.split('-').map(Number);
+
+                                    return (
+                                        <li key={index} className='flex flex-col items-center mb-3'>
+                                            <div className="font-bold text-[11px] text-[#666] mt-[12px]">{year}</div>
+                                            <div className="font-bold text-[30px] text-[#666] mt-[3px]">{month}</div>
+                                            {days.map(({ day, dayOfWeek }, dayIndex) => {
+                                                const isToday = day === todayDay && month === todayMonth && year === todayYear;
+                                                const isSelected = selectedDate === `${year}.${String(month).padStart(2, '0')}.${String(day).padStart(2, '0')}(${dayOfWeek})`;
+
+                                                return (
+                                                    <div
+                                                        key={dayIndex}
+                                                        onClick={() => handleDateSelect(day, dayOfWeek, monthYear)}
+                                                        className={`
+                                                            flex items-center w-fit mb-[1px] cursor-pointer
+                                                            ${isToday ? 'bg-[url("./images/dateListItemToday.png")] bg-no-repeat bg-[0px_12px] pl-[7px]' : ''}
+                                                            ${isSelected ? 'bg-[#333] border-[2px] border-[#5c5c5c] w-[58px] h-[32px] m-[1px] pl-[6px] pr-[5px] text-[#fff]' : 'h-[35px]'}
+                                                            ${dayOfWeek === '토' ? 'text-[#31597c]' : dayOfWeek === '일' ? 'text-[#ad2727]' : 'text-[#333]'}
+                                                            font-bold text-[13px]
+                                                        `}
+                                                    >
+                                                        <div>{dayOfWeek}</div>
+                                                        <div className="ml-2 text-sm">{day}</div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div id="time" className='flex flex-col items-center w-[346px] bg-[#f2f0e5]'>
+                        <div className='flex justify-center items-center bg-[#333333] w-[346px] h-[33px] text-[#fff] text-[16px] font-[500] m-[2px]'>시간</div>
+                        <div className='flex flex-col w-[306px] mt-[18px] border-b-[2px] border-[#cfcdc3]'>
+                            <div className='flex justify-between w-[95px] h-[22px]'>
+                                <div className='flex items-center bg-[url("./images/iconMN.png")] bg-[1px_1px] bg-no-repeat h-[14px] pl-[20px]'>
+                                    <div className='flex text-[13px]'>모닝</div>
+                                </div>
+                                <div className='flex items-center bg-[url("./images/iconMN.png")] bg-[1px_-20px] bg-no-repeat h-[14px] pl-[20px]'>
+                                    <div className='flex text-[13px]'>심야</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="select">
+                            {selectedMovie && selectedTheater && selectedDate ? (
+                                <div className='flex flex-col justify-start w-[300px] mt-[16px]'>
+                                    <div className='flex'>
+                                        <div className='flex text-[#b54d15] text-[12px] font-bold mr-[5px]'>{selectedMovie.screen}</div>
+                                        <div className='flex text-[#333] text-[12px] font-bold mr-[5px]'>{selectedMovie.floor}</div>
+                                        <div className='flex text-[12px] text-[#666]'>총{selectedMovie.seatSum}석</div>
                                     </div>
-                                    <div className='flex text-[12px] text-[#3d7c35] items-center'>{selectedMovie.seatCount}석</div>
+                                    <div className='flex mt-[10px] mb-[6px]'>
+                                        <div 
+                                            className={`flex border-[2px] border-[#d6d3ce] text-[14px] font-semibold py-[2px] px-[5px] mr-[5px] justify-center items-center ${selectedTime === selectedMovie.time ? 'border-[#000] bg-[#333] text-[#fff]' : ''}`}
+                                            onClick={() => setSelectedTime(selectedMovie.time)} // 클릭 시 선택된 시간 상태 업데이트
+                                        >
+                                            {selectedMovie.time}
+                                        </div>
+                                        <div className='flex text-[12px] text-[#3d7c35] items-center'>{selectedMovie.seatCount}석</div>
+                                    </div>
                                 </div>
-                            </div>
-                        ) : (
-                            <div id="noSelect" className='flex items-center justify-center h-[416px] text-[#666] text-[13px]'>영화,극장,날짜를 선택해주세요.</div>
-                        )}
+                            ) : (
+                                <div id="noSelect" className='flex items-center justify-center h-[416px] text-[#666] text-[13px]'>영화,극장,날짜를 선택해주세요.</div>
+                            )}
+                        </div>
                     </div>
                 </div>
-            </div>
+                <div className='flex w-[160px] h-[300px] ml-1 mt-[2px]'>
+                    <img src="img/sideAd.jpg" alt="sideAd" />
+                </div>
+            </div>            
             <div id="bottom" className='flex w-full bg-[#1d1d1c] h-[129px] justify-center items-center'>
                 <div className='flex w-[996px] justify-between'>
                     <div className='flex items-center'>

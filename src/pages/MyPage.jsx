@@ -2,9 +2,9 @@ import React from 'react'
 
 function MyPage() {
     return (
-        <div className="relative h-[600px]">
-            <div className="flex items-center justify-center">
-                <div className='flex flex-col bg-[#FFF] w-[980px] h-[450px] left-[25%] top-[80px] absolute border-white-4 rounded-xl shadow-2xl'>
+        <div className="relative h-max-fit">
+            <div className="flex items-center justify-center h-[600px]">
+                <div className='flex flex-col bg-[#FFF] w-[980px] h-[450px] border-white-4 rounded-xl shadow-2xl'>
                     <div className='flex justify-between'>
                         <div className='flex justify-center items-center border-collapse rounded-xl bg-[#AFAFAF] w-[60px] p-3 text-[13px] text-[#ffffff] h-5 m-7'>일반</div>
                         <div className='flex justify-end text-[13px] font-[600] m-7'>편집</div>

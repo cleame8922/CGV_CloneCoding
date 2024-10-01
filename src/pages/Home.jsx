@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 
 export default function Home() {
@@ -6,16 +6,10 @@ export default function Home() {
     const [hoveredItem, setHoveredItem] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [hoveredIndex, setHoveredIndex] = useState(null);
-
-    const handleMouseEnter = (image, index) => {
-        setSelectedImage(image);
-        setHoveredItem(index);
-    };
-
-    const handleMouseLeave = () => {
-        setHoveredItem(null);
-    };
-
+    const videoRef = useRef(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [isMuted, setIsMuted] = useState(true);
+    
     const [movies] = useState(() => 
         Array.from({ length: 10 }, (_, index) => {
             const randomRate = (Math.random() * 100).toFixed(1); // 0~100 사이의 소수점 1자리 숫자 생성
@@ -27,42 +21,73 @@ export default function Home() {
             };
         })
     );
+    
     const moviesToShow = movies.slice(currentIndex, currentIndex + 5);
 
-    const handleNext = () => {
-        if (currentIndex < movies.length - 5) {
-            setCurrentIndex(prev => prev + 5);
+    useEffect(() => {
+        // 컴포넌트가 마운트될 때 비디오를 초기화합니다.
+        if (videoRef.current) {
+            videoRef.current.play();  // 비디오를 처음에 pause 상태로 설정
+            setIsPlaying(true);
+        }
+    }, []);
+
+    const handlePlayClick = () => {
+        if (videoRef.current) {
+            if (isPlaying) {
+                videoRef.current.pause();
+            } else {
+                videoRef.current.play();
+            }
+            setIsPlaying(!isPlaying); // 재생 상태 토글
         }
     };
 
-    const handlePrev = () => {
-        if (currentIndex > 0) {
-            setCurrentIndex(prev => prev - 5);
+    const handleMuteClick = () => {
+        if (videoRef.current) {
+            videoRef.current.muted = !videoRef.current.muted;
+            setIsMuted(videoRef.current.muted);
         }
+    };
+
+    const handleMouseEnter = (image, index) => {
+        setSelectedImage(image);
+        setHoveredItem(index);
+    };
+
+    const handleMouseLeave = () => {
+        setHoveredItem(null);
     };
 
     return (
         <div className='flex flex-col items-center'>
             <div id="video" className='flex flex-col items-center w-[100%] bg-[#000] relative'>
-                <video autoPlay loop muted className='mx-[181px]'>
+                <video 
+                    ref={videoRef} 
+                    autoPlay 
+                    loop 
+                    muted 
+                    className='mx-[181px] shadow-inner' 
+                    onEnded={() => setIsPlaying(false)} // 비디오가 끝났을 때 상태 업데이트
+                >
                     <source src="img/video.mp4" type="video/mp4" />
                 </video>
                 <div className='absolute inset-0 top-0 left-0 flex flex-col justify-center text-white bg-black bg-opacity-50'>
-                    <div className='ml-[100px] absolute left-[450px]'>
-                        <div className='font-[700] text-[40px]'>트랜스포머 ONE</div>
-                        <div className='text-[20px]'>역대급 트랜스포머</div>
-                        <div className='text-[20px]'>극장에서 확인하라!</div>
+                    <div className='ml-[100px] absolute left-[480px]'>
+                        <div className='font-[700] text-[40px]'>6시간 후 너는 죽는다</div>
+                        <div className='text-[20px]'>정재현 x 박주현 x 곽시양</div>
+                        <div className='text-[20px]'>예고된 죽음, 결말은? 10 / 16 개봉</div>
                     </div>
                 </div>
-                <div className='flex items-center absolute left-[550px] top-[370px] bg-white bg-opacity-80 rounded-[15px] p-[5px_15px] text-[14px] text-[#343434]'>
+                <div className='flex items-center absolute left-[580px] top-[370px] bg-white bg-opacity-80 rounded-[15px] p-[5px_15px] text-[14px] text-[#343434]'>
                     상세보기
                     <img src="img/arrowR.png" alt="arrow" className='flex left-[180px] top-[330px] size-3 ml-3' />
                 </div>
-                <div className='flex items-center absolute left-[665px] top-[370px]'>
-                    <img src="img/play.png" alt="play" className='size-7 border-[1px] border-[#979797] rounded-[50%] p-1' />
+                <div className='flex items-center absolute left-[700px] top-[370px]' onClick={handlePlayClick}>
+                    <img src={isPlaying ? "img/pause.png" : "img/play.png"} alt="soundToggle" className='size-7 border-[1px] border-[#979797] rounded-[50%] p-1' />
                 </div>
-                <div className='flex items-center absolute left-[700px] top-[370px]'>
-                    <img src="img/soundOff.png" alt="soundOff" className='size-7 border-[1px] border-[#979797] rounded-[50%] p-1' />
+                <div className='flex items-center absolute left-[740px] top-[370px]' onClick={handleMuteClick}>
+                    <img src={isMuted ? "img/soundOff.png" : "img/soundOn.png"} alt="soundToggle" className='size-7 border-[1px] border-[#979797] rounded-[50%] p-1' />
                 </div>
             </div>
 
