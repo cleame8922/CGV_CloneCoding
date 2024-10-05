@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { IoIosArrowDown } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
@@ -156,8 +156,8 @@ export default function Payment() {
                                                 <div className='flex w-[700px] h-[40px] border-b-[1px] border-[#d6d4ca]'>
                                                     <div className='flex items-center justify-end w-[82px] pr-[10px] text-[12px]'>카드종류</div>
                                                     <div className='flex items-center'>
-                                                        <select id="credit" className='text-[12px] text-[#666] bg-transparent border-[1px] border-[#d8d8d8]'>
-                                                            <option selected>카드를 선택하세요</option>
+                                                        <select id="credit" defaultValue="option1" className='text-[12px] text-[#666] bg-transparent border-[1px] border-[#d8d8d8]'>
+                                                            <option value="option1">카드를 선택하세요</option>
                                                             <option value="BC카드">BC카드</option>
                                                             <option value="현대카드">현대카드</option>
                                                             <option value="하나카드">하나카드</option>

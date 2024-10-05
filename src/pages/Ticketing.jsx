@@ -26,7 +26,6 @@ export default function Ticketing() {
     
         try {
             const response = await axios.get(`http://localhost:8080/ticket/${movie.movieId}`);
-            console.log(response.data); // response.data 구조 확인
     
             // 포스터 경로를 직접 설정하여 상태 업데이트
             const movieWithFullPosterPath = {
@@ -36,8 +35,6 @@ export default function Ticketing() {
     
             // 선택한 영화의 세부 정보를 상태에 저장
             setSelectedMovieDetails(movieWithFullPosterPath);
-    
-            console.log(movieWithFullPosterPath.posterPath); // 수정된 포스터 경로 확인
     
         } catch (error) {
             console.error('Error fetching movie details:', error);
@@ -173,7 +170,6 @@ export default function Ticketing() {
         try {
             const response = await axios.get(`http://localhost:8080/ticket/${selectedMovie.movieId}/${branchId}/${formattedDate}`);
             setShowTimes(response.data);
-            // console.log(response.data);
         } catch (error) {
             console.error('Error fetching showtimes:', error);
             // 에러 발생 시 사용자에게 알리기 위한 추가 로직을 여기 추가할 수 있습니다.
@@ -306,7 +302,6 @@ export default function Ticketing() {
                                             count={region.theaters.length}
                                             justify="justify-end" 
                                             onClick={() => {
-                                                console.log("Clicked Region:", region.region);
                                                 setActiveRegion(activeRegion === region.region ? null : region.region);
                                             }}
                                             customClass={`

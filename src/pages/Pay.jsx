@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from 'react'
 import { useLocation } from 'react-router-dom';
-
+import $ from 'jquery';
+// import axios from 'axios';
 
 export default function Pay() {
 
@@ -56,6 +57,51 @@ export default function Pay() {
     }, [checkedItems.one, checkedItems.two, checkedItems.three]);
 
     const isAllChecked = checkedItems.all && checkedItems.one && checkedItems.two && checkedItems.three && checkedItems.four;
+
+    // function generateMerchantUid(userId) {
+    //     return `order_${userId}_${Date.now()}`; // userId와 현재 시간을 조합하여 고유 ID 생성
+    // }
+    
+    async function handlePayment() {
+        const totalAmount = queryParams.get('totalAmount');
+        const movie = queryParams.get('movie');
+    
+        // IMP 객체가 정의되어 있는지 확인
+        if (typeof window.IMP === 'undefined') {
+            console.error("결제 라이브러리가 로드되지 않았습니다.");
+            return;
+        }
+    
+        var IMP = window.IMP;
+        IMP.init("imp56135040");
+    
+        function requestPay() {
+            IMP.request_pay(
+                {
+                    pg: "kakaopay",		// KG이니시스 pg파라미터 값
+                    pay_method: "card",		// 결제 방법
+                    merchant_uid: "1234578", // 주문번호
+                    name: movie,		// 상품 명
+                    amount: totalAmount, // 금액 (queryParams에서 가져온 값 사용)
+                    buyer_name: "홍길동",
+                },
+                function (rsp) {
+                    // rsp.imp_uid 값으로 결제 단건조회 API를 호출하여 결제결과를 판단합니다.
+                    if (rsp.success) {
+                        // 서버 검증 요청 부분
+                        console.log("결제 성공:", rsp);
+                    } else {
+                        alert("결제에 실패하였습니다. 에러 내용: " + rsp.error_msg);
+                    }
+                }
+            );
+        }
+    
+        // 결제 요청 함수 호출
+        requestPay();
+    }
+    
+    
 
     return (
         <div className='flex justify-center'>
@@ -223,14 +269,7 @@ export default function Pay() {
                             src={`${process.env.PUBLIC_URL}/img/paymentBtn.png`} 
                             alt="paymentBtn" 
                             style={{ opacity: isAllChecked ? 1 : 0.5 }} // 모든 체크박스가 선택되지 않으면 흐릿하게 표시
-                            onClick={() => {
-                                if (!isAllChecked) {
-                                alert("모든 약관에 동의해야 결제를 진행할 수 있습니다.");
-                                return;
-                                }
-                                // 결제 로직 실행
-                                console.log("결제 진행");
-                            }}
+                            onClick={handlePayment}
                             />
                         </div>
                         <div id="cancel" className='flex ml-2'>

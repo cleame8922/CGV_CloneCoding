@@ -18,9 +18,6 @@ export default function Reservation() {
     // const seat = parseInt(queryParams.get('seat'), 10);
     const navigate = useNavigate();
 
-    console.log(seat);
-    console.log(totalSeats);
-
     const rows = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
     let seatsPerRow, totalRows;
 
