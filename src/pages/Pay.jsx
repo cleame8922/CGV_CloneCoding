@@ -80,7 +80,7 @@ export default function Pay() {
                 {
                     pg: "kakaopay",		// KG이니시스 pg파라미터 값
                     pay_method: "card",		// 결제 방법
-                    merchant_uid: "1234578", // 주문번호
+                    merchant_uid: `order_${new Date().getTime()}`, // 주문번호
                     name: movie,		// 상품 명
                     amount: totalAmount, // 금액 (queryParams에서 가져온 값 사용)
                     buyer_name: "홍길동",
@@ -106,7 +106,7 @@ export default function Pay() {
     return (
         <div className='flex justify-center'>
             <div className='flex flex-col w-[986px] h-[725px] bg-[#f6f6f4] border-[5px] border-[#333] my-[30px]'>
-                <div className='flex w-[986px] h-[51px] text-[22px] font-bold text-[#f2f0e5] bg-[#333] border-[1px] border-[#707070] '>
+                <div className='flex w-full h-[51px] text-[22px] font-bold text-[#f2f0e5] bg-[#333] border-[1px] border-[#707070] '>
                     <div className='flex items-center pl-5'>예매내역 확인</div>
                 </div>
                 <div className='flex flex-col items-center'>
@@ -180,7 +180,7 @@ export default function Pay() {
                                         <td className='flex w-[90px] text-[12px] font-bold'>
                                             {paymentType === '간편결제' ? easyPaymentType : paymentType}
                                         </td>
-                                        <td className='flex w-[271px] font-bold text-[#c62424] text-[16px]'>{totalAmount}</td>
+                                        <td className='flex w-[271px] font-bold text-[#c62424] text-[16px]'>{totalAmount}원</td>
                                     </tr>
                                     </tbody>
                                 </table>
