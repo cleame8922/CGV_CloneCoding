@@ -1,10 +1,7 @@
 <div>
   <h2>남은 개발</h2>
   <ol>
-    <li>HOME 영화부분</li>
-    <li>MovieDetail</li>
-    <li>Movie</li>
-    <li>Ticketing</li>
-    <li>Login</li>
+    <li>Ticketing에서 booking 부분</li>
+    <li>결제하기 백 연결</li>
   </ol>
 </div>
