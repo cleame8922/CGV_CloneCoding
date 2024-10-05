@@ -20,6 +20,7 @@ export default function Payment() {
     const floor = queryParams.get('floor');
     const poster = queryParams.get('poster');
     const people = queryParams.get('people');
+    const screen = queryParams.get('screen');
     const seats = queryParams.get('seats');
     const seatTypeInfo = queryParams.get('seatTypeInfo');
     const totalAmount = queryParams.get('totalAmount');
@@ -34,6 +35,41 @@ export default function Payment() {
     
     const handleEasyPaymentChange = (e) => {
         setSelectedEasyPayment(e.target.id); // 추가된 핸들러
+    };
+
+    const paymentTypeMap = {
+        credit: '신용카드',
+        phone: '휴대폰 결제',
+        easy: '간편결제',
+        my: '내통장 결제',
+        toss: '토스',
+        // 필요에 따라 더 많은 매핑을 추가할 수 있습니다.
+    };
+
+    const easyPaymentTypeMap = {
+        kakao: '카카오페이',
+        naver: '네이버페이',
+        ssg: "SSG페이",
+        payco: '페이코',
+        smile: '스마일페이',
+    };
+
+    const handlePaymentSubmit = () => {
+        // 현재 URL의 모든 파라미터를 가져옵니다.
+        const currentParams = new URLSearchParams(location.search);
+        
+        // paymentType을 사용자 친화적인 이름으로 설정합니다.
+        const paymentTypeName = paymentTypeMap[selectedPayment] || selectedPayment;
+        currentParams.set('paymentType', paymentTypeName);
+    
+        // 간편 결제인 경우 easyPaymentType도 설정합니다.
+        if (selectedPayment === 'easy') {
+            const easyPaymentName = easyPaymentTypeMap[selectedEasyPayment] || selectedEasyPayment;
+            currentParams.set('easyPaymentType', easyPaymentName);
+        }
+        
+        // 수정된 파라미터로 새로운 URL을 생성하고 이동합니다.
+        navigate(`/pay?${currentParams.toString()}`);
     };
     
     return (
@@ -417,7 +453,10 @@ export default function Payment() {
                             </div>
                         </div>
                     </div>
-                    <div className='flex relative w-[250px] h-[106px] mr-[5px] bg-[url("./images/tnbButtons.png")] bg-[0px_-550px] bg-no-repeat'></div>
+                    <div 
+                        className='flex relative w-[250px] h-[106px] mr-[5px] bg-[url("./images/tnbButtons.png")] bg-[0px_-550px] bg-no-repeat cursor-pointer'
+                        onClick={handlePaymentSubmit}
+                    ></div>
                 </div>
             </div>
         </div>

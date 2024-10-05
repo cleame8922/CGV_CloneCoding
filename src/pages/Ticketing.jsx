@@ -1,22 +1,51 @@
 import React, { useState, useEffect } from 'react';
 import { IoIosArrowDown } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function Ticketing() {
-    const movies = Array.from({ length: 14 }, (_, index) => {
-        const randomRate = (Math.random() * 100).toFixed(1); // 0~100 사이의 소수점 1자리 숫자 생성
-        return {
-            id: index,
-            title: `베테랑2`,
-            poster: 'img/moviePoster.jpg',
-            reservationRate: `예매율: ${randomRate}%`,
-            time: `13:00`,
-            floor: `1관 2층`,
-            seatCount: `93`,
-            seatSum: `100`,
-            screen: `2D`,
+
+    const [movies, setMovies] = useState([]);
+    const [selectedMovieDetails, setSelectedMovieDetails] = useState(null);
+
+    useEffect(() => {
+        const fetchMovies = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/ticket');
+                setMovies(response.data);
+            } catch (error) {
+                console.error('Error fetching movies:', error);
+            }
         };
-    });
+
+        fetchMovies();
+    }, []);
+
+    const handleMovieClick = async (movie) => {
+        setSelectedMovie(movie); // 선택한 영화 설정
+    
+        try {
+            const response = await axios.get(`http://localhost:8080/ticket/${movie.movieId}`);
+            console.log(response.data); // response.data 구조 확인
+    
+            // 포스터 경로를 직접 설정하여 상태 업데이트
+            const movieWithFullPosterPath = {
+                ...response.data,
+                posterPath: `${BASE_IMAGE_URL}${response.data.posterPath}`,
+            };
+    
+            // 선택한 영화의 세부 정보를 상태에 저장
+            setSelectedMovieDetails(movieWithFullPosterPath);
+    
+            console.log(movieWithFullPosterPath.posterPath); // 수정된 포스터 경로 확인
+    
+        } catch (error) {
+            console.error('Error fetching movie details:', error);
+            // 에러 처리 로직 추가
+        }
+    };
+
+    const BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
     const ListItem = ({ item, count, justify, onClick, customClass }) => (
         <li
@@ -29,11 +58,13 @@ export default function Ticketing() {
     
     const [activeSort, setActiveSort] = useState('예매율순');
     const [regions, setRegions] = useState([]);
+    const [showTimes, setShowTimes] = useState([]);
     const [activeRegion, setActiveRegion] = useState('서울');
     const [selectedMovie, setSelectedMovie] = useState(null);
     const [selectedTheater, setSelectedTheater] = useState(null);
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTime, setSelectedTime] = useState(null);
+    const [availableDates, setAvailableDates] = useState([]);
     const navigate = useNavigate();
     const today = new Date(); // 현재 날짜
     const todayDay = today.getDate(); // 현재 일
@@ -60,57 +91,123 @@ export default function Ticketing() {
         fetchTheaters();
     }, []);
     
-    const handleReservationClick =() =>{
-        if(selectedMovie && selectedTheater && selectedDate && selectedTime) {
-        const queryParams = new URLSearchParams({
-        movie:selectedMovie.title,
-        theater: selectedTheater,
-        date: selectedDate,
-        time: selectedTime,
-        floor: selectedMovie.floor,
-        poster : selectedMovie.poster,
-        seat: selectedMovie.seatSum,
-        seatCount: selectedMovie.seatCount
-        }).toString();
-        
-        navigate(`/reservation?${queryParams}`);
+    const handleReservationClick = () => {
+        if (selectedMovieDetails && selectedTheater && selectedDate && selectedTime) {
+            const queryParams = new URLSearchParams({
+                movie: selectedMovieDetails.title, // 영화 제목
+                theater: selectedTheater, // 선택한 극장
+                date: selectedDate, // 선택한 날짜
+                time: selectedTime, // 선택한 시간
+                floor: selectedShowtime.branch, // 영화관 층수
+                screen: selectedShowtime.theaterNum,
+                poster: selectedMovieDetails.posterPath, // 포스터 경로
+                seat: selectedShowtime.totalSeats, // 총 좌석 수
+                seatCount: selectedShowtime.remainSeats, // 남은 좌석 수
+            }).toString();
+            
+            navigate(`/reservation?${queryParams}`);
+        } else {
+            console.error('모든 필드를 선택해 주세요.'); // 선택되지 않은 필드가 있는 경우 에러 처리
         }
-        }; 
+    };    
 
     const handleSortChange = (sortType) => {
         setActiveSort(sortType);
     };
-
-    const handleMovieClick = (movie) => {
-        setSelectedMovie(movie); 
-    };
-
-    const handleTheaterClick = (theater) => {
+    
+    const handleTheaterClick = async (theater) => {
         setSelectedTheater(theater);
+    
+        // 지점 ID 설정
+        let branchId;
+        if (theater === '강남') {
+            branchId = 1;
+        } else if (theater === '강변') {
+            branchId = 2;
+        } else {
+            branchId = null; // 다른 지점 처리
+        }
+    
+        // 영화 선택 여부 및 branchId 확인 후 시간 정보 요청
+        if (selectedMovie && branchId) {
+            try {
+                const response = await axios.get(`http://localhost:8080/ticket/${selectedMovie.movieId}/${branchId}`);
+                setShowTimes(response.data); // 시간 정보 설정
+            } catch (error) {
+                console.error('Error fetching showtimes:', error);
+            }
+        }
     };
+    
 
-    const handleDateSelect = (day, dayOfWeek, monthYear) => {
+    const handleDateSelect = async (day, dayOfWeek, monthYear) => {
+        if (!monthYear) {
+            console.error("monthYear is undefined");
+            return;
+        }
+
         const [year, month] = monthYear.split('-');
-        const formattedDate = `${year}.${String(month).padStart(2, '0')}.${String(day).padStart(2, '0')}(${dayOfWeek})`;
-        setSelectedDate(formattedDate);
+        const formattedDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`; // yyyy-mm-dd 형식으로 변환
+
+        setSelectedDate(formattedDate); // 선택된 날짜 업데이트
+
+        if (!selectedMovie || !selectedTheater) {
+            console.error('Selected movie or theater is undefined');
+            return; // 영화나 극장이 선택되지 않았을 경우 처리
+        }
+
+        let branchId = null; // 기본값 설정
+        switch (selectedTheater) {
+            case '강남':
+                branchId = 1;
+                break;
+            case '강변':
+                branchId = 2;
+                break;
+            default:
+                console.warn(`Unexpected theater selected: ${selectedTheater}`);
+                return; // 다른 극장이 선택되면 함수를 종료
+        }
+
+        // API 호출
+        try {
+            const response = await axios.get(`http://localhost:8080/ticket/${selectedMovie.movieId}/${branchId}/${formattedDate}`);
+            setShowTimes(response.data);
+            // console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching showtimes:', error);
+            // 에러 발생 시 사용자에게 알리기 위한 추가 로직을 여기 추가할 수 있습니다.
+        }
+    };
+    const [selectedShowtime, setSelectedShowtime] = useState(null);
+
+    const handleShowtimeClick = (showtime) => {
+        setSelectedTime(showtime.startTime);
+        setSelectedShowtime(showtime);
     };
 
-    const generateDates = () => {
+    const generateDates = (releaseDate) => {
         const today = new Date();
+        const release = new Date(releaseDate);
+        const startDate = today; // 현재 날짜부터 시작
         const dates = [];
-        const dayNames = ['일', '월', '화', '수', '목', '금', '토']; // 요일 배열
+        const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
         for (let i = 0; i < 50; i++) {
-            const date = new Date(today);
-            date.setDate(today.getDate() + i);
+            const date = new Date(startDate);
+            date.setDate(startDate.getDate() + i);
             const year = date.getFullYear();
-            const month = date.getMonth() + 1; // 월은 0부터 시작하므로 1을 더함
+            const month = date.getMonth() + 1;
             const day = date.getDate();
-            const dayOfWeek = dayNames[date.getDay()]; // 요일
+            const dayOfWeek = dayNames[date.getDay()];
             dates.push({ year, month, day, dayOfWeek });
         }
         return dates;
     };
-
+    
+    useEffect(() => {
+        const dates = generateDates(selectedMovie ? selectedMovie.releaseDate : null);
+        setAvailableDates(dates);
+    }, [selectedMovie]);
     const dates = generateDates();
 
     // 월별로 그룹화한 날짜 데이터 생성
@@ -168,16 +265,22 @@ export default function Ticketing() {
                             <div className='overflow-y-auto scrollbar-hide'>
                                 {movies.map(movie => (
                                     <div 
-                                        key={movie.id} 
+                                        key={movie.movieId} 
                                         className={`
                                             flex items-center w-[230px] h-[35px] mb-[1px] cursor-pointer
-                                            ${selectedMovie && selectedMovie.id === movie.id 
+                                            ${selectedMovie && selectedMovie.movieId === movie.movieId 
                                                 ? 'bg-[#333] border-[2px] border-[#5c5c5c] text-[#fff]' 
                                                 : ''}
                                         `}
                                         onClick={() => handleMovieClick(movie)}
                                     >
-                                        <img src="img/15year.svg" alt="15year" className="mr-[6px]" />
+                                        <img 
+                                            src={movie.age === 'ALL' 
+                                                ? `${process.env.PUBLIC_URL}/img/all.svg` 
+                                                : `${process.env.PUBLIC_URL}/img/${movie.age}years.svg`} 
+                                            alt={`${movie.age} rating`} 
+                                            className="mr-[6px] size-[20px]" 
+                                        />
                                         <div className="font-bold text-[13px] pr-[5px]">
                                             {movie.title}
                                         </div>
@@ -243,37 +346,58 @@ export default function Ticketing() {
                         <div className='flex justify-center items-center bg-[#333333] w-[91px] h-[33px] text-[#fff] text-[16px] font-[500] m-[2px]'>날짜</div>
                         <div className='flex justify-center overflow-y-auto scrollbar-hide w-[91px] h-[530px] mt-[20px]'>
                             <ul className='flex flex-col'>
-                                {Object.entries(groupedDates).map(([monthYear, days], index) => {
-                                    const [year, month] = monthYear.split('-').map(Number);
+                                {availableDates.length > 0 ? (
+                                    Object.entries(
+                                        availableDates.reduce((acc, { year, month, day, dayOfWeek }) => {
+                                            const monthYearKey = `${year}-${month < 10 ? '0' : ''}${month}`;
+                                            if (!acc[monthYearKey]) {
+                                                acc[monthYearKey] = [];
+                                            }
+                                            acc[monthYearKey].push({ day, dayOfWeek });
+                                            return acc;
+                                        }, {})
+                                    ).map(([monthYear, days], index) => {
+                                        const [year, month] = monthYear.split('-').map(Number);
 
-                                    return (
-                                        <li key={index} className='flex flex-col items-center mb-3'>
-                                            <div className="font-bold text-[11px] text-[#666] mt-[12px]">{year}</div>
-                                            <div className="font-bold text-[30px] text-[#666] mt-[3px]">{month}</div>
-                                            {days.map(({ day, dayOfWeek }, dayIndex) => {
-                                                const isToday = day === todayDay && month === todayMonth && year === todayYear;
-                                                const isSelected = selectedDate === `${year}.${String(month).padStart(2, '0')}.${String(day).padStart(2, '0')}(${dayOfWeek})`;
+                                        return (
+                                            <li key={index} className='flex flex-col items-center mb-3'>
+                                                <div className="font-bold text-[11px] text-[#666] mt-[12px]">{year}</div>
+                                                <div className="font-bold text-[30px] text-[#666] mt-[3px]">{month}</div>
+                                                {days.map(({ day, dayOfWeek }, dayIndex) => {
+                                                    const currentDate = new Date();
+                                                    const releaseDate = selectedMovie ? new Date(selectedMovie.releaseDate) : null; // 영화의 releaseDate
+                                                    const isToday = day === currentDate.getDate() && month === currentDate.getMonth() + 1 && year === currentDate.getFullYear();
+                                                    const isAfterReleaseDate = releaseDate ? new Date(year, month - 1, day) >= releaseDate : true; // 선택 가능한 날짜
+                                                    const isSelected = selectedDate === `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`; // 선택된 날짜 확인
 
-                                                return (
-                                                    <div
-                                                        key={dayIndex}
-                                                        onClick={() => handleDateSelect(day, dayOfWeek, monthYear)}
-                                                        className={`
-                                                            flex items-center w-fit mb-[1px] cursor-pointer
-                                                            ${isToday ? 'bg-[url("./images/dateListItemToday.png")] bg-no-repeat bg-[0px_12px] pl-[7px]' : ''}
-                                                            ${isSelected ? 'bg-[#333] border-[2px] border-[#5c5c5c] w-[58px] h-[32px] m-[1px] pl-[6px] pr-[5px] text-[#fff]' : 'h-[35px]'}
-                                                            ${dayOfWeek === '토' ? 'text-[#31597c]' : dayOfWeek === '일' ? 'text-[#ad2727]' : 'text-[#333]'}
-                                                            font-bold text-[13px]
-                                                        `}
-                                                    >
-                                                        <div>{dayOfWeek}</div>
-                                                        <div className="ml-2 text-sm">{day}</div>
-                                                    </div>
-                                                );
-                                            })}
-                                        </li>
-                                    );
-                                })}
+                                                    return (
+                                                        <div
+                                                            key={dayIndex}
+                                                            onClick={() => {
+                                                                if (isAfterReleaseDate) {
+                                                                    handleDateSelect(day, dayOfWeek, monthYear);
+                                                                }
+                                                            }}
+                                                            className={`
+                                                                flex items-center w-fit mb-[1px] cursor-pointer
+                                                                ${isToday ? 'bg-[url("./images/dateListItemToday.png")] bg-no-repeat bg-[0px_12px] pl-[7px]' : ''}
+                                                                ${isSelected ? 'bg-[#333] border-[2px] border-[#5c5c5c] w-[65px] h-[32px] m-[1px] px-[6px] text-[#fff]' : 'h-[35px]'}
+                                                                ${isAfterReleaseDate ? '' : 'text-[#666666] opacity-25'} // 선택 불가능한 날짜 색상 및 투명도
+                                                                ${dayOfWeek === '토' ? 'text-[#31597c]' : dayOfWeek === '일' ? 'text-[#ad2727]' : 'text-[#333]'}
+                                                                font-bold text-[13px]
+                                                            `}
+                                                        >
+                                                            <div>{dayOfWeek}</div>
+                                                            <div className="ml-2 text-sm">{day}</div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </li>
+                                        );
+                                    })
+                                ) : (
+                                    <div className="mt-4 text-center text-gray-500">영화를 선택해주세요.</div>
+                                )}
                             </ul>
                         </div>
                     </div>
@@ -293,23 +417,29 @@ export default function Ticketing() {
                         <div id="select">
                             {selectedMovie && selectedTheater && selectedDate ? (
                                 <div className='flex flex-col justify-start w-[300px] mt-[16px]'>
-                                    <div className='flex'>
-                                        <div className='flex text-[#b54d15] text-[12px] font-bold mr-[5px]'>{selectedMovie.screen}</div>
-                                        <div className='flex text-[#333] text-[12px] font-bold mr-[5px]'>{selectedMovie.floor}</div>
-                                        <div className='flex text-[12px] text-[#666]'>총{selectedMovie.seatSum}석</div>
-                                    </div>
-                                    <div className='flex mt-[10px] mb-[6px]'>
-                                        <div 
-                                            className={`flex border-[2px] border-[#d6d3ce] text-[14px] font-semibold py-[2px] px-[5px] mr-[5px] justify-center items-center ${selectedTime === selectedMovie.time ? 'border-[#000] bg-[#333] text-[#fff]' : ''}`}
-                                            onClick={() => setSelectedTime(selectedMovie.time)} // 클릭 시 선택된 시간 상태 업데이트
-                                        >
-                                            {selectedMovie.time}
+                                    {showTimes.map((show, index) => (
+                                        <div key={index} className='flex flex-col mt-[10px] mb-[6px]'>
+                                            <div className='flex'>
+                                                <div className='flex text-[#b54d15] text-[12px] font-bold mr-[5px]'>{show.branch}</div>
+                                                <div className='flex text-[#333] text-[12px] font-bold mr-[5px]'>{show.theaterNum}</div>
+                                                <div className='flex text-[12px] text-[#666]'>{show.totalSeats}</div>
+                                            </div>
+                                            <div className='flex mt-[10px]'>
+                                                <div 
+                                                    className={`flex border-[2px] border-[#d6d3ce] text-[14px] font-semibold py-[2px] px-[5px] mr-[5px] justify-center items-center ${selectedTime === show.startTime ? 'border-[#000] bg-[#333] text-[#fff]' : ''}`}
+                                                    onClick={() => handleShowtimeClick(show)}
+                                                >
+                                                    {show.startTime}
+                                                </div>
+                                                <div className='flex text-[12px] text-[#3d7c35] items-center'>{show.remainSeats}</div>
+                                            </div>
                                         </div>
-                                        <div className='flex text-[12px] text-[#3d7c35] items-center'>{selectedMovie.seatCount}석</div>
-                                    </div>
+                                    ))}
                                 </div>
                             ) : (
-                                <div id="noSelect" className='flex items-center justify-center h-[416px] text-[#666] text-[13px]'>영화,극장,날짜를 선택해주세요.</div>
+                                <div id="noSelect" className='flex items-center justify-center h-[416px] text-[#666] text-[13px]'>
+                                    영화, 극장, 날짜를 선택해주세요.
+                                </div>
                             )}
                         </div>
                     </div>
@@ -322,20 +452,18 @@ export default function Ticketing() {
                 <div className='flex w-[996px] justify-between'>
                     <div className='flex items-center'>
                         <div className='flex relative h-[80px] w-[210px] pr-[2px]'>
-                            {/* 선택된 영화 포스터 및 제목 표시 영역 */}
-                            {selectedMovie ? (
+                            {selectedMovieDetails ? (
                                 <div className='flex'>
                                     <div className='flex items-center'>
-                                        <img src={selectedMovie.poster} alt="Selected Movie Poster" className='w-[70px]' />
+                                        <img src={selectedMovieDetails.posterPath} alt="Selected Movie Poster" className='w-[70px]' />
                                     </div>
-                                    <div className="ml-2 text-[#cccccc] text-[14px] font-[500]">{selectedMovie.title}</div> {/* 포스터 오른쪽에 영화 제목 표시 */}
+                                    <div className="ml-2 text-[#cccccc] text-[14px] font-[500]">{selectedMovieDetails.title}</div>
                                 </div>
                             ) : (
-                                <div className='bg-[url("./images/tnbSteps.png")] bg-[30px_25px] bg-no-repeat w-full h-full'></div> // 배경 표시 (선택된 영화 없을 때)
+                                <div className='bg-[url("./images/tnbSteps.png")] bg-[30px_25px] bg-no-repeat w-full h-full'></div>
                             )}
                         </div>
                         <div className='flex relative h-[80px] w-[210px] pr-[2px]'>
-                            {/* 선택된 극장 표시 영역 */}
                             {selectedTheater ? (
                                 <div>
                                     <div className='flex mt-[2px]'>
@@ -346,17 +474,17 @@ export default function Ticketing() {
                                         <div className='w-[50px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>일시</div>
                                         <div className='flex w-[135px] ml-4'>
                                             <div id="dayList" className='mr-1 first-line:text-[#cccccc] text-[12px] font-[700]'>
-                                                {selectedMovie && selectedTheater && selectedDate ? `${selectedDate}` : ''}
+                                                {selectedDate || ''}
                                             </div>
                                             <div className='text-[#cccccc] text-[12px] font-[700]'>
-                                            {selectedMovie && selectedTheater && selectedDate && selectedTime ? `${selectedTime}` : ''}
+                                                {selectedTime || ''}
                                             </div>
                                         </div>
                                     </div>
                                     <div className='flex mt-[2px]'>
                                         <div className='w-[50px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>상영관</div>
                                         <div id="floorList" className='w-[135px] ml-4 text-[#cccccc] text-[12px] font-[700]'>
-                                            {selectedMovie && selectedTheater && selectedDate && selectedTime ? selectedMovie.floor : ''}
+                                            {selectedShowtime ? `${selectedShowtime.branch} ${selectedShowtime.theaterNum}` : ''}
                                         </div>
                                     </div>
                                     <div className='flex mt-[2px]'>
@@ -365,7 +493,7 @@ export default function Ticketing() {
                                     </div>
                                 </div>
                             ) : (
-                                <div className='w-[210px] bg-[url("./images/tnbSteps.png")] h-[80px] bg-[30px_25px] bg-no-repeat border-l-[1px] border-[#5b5b5b]'></div> // 배경 표시 (선택된 극장이 없을 때)
+                                <div className='w-[210px] bg-[url("./images/tnbSteps.png")] h-[80px] bg-[30px_25px] bg-no-repeat border-l-[1px] border-[#5b5b5b]'></div>
                             )}
                         </div>
                         <div className='flex relative h-[80px] w-[160px] pr-[2px] bg-[url("./images/tnbSteps.png")] bg-[10px_-190px] bg-no-repeat border-l-[1px] border-[#5b5b5b]'></div>

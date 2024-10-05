@@ -12,40 +12,38 @@ export default function Reservation() {
     const floor = queryParams.get('floor');
     const poster = queryParams.get('poster');
     const seat = queryParams.get('seat');
+    const totalSeats = parseInt(seat.replace(/[^0-9]/g, ''), 10);
     const seatCount = queryParams.get('seatCount');
+    const screen = queryParams.get('screen');
+    // const seat = parseInt(queryParams.get('seat'), 10);
     const navigate = useNavigate();
 
+    console.log(seat);
+    console.log(totalSeats);
+
+    const rows = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    let seatsPerRow, totalRows;
+
+    if (totalSeats <= 80) {
+        seatsPerRow = 10; // 최대 80석인 경우, 10개씩
+        totalRows = Math.ceil(totalSeats / seatsPerRow);
+    } else if (totalSeats <= 100) {
+        seatsPerRow = 10; // 최대 100석인 경우, 10개씩
+        totalRows = Math.ceil(totalSeats / seatsPerRow);
+    } else {
+        seatsPerRow = 12; // 108석인 경우, 12개씩
+        totalRows = Math.ceil(totalSeats / seatsPerRow);
+    }
+    
     const [selectedNums, setSelectedNums] = useState({ 일반: 0, 청소년: 0, 경로: 0, 우대: 0 });
     const maxSelectable = 8;
     const totalSelected = Object.values(selectedNums).reduce((acc, num) => acc + num, 0);
     const remainingSeats = seat - seatCount;
     
-    const handleNumClick = (section, num) => {
-        if (num <= maxSelectable - totalSelected + selectedNums[section]) {
-            setSelectedNums(prev => ({
-                ...prev,
-                [section]: num,
-            }));
-        }
-    };
-
-    const blockedSeats = ['I1', 'I2', 'J8', 'J9', 'E6', 'F3', 'F4'];
-
-    const handleReset = () => {
-        setSelectedNums({ 일반: 0, 청소년: 0, 경로: 0, 우대: 0 });
-        setSelectedSeats([]);
-    };
-
-    const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-    const seatsPerRow = 10;
-
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [tempSeat, setTempSeat] = useState(null);
 
     const handleSeatClick = (seatNumber) => {
-        if (blockedSeats.includes(seatNumber)) {
-            return;
-        }
     
         const totalSelectedCount = Object.values(selectedNums).reduce((sum, num) => sum + num, 0);
         const remainingSeats = totalSelectedCount - selectedSeats.length;
@@ -69,14 +67,28 @@ export default function Reservation() {
             }
         }
     };
-    
+
+    const handleNumClick = (section, num) => {
+        if (num <= maxSelectable - totalSelected + selectedNums[section]) {
+            setSelectedNums(prev => ({
+                ...prev,
+                [section]: num,
+            }));
+        }
+    };
+
+    const handleReset = () => {
+        setSelectedNums({ 일반: 0, 청소년: 0, 경로: 0, 우대: 0 });
+        setSelectedSeats([]);
+    };
+
     const getAdjacentSeat = (seatNumber) => {
         const [row, num] = seatNumber.split(/(?<=^[A-Z])/);
         const adjacentNum = parseInt(num) + 1; // 오른쪽 좌석
         const adjacentSeat = `${row}${adjacentNum}`;
     
         // 인접 좌석이 범위 내에 있고, 차단되지 않았는지 확인
-        return adjacentNum <= seatsPerRow && !blockedSeats.includes(adjacentSeat) ? adjacentSeat : null;
+        return adjacentNum <= seatsPerRow ? adjacentSeat : null;
     };
     
     
@@ -133,40 +145,52 @@ export default function Reservation() {
         return totalSelected > 0 && selectedSeats.length === totalSelected;
     };
 
+    const isLoggedIn = () => {
+        const token = localStorage.getItem('token');
+        return !!token; // token이 존재하면 true, 그렇지 않으면 false 반환
+    };
+
     const handlePaymentClick = () => {
         if (isSelectionComplete()) {
-            const selectedSeatList = selectedSeats.join(',');
-            
-            // 좌석 유형별로 정보를 생성
-            const seatTypes = new Set(selectedSeats.map((_, index) => getSeatType(index)));
-            const seatTypeInfo = Array.from(seatTypes).join(',');
-
-            const peopleInfo = Object.entries(selectedNums)
-                .filter(([_, count]) => count > 0)
-                .map(([type, count]) => `${type} ${count}명`)
-                .join(', ');
-
-
-            const queryParams = new URLSearchParams({
-                movie,
-                theater,
-                date,
-                time,
-                floor,
-                poster,
-                seat,
-                seatCount,
-                totalSelected,
-                people: peopleInfo,
-                seats: selectedSeats.join(','),
-                selectedSeats: selectedSeatList,
-                seatTypeInfo: seatTypeInfo,
-                totalAmount: totalMoney,
-            }).toString();
+            if (isLoggedIn()) {
+                const selectedSeatList = selectedSeats.join(',');
+                
+                // 좌석 유형별로 정보를 생성
+                const seatTypes = new Set(selectedSeats.map((_, index) => getSeatType(index)));
+                const seatTypeInfo = Array.from(seatTypes).join(',');
     
-            navigate(`/payment?${queryParams}`);
+                const peopleInfo = Object.entries(selectedNums)
+                    .filter(([_, count]) => count > 0)
+                    .map(([type, count]) => `${type} ${count}명`)
+                    .join(', ');
+    
+                const queryParams = new URLSearchParams({
+                    movie,
+                    theater,
+                    date,
+                    time,
+                    floor,
+                    poster,
+                    seat,
+                    seatCount,
+                    totalSelected,
+                    screen,
+                    people: peopleInfo,
+                    seats: selectedSeats.join(','),
+                    selectedSeats: selectedSeatList,
+                    seatTypeInfo: seatTypeInfo,
+                    totalAmount: totalMoney,
+                }).toString();
+        
+                navigate(`/payment?${queryParams}`);
+            } else {
+                // 로그인되어 있지 않은 경우 alert 메시지를 띄우고 로그인 페이지로 이동
+                alert('로그인이 필요합니다. 로그인 후 다시 시도해주세요!');
+                navigate('/login', { state: { from: location.pathname + location.search } });
+            }
         }
     };
+    
 
     return (
         <div className='flex flex-col items-center'>
@@ -184,7 +208,7 @@ export default function Reservation() {
                     <div className='flex items-center justify-center bg-[#333333] w-[996px] h-[33px]'>
                         <div className='flex text-[#fff] text-[16px] font-[500]'>인원 / 좌석</div>
                     </div>
-                    <div id="reset" className='absolute top-[325px] right-[80px] w-[65px] text-[#e6e6e6] text-[12px] font-bold bg-[url("./images/refreshBtn.png")] bg-no-repeat bg-[100%_50%] h-[20px]'
+                    <div id="reset" className='absolute top-[325px] right-[470px] w-[65px] text-[#e6e6e6] text-[12px] font-bold bg-[url("./images/refreshBtn.png")] bg-no-repeat bg-[100%_50%] h-[20px]'
                     onClick={handleReset}>다시하기</div>
                     <div className='flex pt-[17px] pb-[3px] border-b-[2px] border-[#d4d3c9]'>
                         <div id="left" className='ml-[20px] pr-[18px] border-r-[1px] border-[#d4d3c9]'>
@@ -216,7 +240,7 @@ export default function Reservation() {
                                         </ul>
                                     </div>
                                 ))}
-                                <div className='absolute flex justify-end left-[990px] top-[482px]'>
+                                <div className='absolute flex justify-end left-[830px] top-[482px]'>
                                     <div className='w-fit h-[18px] text-[#fff] text-[12px] p-[0_5px] border-[1px] border-[#745447] bg-[#926f60] rounded-[3px]'>관람 할인 안내</div>
                                 </div>
                             </div>
@@ -224,13 +248,13 @@ export default function Reservation() {
                         <div id="right" className='flex flex-col ml-[20px] w-[440px]'>
                             <div className='flex justify-start'>
                                 <div className='flex pr-[10px] border-r-[1px] border-[#ccc] h-[15px] text-[12px] text-[#333]'>CGV {theater}</div>
-                                <div className='flex px-[10px] border-r-[1px] border-[#ccc] h-[15px] text-[12px] text-[#333]'>{floor}</div>
+                                <div className='flex px-[10px] border-r-[1px] border-[#ccc] h-[15px] text-[12px] text-[#333]'>{floor} {screen}</div>
                                 <div className='flex px-[10px] border-r-[1px] border-[#ccc] h-[15px] text-[12px] text-[#333]'>{seatCount}/{seat}</div>
                             </div>
                             <div className='flex justify-start pt-[5px]'>
                                 <div className='flex font-bold text-[#5a5a5a] text-[20px]'>{date} {time}</div>
                             </div>
-                            <div className='absolute flex justify-end left-[1510px] top-[482px]'>
+                            <div className='absolute flex justify-end left-[1360px] top-[482px]'>
                                 <div className='w-fit h-[18px] text-[#fff] text-[12px] p-[0_5px] border-[1px] border-[#745447] bg-[#926f60] rounded-[3px]'>상영시간 변경</div>
                             </div>
                         </div>
@@ -240,35 +264,39 @@ export default function Reservation() {
                             <div className='flex w-[650px] bg-[url("./images/screenBg.png")] bg-repeat-x h-[25px] text-[16px] text-[#333] font-bold justify-center'>SCREEN</div>
                             <div className='flex h-[350px] items-center justify-center'>
                                 <div className="flex flex-col justify-center mr-4">
-                                    {rows.map(row => (
+                                    {rows.slice(0, totalRows).map(row => (
                                         <div key={row} className="h-[20px] flex items-center justify-end text-[14px] font-bold text-[#333] mr-1">
                                             {row}
                                         </div>
                                     ))}
                                 </div>
 
-                                <div className="grid grid-cols-10">
-                                    {rows.map(row => (
+                                <div className={`grid grid-cols-${seatsPerRow}`} style={{gridTemplateColumns: `repeat(${seatsPerRow}, minmax(0, 1fr))`}}>
+                                    {rows.slice(0, totalRows).flatMap(row => 
                                         [...Array(seatsPerRow)].map((_, i) => {
                                             const seatNumber = `${row}${i + 1}`;
+                                            const seatIndex = rows.indexOf(row) * seatsPerRow + i;
+
+                                            if (seatIndex >= totalSeats) return null; // 총 좌석 수를 초과하면 렌더링하지 않음
+                                            
                                             return (
                                                 <div
                                                     key={seatNumber}
                                                     onClick={() => handleSeatClick(seatNumber)}
                                                     className={`w-[20px] h-[20px] mx-[1px] text-[12px] p-[1px] flex items-center justify-center border 
                                                         ${selectedSeats.includes(seatNumber) ? 'bg-[red] text-[#fff]' : 
-                                                        (tempSeat === seatNumber ? 'bg-[orange] text-[#fff]' :
-                                                        (blockedSeats.includes(seatNumber) ? 'bg-[#d6d3ce] text-[#fff]' : 'bg-[#666] text-[#fff]'))} 
+                                                        (tempSeat === seatNumber ? 'bg-[orange] text-[#fff]' : 'bg-[#666] text-[#fff]')} 
                                                         cursor-pointer`}>
                                                     {i + 1}
                                                 </div>
                                             );
                                         })
-                                    ))}
+                                    )}
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
                 <div className='flex w-[160px] h-[300px] ml-1'>
                     <img src="img/sideAd.jpg" alt="sideAd" />
@@ -298,14 +326,14 @@ export default function Reservation() {
                                         {date}
                                     </div>
                                     <div className='text-[#cccccc] text-[12px] font-[700]'>
-                                    {time}
+                                        {time}
                                     </div>
                                 </div>
                             </div>
                             <div className='flex mt-[2px]'>
                                 <div className='w-[50px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>상영관</div>
                                 <div id="floorList" className='w-[135px] ml-4 text-[#cccccc] text-[12px] font-[700]'>
-                                    {floor}
+                                    {floor} {screen}
                                 </div>
                             </div>
                             <div className='flex mt-[2px]'>
@@ -328,25 +356,26 @@ export default function Reservation() {
                         </div>
                     </div>
                     <div className='flex mt-[15px] pt-[10px]'>
-                        <div className='flex flex-col '>
+                        <div className='flex flex-col'>
                             {selectedSeats.length > 0 ? (
                                 <>
                                     <div className='flex'>
                                         <div className='flex w-[60px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>좌석명</div>
                                         <div className='flex w-[130px] ml-4 text-[#cccccc] text-[12px] font-[700] whitespace-nowrap overflow-hidden text-ellipsis'>
-                                        {(() => {
-                                            const seatTypes = new Set();
+                                            {(() => {
+                                                // 선택된 섹션 추가
+                                                const selectedSections = Object.keys(selectedNums).filter(section => selectedNums[section] > 0);
+                                                const sectionString = selectedSections.length > 0 ? selectedSections.join(', ') : '';
 
-                                            selectedSeats.forEach((seat, index) => {
-                                                seatTypes.add(getSeatType(index));  // 좌석 종류를 Set에 추가
-                                            });
-
-                                            return Array.from(seatTypes).join(', ');  // 중복 제거된 종류명 반환
-                                        })()}석</div>
+                                                return `${sectionString}석`;  // 선택된 섹션만 반환
+                                            })()}
+                                        </div>
                                     </div>
-                                    <div className='flex'>
+                                    <div className='flex mt-2'>
                                         <div className='flex w-[60px] pl-[10px] text-[#cccccc] text-[12px] font-[500]'>좌석번호</div>
-                                        <div className='flex w-[120px] ml-4 text-[#cccccc] text-[12px] font-[700] whitespace-nowrap overflow-hidden text-ellipsis'>{selectedSeats.join(', ')}</div>
+                                        <div className='flex w-[120px] ml-4 text-[#cccccc] text-[12px] font-[700] whitespace-nowrap overflow-hidden text-ellipsis'>
+                                            {selectedSeats.join(', ')}
+                                        </div>
                                     </div>
                                 </>
                             ) : (
@@ -385,13 +414,14 @@ export default function Reservation() {
                             <div 
                                 className={`flex relative size-[106px] mr-[5px] bg-[url("./images/tnbButtons.png")] 
                                     ${isSelectionComplete() ? 'bg-[-150px_-330px]' : 'bg-[0px_-330px]'
-                                } bg-no-repeat cursor-pointer`}
+                                    } bg-no-repeat cursor-pointer`}
                                 onClick={handlePaymentClick}
                             ></div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div className='flex w-[996px] m-[30px_0]'>
                 <img src="img/ticketingAd.jpg" alt="ticketingAd" />
             </div>

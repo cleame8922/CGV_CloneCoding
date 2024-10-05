@@ -37,7 +37,7 @@ export default function Ticketing() {
                         onClick={scrollToTop} 
                         className='size-[48px] flex justify-center p-3 fixed right-[430px] bottom-[80px] bg-[#fff] rounded-full shadow-custom-shadow border-[1px] border-[#000]'
                     >
-                        <img src="img/gotoTop.png" alt="gotoTop" />
+                        <img src={`${process.env.PUBLIC_URL}/img/gotoTop.png`} alt="gotoTop" />
                     </div>
                 </>
             )}

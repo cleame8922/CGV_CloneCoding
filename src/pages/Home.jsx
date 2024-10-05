@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
+import axios from 'axios';
 
 export default function Home() {
     const [selectedImage, setSelectedImage] = useState('img/suiteCinema.png');
@@ -10,18 +11,49 @@ export default function Home() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [isMuted, setIsMuted] = useState(true);
     
-    const [movies] = useState(() => 
-        Array.from({ length: 10 }, (_, index) => {
-            const randomRate = (Math.random() * 100).toFixed(1); // 0~100 사이의 소수점 1자리 숫자 생성
-            return {
-                id: index,
-                title: `베테랑2`,
-                poster: 'img/moviePoster.jpg',
-                reservationRate: `예매율: ${randomRate}%`,
-            };
-        })
-    );
+    const [movies, setMovies] = useState([]);
+    const [isUpcoming, setIsUpcoming] = useState(false);
+
+    useEffect(() => {
+        const fetchMovies = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/movies');
+                const moviesWithFullPosterPath = response.data.map(movie => ({
+                    ...movie,
+                    poster_path: `${BASE_IMAGE_URL}${movie.poster_path}`,
+                }));
+                setMovies(moviesWithFullPosterPath);
+            } catch (error) {
+                console.error('Failed to fetch movies:', error);
+            }
+        };
     
+        if (!isUpcoming) { // 상영예정작이 아닌 경우에만 영화차트 데이터를 가져옴
+            fetchMovies();
+        }
+    }, [isUpcoming]);
+
+    // 상영예정작 리스트 가져오기
+    const fetchUpcomingMovies = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/movies/upcoming');
+            const upcomingMoviesWithFullPosterPath = response.data.map(movie => ({
+                ...movie,
+                poster_path: `${BASE_IMAGE_URL}${movie.poster_path}`,
+            }));
+            setMovies(upcomingMoviesWithFullPosterPath);
+        } catch (error) {
+            console.error('Failed to fetch upcoming movies:', error);
+        }
+    };
+
+    // '상영예정작' 버튼 클릭 시 실행
+    const handleUpcomingClick = () => {
+        setIsUpcoming(true); // 상태를 상영예정작으로 변경
+        fetchUpcomingMovies(); // 상영예정작 데이터 가져오기
+    };
+
+    const BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
     const moviesToShow = movies.slice(currentIndex, currentIndex + 5);
 
     useEffect(() => {
@@ -97,7 +129,12 @@ export default function Home() {
                         <div id="chart" className='flex justify-between w-[248px] items-center'>
                             <div className='flex font-[700] text-[#222] text-[26px]'>무비차트</div>
                             <div className='flex border-l-[1px] border-[#d8d8d8] h-[20px]'></div>
-                            <div className='flex font-[400] text-[#666666] text-[26px]'>상영예정작</div>
+                            <div 
+                                className='flex font-[400] text-[#666666] text-[26px] cursor-pointer'
+                                onClick={handleUpcomingClick} // 상영예정작 버튼 클릭 이벤트
+                            >
+                                상영예정작
+                            </div>
                         </div>
                         <NavLink to='/movie' className='flex items-center border-[1px] bg-white bg-opacity-80 rounded-[15px] px-[13px] h-8 text-[14px] text-[#222]'>
                             전체보기
@@ -106,27 +143,52 @@ export default function Home() {
                     <div id="movieList" className='flex overflow-hidden'>
                         {moviesToShow.map((movie, index) => (
                             <div 
-                            key={movie.id} 
-                            id="movie" 
-                            className='relative flex flex-col items-center m-2'
-                            onMouseEnter={() => setHoveredIndex(index)}
-                            onMouseLeave={() => setHoveredIndex(null)}
+                                key={currentIndex + index}
+                                id="movie" 
+                                className='relative flex flex-col items-center m-2'
+                                onMouseEnter={() => setHoveredIndex(index)}
+                                onMouseLeave={() => setHoveredIndex(null)}
                             >
-                            <div className='relative mb-2'>
-                                <img src={movie.poster} alt={movie.title} className='w-[170px] h-[234px] rounded-[15px]' />
-                                <div className={`absolute inset-0 bg-black transition-opacity duration-300 rounded-[15px] ${hoveredIndex === index ? 'opacity-50' : 'opacity-0'}`}></div>
-                                
-                                <div className={`absolute px-2 italic text-[40px] text-[#fff] bg-transparent rounded bottom-0 left-2 transition-opacity duration-300 ${hoveredIndex === index ? 'opacity-0' : 'opacity-100'}`}>
-                                {currentIndex + index + 1}
+                                <div className='relative mb-2'>
+                                    <img key={movie.movie_id} src={movie.poster_path} alt={movie.title} className='w-[170px] h-[234px] rounded-[15px]' />
+                                    <div className='absolute top-[8px] right-[8px]'>
+                                        {movie.age === 'ALL' && (
+                                            <img src={`${process.env.PUBLIC_URL}/img/all.svg`} alt="all"  className='size-[20px]'/>
+                                        )}
+                                        {movie.age === '12' && (
+                                            <img src={`${process.env.PUBLIC_URL}/img/12years.svg`} alt="12years"  className='size-[20px]'/>
+                                        )}
+                                        {movie.age === '15' && (
+                                            <img src={`${process.env.PUBLIC_URL}/img/15years.svg`} alt="15years"  className='size-[20px]'/>
+                                        )}
+                                        {movie.age === '19' && (
+                                            <img src={`${process.env.PUBLIC_URL}/img/19years.svg`} alt="19years"  className='size-[20px]'/>
+                                        )}
+                                    </div>
+                                    <div className={`absolute inset-0 bg-black transition-opacity duration-300 rounded-[15px] ${hoveredIndex === index ? 'opacity-50' : 'opacity-0'}`}></div>
+                                    <div className={`absolute px-2 italic text-[40px] text-[#fff] bg-transparent rounded bottom-0 left-2 transition-opacity duration-300 ${hoveredIndex === index ? 'opacity-0' : 'opacity-100'}`}>
+                                        {currentIndex + index + 1}
+                                    </div>
+                                    <div className={`flex flex-col justify-center items-center w-[170px] absolute bottom-20 left-0 transition-opacity duration-300 z-10 ${hoveredIndex === index ? 'opacity-100' : 'opacity-0'}`}>
+                                        <NavLink 
+                                            to={`/movieDetail/${movie.movie_id}`} 
+                                            className='flex justify-center items-center font-[500] w-[120px] h-[34px] bg-[#ffffff] text-[14px] text-[#666666] rounded-[5px]'
+                                        >
+                                            상세보기
+                                        </NavLink>
+                                        <NavLink to='/ticketing' className='flex justify-center items-center font-[500] w-[120px] h-[34px] bg-[#fb4357] text-[14px] text-[#fff] rounded-[5px] mt-2'>예매하기</NavLink>
+                                    </div>
                                 </div>
-
-                                <div className={`flex flex-col justify-center items-center w-[170px] absolute bottom-20 left-0 transition-opacity duration-300 z-10 ${hoveredIndex === index ? 'opacity-100' : 'opacity-0'}`}>
-                                <NavLink to='/movieDetail' className='flex justify-center items-center font-[500] w-[120px] h-[34px] bg-[#ffffff] text-[14px] text-[#666666] rounded-[5px]'>상세보기</NavLink>
-                                <NavLink to='/ticketing' className='flex justify-center items-center font-[500] w-[120px] h-[34px] bg-[#fb4357] text-[14px] text-[#fff] rounded-[5px] mt-2'>예매하기</NavLink>
+                                <div className='py-2 font-[600] text-[18px] text-[#222]'>{movie.title}</div>
+                                <div className='flex items-center'>
+                                    <div className='flex font-[400] text-[14px] text-[#444444]'>
+                                        투표율
+                                    </div>
+                                    <div className='flex border-l-[2px] border-[#666666] h-[15px] mx-2'></div>
+                                    <div className='flex font-bold'>
+                                        {movie.vote_average}
+                                    </div>
                                 </div>
-                            </div>
-                            <div className='py-2 font-[600] text-[18px] text-[#222]'>{movie.title}</div>
-                            <div className='font-[400] text-[14px] text-[#444444]'>{movie.reservationRate}</div>
                             </div>
                         ))}
                     </div>

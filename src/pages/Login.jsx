@@ -1,7 +1,46 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function Login() {
+    // 로그인 상태 관리
+    const [userId, setUserId] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState(''); // 성공 메시지 상태 추가
+    const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
+
+    // 로그인 요청 함수
+    const handleLogin = async (e) => {
+        e.preventDefault(); // 기본 폼 제출 방지
+        setError('');
+        setSuccessMessage('');
+
+        try {
+            const response = await axios.post('http://localhost:8080/login', {
+                userId,
+                password,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            // 로그인 성공 후 토큰 저장
+            const token = response.data; // 응답에서 토큰 가져오기
+            localStorage.setItem('token', token); // 로컬 스토리지에 토큰 저장
+
+            // 성공 메시지 설정 및 Home.jsx로 이동
+            alert('로그인 성공!');
+            setTimeout(() => {
+                navigate('/'); // 2초 후에 Home.jsx로 이동
+            }, 0);
+        } catch (error) {
+            setError('로그인에 실패했습니다. 아이디와 비밀번호를 확인하세요.');
+            console.error('로그인 오류:', error);
+        }
+    };
+
     return (
         <div className='flex justify-center'>
             <div id="container" className='flex flex-col flex-wrap w-[980px] p-[30px_0]'>
@@ -12,17 +51,33 @@ export default function Login() {
                             <NavLink to='/login2' className='flex items-center justify-center font-[500] bg-[#898987] text-[#fdfcf0] text-[13px] text-center ml-[1px] w-[100px] h-[37px] rounded-t-[5px]'>비회원 예매</NavLink>
                             <NavLink to='/login3' className='flex items-center justify-center font-[500] bg-[#898987] text-[#fdfcf0] text-[13px] text-center ml-[1px] w-[100px] h-[37px] rounded-t-[5px]'>비회원 예매확인</NavLink>
                         </ul>
-                        <div id="login" className='flex flex-col items-center justify-center border-y-[2px] border-[#898987]
-                        w-[541px] h-[298px]'>
+                        <div id="login" className='flex flex-col items-center justify-center border-y-[2px] border-[#898987] w-[541px] h-[298px]'>
                             <div className='flex font-[500] text-[#666] text-[14px]'>아이디 비밀번호를 입력하신 후, 로그인 버튼을 클릭해 주세요.</div>
+                            {error && <div className="text-red-500">{error}</div>}
+                            {successMessage && <div className="text-green-500">{successMessage}</div>} {/* 성공 메시지 출력 */}
                             <div id="id" className='mt-[13px] w-[215px] h-[35px]'>
-                                <input type="text" className='w-[264px] h-[42px] mb-[5px] border-[2px] border-[#b5b5b5] bg-[url("./images/spriteIcon.png")] bg-[8px_-230px] p-[0_5px_0_40px]' />
+                                <input 
+                                    type="text" 
+                                    className='w-[264px] h-[42px] mb-[5px] border-[2px] border-[#b5b5b5] bg-[url("./images/spriteIcon.png")] bg-[8px_-230px] p-[0_5px_0_40px]' 
+                                    value={userId}
+                                    onChange={(e) => setUserId(e.target.value)} 
+                                />
                             </div>
                             <div id="pw" className='mt-[13px] w-[215px] h-[35px]'>
-                                <input type="password" className='w-[264px] h-[42px] mb-[5px] border-[2px] border-[#b5b5b5] bg-[url("./images/spriteIcon.png")] bg-[8px_-260px] p-[0_5px_0_40px]' />
+                                <input 
+                                    type="password" 
+                                    className='w-[264px] h-[42px] mb-[5px] border-[2px] border-[#b5b5b5] bg-[url("./images/spriteIcon.png")] bg-[8px_-260px] p-[0_5px_0_40px]' 
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)} 
+                                />
                             </div>
                             <div className='mt-2 w-[215px]'>
-                                <button className='bg-[#fb4357] text-[#fdfcf0] w-[264px] h-[42px] position-static mt-[5px] p-[2px] text-center'>로그인</button>
+                                <button 
+                                    className='bg-[#fb4357] text-[#fdfcf0] w-[264px] h-[42px] position-static mt-[5px] p-[2px] text-center' 
+                                    onClick={handleLogin}
+                                >
+                                    로그인
+                                </button>
                             </div>
                             <div id="loginEtc" className='flex justify-between items-center mt-[10px] w-[264px]'>
                                 <div id="leftEtc" className='flex ml-[20px]'>

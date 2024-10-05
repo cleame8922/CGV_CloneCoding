@@ -12,6 +12,7 @@ import Ticketing from "./pages/Ticketing";
 import Click from "./components/Click";
 import Movie from "./pages/Movie";
 import Payment from "./pages/Payment";
+import Pay from "./pages/Pay";
 import MyPage from "./pages/MyPage";
 import MovieDetail from "./pages/MovieDetail";
 import Reservation from "./pages/Reservation";
@@ -36,13 +37,14 @@ function App() {
           <Route path='/login3' element={<Login3 />} />
           <Route path='/join' element={<Join />} />
           <Route path='/movie' element={<Movie />} />
-          <Route path='/movieDetail' element={<MovieDetail />} />
+          <Route path="/movieDetail/:movieId" element={<MovieDetail />} />
           <Route path='/ticketing' element={<Ticketing onSelectTicket={handleSelectTicket} />} />
           <Route 
             path='/reservation' 
             element={<Reservation selectedTicket={selectedTicket} />} 
           />
           <Route path='/payment' element={<Payment />} />
+          <Route path='/pay' element={<Pay />} />
           <Route path='/myPage' element={<MyPage />} />
         </Routes>
         <Click />

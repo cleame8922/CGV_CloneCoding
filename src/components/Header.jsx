@@ -2,6 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 export default function Header() {
+
+    const token = localStorage.getItem('token'); // 로컬 스토리지에서 토큰 가져오기
+
+    const handleLogout = () => {
+        localStorage.removeItem('token'); // 토큰 삭제
+        window.location.reload(); // 페이지 리로드하여 상태 갱신
+    };
+    
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
     const [isNavFixed, setIsNavFixed] = useState(false);
     const [navTop, setNavTop] = useState(0);
@@ -64,35 +72,45 @@ export default function Header() {
         <div className='min-h-fit'>
             <div id="top" className='flex flex-col items-center'>
                 <div id="banner" className='flex justify-center w-full bg-[#1E0D44]'>
-                    <img src="img/banner.jpg" alt="banner" className='flex' />
+                    <img src={`${process.env.PUBLIC_URL}/img/banner.jpg`} alt="banner" className='flex' />
                 </div>
                 <div className='flex items-center justify-between p-[30px_6px_25px_5px] w-[980px]'>
                     <NavLink to='/' id="bLeft" className='flex'>
-                        <img src="img/logoRed.png" alt="logoRed" className='flex w-[117px] h-[53px]' />
+                        <img src={`${process.env.PUBLIC_URL}/img/logoRed.png`} alt="logoRed" className='flex w-[117px] h-[53px]' />
                         <p className='flex items-end tracking-[0.313em] text-[16px] text-[#222]'>DEEP DIVE SPACE</p>
                     </NavLink>
                     <div id="bRight" className='flex items-center'>
-                        <a href='http://www.cgv.co.kr/culture-event/event/detailViewUnited.aspx?seq=31426&menu=006' className='flex'>
-                            <img src="img/point.png" alt="point" className='w-[136px] h-[39px]' />
-                        </a>
-                        <div id="icon" className='flex'>
-                            <NavLink to='/login' className='flex flex-col items-center ml-7'>
-                                <img src="img/loginPassword.png" alt="loginPassword" className='size-[36px]' />
-                                <div className='flex text-[13px] text-[#666] leading-5 whitespace-nowrap'>로그인</div>
-                            </NavLink>
-                            <NavLink to='/join' className='flex flex-col items-center ml-7'>
-                                <img src="img/loginJoin.png" alt="loginJoin" className='size-[36px]' />
-                                <div className='flex text-[13px] text-[#666] leading-5 whitespace-nowrap'>회원가입</div>
-                            </NavLink>
-                            <NavLink to='/myPage' className='flex flex-col items-center ml-7'>
-                                <img src="img/loginMember.png" alt="loginMember" className='size-[36px]' />
-                                <div className='flex text-[13px] text-[#666] leading-5 whitespace-nowrap'>MY CGV</div>
-                            </NavLink>
-                            <a href='http://www.cgv.co.kr/support/default.aspx' className='flex flex-col items-center ml-7'>
-                                <img src="img/loginCustomer.png" alt="loginCustomer" className='size-[36px]' />
-                                <div className='flex text-[13px] text-[#666] leading-5 whitespace-nowrap'>고객센터</div>
-                            </a>
-                        </div>
+                        {token ? (
+                            <div id="icon2" className='flex'>
+                                <div className='flex flex-col items-center ml-7' onClick={handleLogout}>
+                                    <img src={`${process.env.PUBLIC_URL}/img/loginPassword.png`} alt="loginPassword" className='size-[36px]' />
+                                    <div className='flex text-[13px] text-[#666] leading-5 whitespace-nowrap'>로그아웃</div>
+                                </div>
+                                <NavLink to='/myPage' className='flex flex-col items-center ml-7'>
+                                    <img src={`${process.env.PUBLIC_URL}/img/loginMember.png`} alt="loginMember" className='size-[36px]' />
+                                    <div className='flex text-[13px] text-[#666] leading-5 whitespace-nowrap'>MY CGV</div>
+                                </NavLink>
+                                <a href='http://www.cgv.co.kr/support/default.aspx' className='flex flex-col items-center ml-7'>
+                                    <img src={`${process.env.PUBLIC_URL}/img/loginCustomer.png`} alt="loginCustomer" className='size-[36px]' />
+                                    <div className='flex text-[13px] text-[#666] leading-5 whitespace-nowrap'>고객센터</div>
+                                </a>
+                            </div>
+                        ) : (
+                            <div id="icon1" className='flex'>
+                                <NavLink to='/login' className='flex flex-col items-center ml-7'>
+                                    <img src={`${process.env.PUBLIC_URL}/img/loginPassword.png`} alt="loginPassword" className='size-[36px]' />
+                                    <div className='flex text-[13px] text-[#666] leading-5 whitespace-nowrap'>로그인</div>
+                                </NavLink>
+                                <NavLink to='/join' className='flex flex-col items-center ml-7'>
+                                    <img src={`${process.env.PUBLIC_URL}/img/loginJoin.png`} alt="loginJoin" className='size-[36px]' />
+                                    <div className='flex text-[13px] text-[#666] leading-5 whitespace-nowrap'>회원가입</div>
+                                </NavLink>
+                                <a href='http://www.cgv.co.kr/support/default.aspx' className='flex flex-col items-center ml-7'>
+                                    <img src={`${process.env.PUBLIC_URL}/img/loginCustomer.png`} alt="loginCustomer" className='size-[36px]' />
+                                    <div className='flex text-[13px] text-[#666] leading-5 whitespace-nowrap'>고객센터</div>
+                                </a>
+                            </div>
+                        )}
                     </div>
                 </div>
                 <div className='border-b-[1px]'></div>
@@ -109,7 +127,7 @@ export default function Header() {
                 <div ref={navRef} className='flex justify-between py-[5px] w-[980px] mx-auto'>
                     <ul id="navList" className='flex items-center'>
                         {isNavFixed && (
-                            <img src="img/logoWhite.png" alt="logoWhite" className='w-[70px] h-[32px]' />
+                            <img src={`${process.env.PUBLIC_URL}/img/logoWhite.png`} alt="logoWhite" className='w-[70px] h-[32px]' />
                         )}
                         {['영화', '극장', '예매', '스토어', '이벤트', '혜택'].map((item) => (
                             <li 
@@ -131,7 +149,7 @@ export default function Header() {
                     <div id="nR" className='flex items-center'> 
                         <div className='flex items-center border-x-[1px] h-6 p-[0px_10px_0px_10px]'> 
                             <div className={`flex text-[16px] pr-[7px] w-[150px] ${isNavFixed ? 'text-white' : 'text-[#222]'}`}>추석엔 빵스타!</div> 
-                            <img src="img/search.png" alt="search" className='size-[26px] flex justify-end' /> 
+                            <img src={`${process.env.PUBLIC_URL}/img/search.png`} alt="search" className='size-[26px] flex justify-end' /> 
                         </div> 
                     </div> 
                 </div>
