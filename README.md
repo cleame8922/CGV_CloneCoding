@@ -1,7 +1,7 @@
 <div>
   <h2>남은 개발</h2>
   <ol>
-    <li>Ticketing에서 booking 부분</li>
-    <li>결제하기 백 연결</li>
+    <li>회원가입 페이지 구현 및 연결</li>
+    <li>+시간 남으면 예매율순 같은 Detail 연결하기</li>
   </ol>
 </div>
