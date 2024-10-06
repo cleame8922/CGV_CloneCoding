@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react'
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+// import { post } from 'jquery';
 
 export default function Pay() {
 
@@ -71,19 +72,16 @@ export default function Pay() {
             alert("모든 약관에 동의해주세요.");
             return;
         }
-
-        const totalAmount = queryParams.get('totalAmount');
-        const movie = queryParams.get('movie');
-
+    
         // IMP 객체가 정의되어 있는지 확인
         if (typeof window.IMP === 'undefined') {
             console.error("결제 라이브러리가 로드되지 않았습니다.");
             return;
         }
-
+    
         var IMP = window.IMP;
         IMP.init("imp56135040");
-
+    
         function requestPay() {
             IMP.request_pay(
                 {
@@ -103,7 +101,15 @@ export default function Pay() {
                             if (response.bookingNum) {
                                 // 성공적으로 예매 정보가 저장됨
                                 alert(`예매가 완료되었습니다. 예매번호: ${response.bookingNum}`);
-                                navigate('/payend');
+                                
+                                // PayEnd로 이동하며 booking 데이터와 poster를 상태로 전달
+                                navigate('/payEnd', {
+                                    state: {
+                                        bookingData: response, // 서버에서 받은 예매 데이터
+                                        poster: poster, // 포스터 이미지
+                                        amount: totalAmount,
+                                    }
+                                });
                             } else {
                                 // 예매 정보 저장 실패
                                 alert("예매 정보 저장에 실패했습니다. 고객센터에 문의해주세요.");
@@ -118,22 +124,26 @@ export default function Pay() {
                 }
             );
         }
-
+    
         // 결제 요청 함수 호출
         requestPay();
     }
+    
 
     const convertSeatsFormat = (seatsString) => {
-        return seatsString.split(', ').map(seat => {
-            const [row, num] = seat.split('');
-            return { row, num: parseInt(num) };
+        if (!seatsString) return [];
+    
+        return seatsString.split(',').map(seat => {
+            const row = seat.charAt(0); // 첫 글자를 행(row)으로 설정
+            const num = parseInt(seat.slice(1)); // 나머지 문자열을 숫자로 변환하여 번호(num)로 설정
+            return { row, num }; // 객체 형태로 반환
         });
     };
 
     async function sendBookingData() {
         const apiUrl = 'http://localhost:8080/booking';
         const token = localStorage.getItem('token');
-    
+
         const theaterData = screen; // 실제로는 URL에서 받아오는 값
         const theaterNum = theaterData.replace('관', ''); // '관'을 제거하고 숫자만 추출
     
@@ -158,11 +168,12 @@ export default function Pay() {
             theaterNum: theaterNum,
             ticketsCategory: peopleArray,
             seats: formattedSeats,
-            paymentAmount: parseInt(totalAmount),
+            paymentAmount: totalAmount,
             paymentType: paymentType,
-            easyPaymentType: easyPaymentType
+            easyPaymentType: easyPaymentType,
+            poster: poster,
         };
-    
+
         try {
             const response = await axios({
                 method: 'post',

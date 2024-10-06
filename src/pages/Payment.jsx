@@ -28,6 +28,9 @@ export default function Payment() {
     const seatTypeInfo = queryParams.get('seatTypeInfo');
     const totalAmount = queryParams.get('totalAmount');
 
+    console.log('Seats:', seats); // 로그 확인
+
+
     const handleReset = () => {
         setSelectedNums({ 일반: 0, 청소년: 0, 경로: 0, 우대: 0 });
     };
@@ -57,53 +60,40 @@ export default function Payment() {
         smile: '스마일페이',
     };
 
-    const convertSeatsFormat = (seatsString) => {
-        return seatsString.split(', ').map(seat => {
-            const [row, num] = seat.split('');
-            return { row, num: parseInt(num) };
-        });
-    };
-
     const handlePaymentSubmit = async () => {
         try {
-            // 현재 URL의 모든 파라미터를 가져옵니다.
             const currentParams = new URLSearchParams(location.search);
-    
-            // paymentType을 사용자 친화적인 이름으로 설정합니다.
             const paymentTypeName = paymentTypeMap[selectedPayment] || selectedPayment;
             currentParams.set('paymentType', paymentTypeName);
     
-            // 간편 결제인 경우 easyPaymentType도 설정합니다.
             if (selectedPayment === 'easy') {
                 const easyPaymentName = easyPaymentTypeMap[selectedEasyPayment] || selectedEasyPayment;
                 currentParams.set('easyPaymentType', easyPaymentName);
             }
     
-            // 수정된 파라미터로 새로운 URL을 생성하고 이동합니다.
             navigate(`/pay?${currentParams.toString()}`);
     
-            const theaterData = screen; // 실제로는 URL에서 받아오는 값
-            const theaterNum = theaterData.replace('관', ''); // '관'을 제거하고 숫자만 추출
+            const theaterData = screen;
+            const theaterNum = theaterData.replace('관', '');
     
-            const formattedSeats = convertSeatsFormat(seats);
-            console.log(formattedSeats);
+            // 좌석 문자열이 올바르게 전달되는지 확인
+            const formattedSeats = convertSeatsFormat(seats); // seats는 "J1,J2,J3" 형식이어야 함
+            console.log('Formatted Seats:', formattedSeats); // 로그 확인
     
-            const screeningTime = time; // time은 "hh:mm:ss" 형식으로 되어있다고 가정합니다.
+            const screeningTime = time;
             const [hours, minutes, seconds] = screeningTime.split(':');
     
-            // 결제를 위한 데이터 전송 로직을 추가합니다.
             const requestBody = {
                 movieId: movieId,
                 branchId: branchId,
                 theaterNum: theaterNum,
                 screeningDate: date,
-                screeningTime: `${hours}:${minutes}:${seconds}`, // hh:mm:ss 형식으로 수정된 부분
-                seats: formattedSeats // 실제 선택한 좌석 데이터를 여기에 넣으세요.
+                screeningTime: `${hours}:${minutes}:${seconds}`,
+                seats: formattedSeats // 여러 좌석을 배열로 전달
             };
     
             console.log('Request Body:', requestBody);
     
-            // axios를 사용하여 POST 요청을 보냅니다.
             const response = await axios.post('http://localhost:8080/selectSeats', requestBody, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -112,24 +102,30 @@ export default function Payment() {
     
             console.log('Response received:', response.data);
     
-            // 반환된 값이 true인지 확인
             if (response.data === true) {
-                // 결제 페이지로 이동하거나 추가 처리를 수행
-                // navigate('/payment'); // 결제 페이지로 이동 (예시)
+                // navigate('/payment'); // 결제 페이지로 이동
             } else {
                 alert('이미 선택된 좌석입니다.');
-                // 이전 페이지로 돌아갑니다. (Reservation.jsx)
-                navigate(-1); // 또는 navigate('/Reservation');로 직접 경로를 지정
+                navigate(-1);
             }
         } catch (error) {
             console.error('Error occurred:', error);
-            // 에러 처리 (예: 사용자에게 에러 메시지 표시)
         }
     };
     
+    // 좌석 문자열을 객체 배열로 변환하는 함수
+    const convertSeatsFormat = (seatsString) => {
+        if (!seatsString) return [];
+    
+        return seatsString.split(',').map(seat => {
+            const row = seat.charAt(0); // 첫 글자를 행(row)으로 설정
+            const num = parseInt(seat.slice(1)); // 나머지 문자열을 숫자로 변환하여 번호(num)로 설정
+            return { row, num }; // 객체 형태로 반환
+        });
+    };
     
     
-    
+
     return (
         <div className='flex flex-col items-center'>   
             <div id="etc" className='flex justify-end w-[996px] h-[74px] pt-[30px]'>
