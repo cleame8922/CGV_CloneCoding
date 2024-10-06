@@ -52,6 +52,9 @@ export default function Home() {
         setIsUpcoming(true); // 상태를 상영예정작으로 변경
         fetchUpcomingMovies(); // 상영예정작 데이터 가져오기
     };
+    const handleChartClick = () => {
+        setIsUpcoming(false); // 기본 영화 목록을 상태로 설정
+    };
 
     const BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
     const moviesToShow = movies.slice(currentIndex, currentIndex + 5);
@@ -127,7 +130,12 @@ export default function Home() {
                 <div id="container" className='flex flex-col items-center justify-center w-[980px]'>
                     <div className='flex items-center justify-between w-full mb-4'>
                         <div id="chart" className='flex justify-between w-[248px] items-center'>
-                            <div className='flex font-[700] text-[#222] text-[26px]'>무비차트</div>
+                            <div 
+                                className='flex font-[700] text-[#222] text-[26px] cursor-pointer'
+                                onClick={handleChartClick} // 무비차트를 클릭했을 때 기본 영화 목록을 보여주는 이벤트
+                            >
+                                무비차트
+                            </div>
                             <div className='flex border-l-[1px] border-[#d8d8d8] h-[20px]'></div>
                             <div 
                                 className='flex font-[400] text-[#666666] text-[26px] cursor-pointer'

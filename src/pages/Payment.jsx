@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { IoIosArrowDown } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 export default function Payment() {
 
@@ -13,7 +14,9 @@ export default function Payment() {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
 
+    const movieId = queryParams.get('movieId');
     const movie = queryParams.get('movie');
+    const branchId = queryParams.get('branchId');
     const theater = queryParams.get('theater');
     const date = queryParams.get('date');
     const time = queryParams.get('time');
@@ -54,23 +57,78 @@ export default function Payment() {
         smile: '스마일페이',
     };
 
-    const handlePaymentSubmit = () => {
-        // 현재 URL의 모든 파라미터를 가져옵니다.
-        const currentParams = new URLSearchParams(location.search);
-        
-        // paymentType을 사용자 친화적인 이름으로 설정합니다.
-        const paymentTypeName = paymentTypeMap[selectedPayment] || selectedPayment;
-        currentParams.set('paymentType', paymentTypeName);
-    
-        // 간편 결제인 경우 easyPaymentType도 설정합니다.
-        if (selectedPayment === 'easy') {
-            const easyPaymentName = easyPaymentTypeMap[selectedEasyPayment] || selectedEasyPayment;
-            currentParams.set('easyPaymentType', easyPaymentName);
-        }
-        
-        // 수정된 파라미터로 새로운 URL을 생성하고 이동합니다.
-        navigate(`/pay?${currentParams.toString()}`);
+    const convertSeatsFormat = (seatsString) => {
+        return seatsString.split(', ').map(seat => {
+            const [row, num] = seat.split('');
+            return { row, num: parseInt(num) };
+        });
     };
+
+    const handlePaymentSubmit = async () => {
+        try {
+            // 현재 URL의 모든 파라미터를 가져옵니다.
+            const currentParams = new URLSearchParams(location.search);
+    
+            // paymentType을 사용자 친화적인 이름으로 설정합니다.
+            const paymentTypeName = paymentTypeMap[selectedPayment] || selectedPayment;
+            currentParams.set('paymentType', paymentTypeName);
+    
+            // 간편 결제인 경우 easyPaymentType도 설정합니다.
+            if (selectedPayment === 'easy') {
+                const easyPaymentName = easyPaymentTypeMap[selectedEasyPayment] || selectedEasyPayment;
+                currentParams.set('easyPaymentType', easyPaymentName);
+            }
+    
+            // 수정된 파라미터로 새로운 URL을 생성하고 이동합니다.
+            navigate(`/pay?${currentParams.toString()}`);
+    
+            const theaterData = screen; // 실제로는 URL에서 받아오는 값
+            const theaterNum = theaterData.replace('관', ''); // '관'을 제거하고 숫자만 추출
+    
+            const formattedSeats = convertSeatsFormat(seats);
+            console.log(formattedSeats);
+    
+            const screeningTime = time; // time은 "hh:mm:ss" 형식으로 되어있다고 가정합니다.
+            const [hours, minutes, seconds] = screeningTime.split(':');
+    
+            // 결제를 위한 데이터 전송 로직을 추가합니다.
+            const requestBody = {
+                movieId: movieId,
+                branchId: branchId,
+                theaterNum: theaterNum,
+                screeningDate: date,
+                screeningTime: `${hours}:${minutes}:${seconds}`, // hh:mm:ss 형식으로 수정된 부분
+                seats: formattedSeats // 실제 선택한 좌석 데이터를 여기에 넣으세요.
+            };
+    
+            console.log('Request Body:', requestBody);
+    
+            // axios를 사용하여 POST 요청을 보냅니다.
+            const response = await axios.post('http://localhost:8080/selectSeats', requestBody, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            console.log('Response received:', response.data);
+    
+            // 반환된 값이 true인지 확인
+            if (response.data === true) {
+                // 결제 페이지로 이동하거나 추가 처리를 수행
+                // navigate('/payment'); // 결제 페이지로 이동 (예시)
+            } else {
+                alert('이미 선택된 좌석입니다.');
+                // 이전 페이지로 돌아갑니다. (Reservation.jsx)
+                navigate(-1); // 또는 navigate('/Reservation');로 직접 경로를 지정
+            }
+        } catch (error) {
+            console.error('Error occurred:', error);
+            // 에러 처리 (예: 사용자에게 에러 메시지 표시)
+        }
+    };
+    
+    
+    
     
     return (
         <div className='flex flex-col items-center'>   

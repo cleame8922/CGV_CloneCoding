@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { IoIosArrowDown } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -35,7 +35,8 @@ export default function Ticketing() {
     
             // 선택한 영화의 세부 정보를 상태에 저장
             setSelectedMovieDetails(movieWithFullPosterPath);
-    
+            console.log(movie)
+            
         } catch (error) {
             console.error('Error fetching movie details:', error);
             // 에러 처리 로직 추가
@@ -62,6 +63,7 @@ export default function Ticketing() {
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTime, setSelectedTime] = useState(null);
     const [availableDates, setAvailableDates] = useState([]);
+    // const [branchId, setBranchId] = useState(null);
     const navigate = useNavigate();
     const today = new Date(); // 현재 날짜
     const todayDay = today.getDate(); // 현재 일
@@ -87,26 +89,6 @@ export default function Ticketing() {
         };
         fetchTheaters();
     }, []);
-    
-    const handleReservationClick = () => {
-        if (selectedMovieDetails && selectedTheater && selectedDate && selectedTime) {
-            const queryParams = new URLSearchParams({
-                movie: selectedMovieDetails.title, // 영화 제목
-                theater: selectedTheater, // 선택한 극장
-                date: selectedDate, // 선택한 날짜
-                time: selectedTime, // 선택한 시간
-                floor: selectedShowtime.branch, // 영화관 층수
-                screen: selectedShowtime.theaterNum,
-                poster: selectedMovieDetails.posterPath, // 포스터 경로
-                seat: selectedShowtime.totalSeats, // 총 좌석 수
-                seatCount: selectedShowtime.remainSeats, // 남은 좌석 수
-            }).toString();
-            
-            navigate(`/reservation?${queryParams}`);
-        } else {
-            console.error('모든 필드를 선택해 주세요.'); // 선택되지 않은 필드가 있는 경우 에러 처리
-        }
-    };    
 
     const handleSortChange = (sortType) => {
         setActiveSort(sortType);
@@ -114,7 +96,7 @@ export default function Ticketing() {
     
     const handleTheaterClick = async (theater) => {
         setSelectedTheater(theater);
-    
+
         // 지점 ID 설정
         let branchId;
         if (theater === '강남') {
@@ -124,7 +106,7 @@ export default function Ticketing() {
         } else {
             branchId = null; // 다른 지점 처리
         }
-    
+
         // 영화 선택 여부 및 branchId 확인 후 시간 정보 요청
         if (selectedMovie && branchId) {
             try {
@@ -136,6 +118,16 @@ export default function Ticketing() {
         }
     };
     
+    const branchId = useMemo(() => {
+        switch (selectedTheater) {
+            case '강남':
+                return 1;
+            case '강변':
+                return 2;
+            default:
+                return null;
+        }
+    }, [selectedTheater]);
 
     const handleDateSelect = async (day, dayOfWeek, monthYear) => {
         if (!monthYear) {
@@ -153,19 +145,11 @@ export default function Ticketing() {
             return; // 영화나 극장이 선택되지 않았을 경우 처리
         }
 
-        let branchId = null; // 기본값 설정
-        switch (selectedTheater) {
-            case '강남':
-                branchId = 1;
-                break;
-            case '강변':
-                branchId = 2;
-                break;
-            default:
-                console.warn(`Unexpected theater selected: ${selectedTheater}`);
-                return; // 다른 극장이 선택되면 함수를 종료
+        if (branchId === null) {
+            console.warn(`Unexpected theater selected: ${selectedTheater}`);
+            return;
         }
-
+        
         // API 호출
         try {
             const response = await axios.get(`http://localhost:8080/ticket/${selectedMovie.movieId}/${branchId}/${formattedDate}`);
@@ -175,6 +159,7 @@ export default function Ticketing() {
             // 에러 발생 시 사용자에게 알리기 위한 추가 로직을 여기 추가할 수 있습니다.
         }
     };
+    
     const [selectedShowtime, setSelectedShowtime] = useState(null);
 
     const handleShowtimeClick = (showtime) => {
@@ -215,6 +200,31 @@ export default function Ticketing() {
         acc[monthYearKey].push({ day, dayOfWeek });
         return acc;
     }, {});
+
+    const handleReservationClick = async () => {
+        if (selectedMovieDetails && selectedTheater && selectedDate && selectedTime) {
+
+            console.log(branchId);
+            
+            const queryParams = new URLSearchParams({
+                movieId: selectedMovie.movieId,
+                branchId: branchId,
+                movie: selectedMovieDetails.title, // 영화 제목
+                theater: selectedTheater, // 선택한 극장
+                date: selectedDate, // 선택한 날짜
+                time: selectedTime, // 선택한 시간
+                floor: selectedShowtime.branch, // 영화관 층수
+                screen: selectedShowtime.theaterNum,
+                poster: selectedMovieDetails.posterPath, // 포스터 경로
+                seat: selectedShowtime.totalSeats, // 총 좌석 수
+                seatCount: selectedShowtime.remainSeats, // 남은 좌석 수
+            }).toString();
+            
+            navigate(`/reservation?${queryParams}`);
+        } else {
+            console.error('모든 필드를 선택해 주세요.'); // 선택되지 않은 필드가 있는 경우 에러 처리
+        }
+    }; 
 
     return (
         <div className='flex flex-col items-center'>

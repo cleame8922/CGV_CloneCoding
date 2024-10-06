@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function Reservation() {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     
+    const movieId = queryParams.get('movieId');
     const movie = queryParams.get('movie');
+    const branchId = queryParams.get('branchId');
     const theater = queryParams.get('theater');
     const date = queryParams.get('date');
     const time = queryParams.get('time');
@@ -15,7 +18,7 @@ export default function Reservation() {
     const totalSeats = parseInt(seat.replace(/[^0-9]/g, ''), 10);
     const seatCount = queryParams.get('seatCount');
     const screen = queryParams.get('screen');
-    // const seat = parseInt(queryParams.get('seat'), 10);
+
     const navigate = useNavigate();
 
     const rows = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -40,26 +43,60 @@ export default function Reservation() {
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [tempSeat, setTempSeat] = useState(null);
 
+    const [blockedSeats, setBlockedSeats] = useState([]);
+
+    useEffect(() => {
+        // 이미 선택된 좌석 정보를 가져오는 API 호출
+        const fetchBlockedSeats = async () => {
+
+            const screeningTime = time; // time은 "hh:mm:ss" 형식으로 되어있다고 가정합니다.
+            const [hours, minutes, seconds] = screeningTime.split(':');
+            
+            const apiUrl = `http://localhost:8080/ticket/chooseTheater/${movieId}/${branchId}/${date}`;
+            const requestBody = {
+                theaterName: branchId,
+                screeningTime: `${hours}:${minutes}:${seconds}`
+            };
+
+            try {
+                const response = await axios.post(apiUrl, requestBody, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': '*/*'
+                    }
+                });
+
+                // 서버에서 응답받은 좌석 정보를 가공하여 blockedSeats 상태에 저장
+                const seatsData = response.data.seats || []; // 응답에서 좌석 정보를 추출
+                const formattedBlockedSeats = seatsData.map(seat => `${seat.row}${seat.num}`); // 'A1' 형식으로 변환
+                setBlockedSeats(formattedBlockedSeats);
+            } catch (error) {
+                console.error("좌석 정보를 가져오는 중 오류 발생:", error);
+            }
+        };
+
+        fetchBlockedSeats();
+    }, []);
+
     const handleSeatClick = (seatNumber) => {
-    
+        if (blockedSeats.includes(seatNumber)) {
+            return; // 이미 선택된 좌석이면 아무 작업도 하지 않음
+        }
+
         const totalSelectedCount = Object.values(selectedNums).reduce((sum, num) => sum + num, 0);
         const remainingSeats = totalSelectedCount - selectedSeats.length;
-    
+
         if (selectedSeats.includes(seatNumber)) {
-            // 이미 선택된 좌석 클릭 시 선택 해제
             setSelectedSeats(prev => prev.filter(seat => seat !== seatNumber));
         } else if (remainingSeats > 0) {
-            // 인원 수에 맞게 좌석 선택
             if (remainingSeats === 1) {
-                // 마지막 한 명의 경우 개별적으로 선택
                 setSelectedSeats(prev => [...prev, seatNumber]);
             } else if (remainingSeats > 1) {
-                // 첫 두 명의 경우 연속으로 선택
                 const adjacentSeat = getAdjacentSeat(seatNumber);
-                if (adjacentSeat) {
+                if (adjacentSeat && !blockedSeats.includes(adjacentSeat)) {
                     setSelectedSeats(prev => [...prev, seatNumber, adjacentSeat]);
                 } else {
-                    setSelectedSeats(prev => [...prev, seatNumber]); // 인접 좌석이 없으면 현재 좌석만 선택
+                    setSelectedSeats(prev => [...prev, seatNumber]);
                 }
             }
         }
@@ -162,7 +199,9 @@ export default function Reservation() {
                     .join(', ');
     
                 const queryParams = new URLSearchParams({
+                    movieId,
                     movie,
+                    branchId,
                     theater,
                     date,
                     time,
@@ -274,16 +313,17 @@ export default function Reservation() {
                                             const seatNumber = `${row}${i + 1}`;
                                             const seatIndex = rows.indexOf(row) * seatsPerRow + i;
 
-                                            if (seatIndex >= totalSeats) return null; // 총 좌석 수를 초과하면 렌더링하지 않음
+                                            if (seatIndex >= totalSeats) return null;
                                             
                                             return (
                                                 <div
                                                     key={seatNumber}
-                                                    onClick={() => handleSeatClick(seatNumber)}
-                                                    className={`w-[20px] h-[20px] mx-[1px] text-[12px] p-[1px] flex items-center justify-center border 
+                                                    onClick={() => !blockedSeats.includes(seatNumber) && handleSeatClick(seatNumber)}
+                                                    className={`w-[20px] h-[20px] mx-[1px] text-[12px] p-[1px] flex items-center justify-center border
                                                         ${selectedSeats.includes(seatNumber) ? 'bg-[red] text-[#fff]' : 
-                                                        (tempSeat === seatNumber ? 'bg-[orange] text-[#fff]' : 'bg-[#666] text-[#fff]')} 
-                                                        cursor-pointer`}>
+                                                        (tempSeat === seatNumber ? 'bg-[orange] text-[#fff]' : 
+                                                        (blockedSeats.includes(seatNumber) ? 'bg-[#d6d3ce] text-[#fff] cursor-not-allowed' : 'bg-[#666] text-[#fff] cursor-pointer'))}`}
+                                                >
                                                     {i + 1}
                                                 </div>
                                             );

@@ -13,6 +13,7 @@ import Click from "./components/Click";
 import Movie from "./pages/Movie";
 import Payment from "./pages/Payment";
 import Pay from "./pages/Pay";
+import PayEnd from "./pages/PayEnd";
 import MyPage from "./pages/MyPage";
 import MovieDetail from "./pages/MovieDetail";
 import Reservation from "./pages/Reservation";
@@ -45,6 +46,7 @@ function App() {
           />
           <Route path='/payment' element={<Payment />} />
           <Route path='/pay' element={<Pay />} />
+          <Route path='/payEnd' element={<PayEnd />} />
           <Route path='/myPage' element={<MyPage />} />
         </Routes>
         <Click />

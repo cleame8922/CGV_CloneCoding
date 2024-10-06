@@ -1,14 +1,16 @@
 import React, { useState,useEffect } from 'react'
 import { useLocation } from 'react-router-dom';
-import $ from 'jquery';
-// import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function Pay() {
 
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
 
+    const movieId = queryParams.get('movieId');
     const movie = queryParams.get('movie');
+    const branchId = queryParams.get('branchId');
     const theater = queryParams.get('theater');
     const date = queryParams.get('date');
     const time = queryParams.get('time');
@@ -19,6 +21,12 @@ export default function Pay() {
     const totalAmount = queryParams.get('totalAmount');
     const paymentType = queryParams.get('paymentType');
     const easyPaymentType = queryParams.get('easyPaymentType');
+
+    const navigate = useNavigate();
+
+    const handleCancelClick = () => {
+        navigate(-1); // 이전 페이지로 이동
+    };
 
     // 체크박스 상태 배열로 관리, 초기값은 false
     const [checkedItems, setCheckedItems] = useState({
@@ -58,51 +66,121 @@ export default function Pay() {
 
     const isAllChecked = checkedItems.all && checkedItems.one && checkedItems.two && checkedItems.three && checkedItems.four;
 
-    // function generateMerchantUid(userId) {
-    //     return `order_${userId}_${Date.now()}`; // userId와 현재 시간을 조합하여 고유 ID 생성
-    // }
-    
     async function handlePayment() {
+        if (!isAllChecked) {
+            alert("모든 약관에 동의해주세요.");
+            return;
+        }
+
         const totalAmount = queryParams.get('totalAmount');
         const movie = queryParams.get('movie');
-    
+
         // IMP 객체가 정의되어 있는지 확인
         if (typeof window.IMP === 'undefined') {
             console.error("결제 라이브러리가 로드되지 않았습니다.");
             return;
         }
-    
+
         var IMP = window.IMP;
         IMP.init("imp56135040");
-    
+
         function requestPay() {
             IMP.request_pay(
                 {
-                    pg: "kakaopay",		// KG이니시스 pg파라미터 값
-                    pay_method: "card",		// 결제 방법
-                    merchant_uid: `order_${new Date().getTime()}`, // 주문번호
-                    name: movie,		// 상품 명
-                    amount: totalAmount, // 금액 (queryParams에서 가져온 값 사용)
+                    pg: "kakaopay",
+                    pay_method: "card",
+                    merchant_uid: `order_${new Date().getTime()}`,
+                    name: movie,
+                    amount: totalAmount,
                     buyer_name: "홍길동",
                 },
-                function (rsp) {
-                    // rsp.imp_uid 값으로 결제 단건조회 API를 호출하여 결제결과를 판단합니다.
+                async function (rsp) {
                     if (rsp.success) {
-                        // 서버 검증 요청 부분
                         console.log("결제 성공:", rsp);
+                        // 결제 성공 시 백엔드 API 호출
+                        try {
+                            const response = await sendBookingData();
+                            if (response.bookingNum) {
+                                // 성공적으로 예매 정보가 저장됨
+                                alert(`예매가 완료되었습니다. 예매번호: ${response.bookingNum}`);
+                                navigate('/payend');
+                            } else {
+                                // 예매 정보 저장 실패
+                                alert("예매 정보 저장에 실패했습니다. 고객센터에 문의해주세요.");
+                            }
+                        } catch (error) {
+                            console.error("API 호출 중 오류 발생:", error);
+                            alert("예매 처리 중 오류가 발생했습니다. 고객센터에 문의해주세요.");
+                        }
                     } else {
                         alert("결제에 실패하였습니다. 에러 내용: " + rsp.error_msg);
                     }
                 }
             );
         }
-    
+
         // 결제 요청 함수 호출
         requestPay();
     }
-    
-    
 
+    const convertSeatsFormat = (seatsString) => {
+        return seatsString.split(', ').map(seat => {
+            const [row, num] = seat.split('');
+            return { row, num: parseInt(num) };
+        });
+    };
+
+    async function sendBookingData() {
+        const apiUrl = 'http://localhost:8080/booking';
+        const token = localStorage.getItem('token');
+    
+        const theaterData = screen; // 실제로는 URL에서 받아오는 값
+        const theaterNum = theaterData.replace('관', ''); // '관'을 제거하고 숫자만 추출
+    
+        const formattedSeats = convertSeatsFormat(seats);
+    
+        const screeningTime = time; // time은 "hh:mm:ss" 형식으로 되어있다고 가정합니다.
+        const [hours, minutes, seconds] = screeningTime.split(':');
+
+        const peopleArray = people.split(',').map(person => {
+            const [ticketType, ticketCount] = person.trim().replace('명', '').split(' ');
+            return {
+                ticketType: ticketType, // 예: '일반', '청소년'
+                ticketCount: parseInt(ticketCount, 10) // 숫자로 변환
+            };
+        });
+        
+        const bookingData = {
+            movieId: movieId, // 실제 영화 ID로 변경 필요
+            screeningDate: date,
+            screeningTime: `${hours}:${minutes}:${seconds}`,
+            branchId: branchId, // 실제 지점 ID로 변경 필요
+            theaterNum: theaterNum,
+            ticketsCategory: peopleArray,
+            seats: formattedSeats,
+            paymentAmount: parseInt(totalAmount),
+            paymentType: paymentType,
+            easyPaymentType: easyPaymentType
+        };
+    
+        try {
+            const response = await axios({
+                method: 'post',
+                url: apiUrl,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${token}`
+                },
+                data: bookingData // body에 명시적으로 data 넣기
+            });
+    
+            return response.data; // axios는 기본적으로 response.data에 JSON 데이터를 반환함
+        } catch (error) {
+            console.error("API 호출 중 오류 발생:", error);
+            throw error;
+        }
+    }
+    
     return (
         <div className='flex justify-center'>
             <div className='flex flex-col w-[986px] h-[725px] bg-[#f6f6f4] border-[5px] border-[#333] my-[30px]'>
@@ -272,7 +350,7 @@ export default function Pay() {
                             onClick={handlePayment}
                             />
                         </div>
-                        <div id="cancel" className='flex ml-2'>
+                        <div id="cancel" className="flex ml-2" onClick={handleCancelClick}>
                             <img src={`${process.env.PUBLIC_URL}/img/cancelBtn.png`} alt="cancelBtn" />
                         </div>
                     </div>
