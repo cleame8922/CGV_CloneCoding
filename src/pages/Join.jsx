@@ -1,52 +1,136 @@
-import React from 'react'
+import React, { useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 
-export default function Join() {
+export default function Join2() {
+    const [userId, setUserId] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordConfirm, setPasswordConfirm] = useState('');
+    const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+    const [activeTab, setActiveTab] = useState('join'); // 현재 활성화된 탭 상태 추가
+    const navigate = useNavigate();
+
+    const handleJoin = async (e) => {
+        e.preventDefault();
+        setError('');
+        setSuccessMessage('');
+
+        if (password.length < 8) {
+            setError('비밀번호는 최소 8자 이상이어야 합니다.');
+            return;
+        }
+
+        if (password !== passwordConfirm) {
+            setError('비밀번호가 일치하지 않습니다.');
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:8080/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': '*/*',
+                },
+                body: JSON.stringify({ userId, password }),
+            });
+
+            if (response.ok) {
+                const data = await response.text();
+                setSuccessMessage('회원가입이 성공적으로 완료되었습니다.');
+                console.log('Response Body:', data);
+                navigate('/login');
+            } else {
+                const errorData = await response.text();
+                setError('회원가입에 실패했습니다: ' + errorData);
+            }
+        } catch (err) {
+            setError('회원가입 요청 중 오류가 발생했습니다.');
+        }
+    };
+
     return (
         <div id='join' className='flex flex-col items-center justify-center'>
-            <div className='flex flex-col w-[980px] items-center mt-[30px]'>
-                <div className='flex'>
+            <div className='flex flex-col items-center mt-[40px]'>
+                <div className='flex mb-[10px]'>
                     <img src="img/joinAd.jpg" alt="joinAd" className='w-[721px] h-[391px]' />
                 </div>
-                <div className='flex mt-[20px] mb-[33px] text-[15px] text-[#222]'>CJ ONE 회원이 되시면 하나의 통합된 회원 ID와 비밀번호로<br />
-                CGV와 CJ ONE의 다양한 서비스를 이용하실 수 있습니다.</div>
             </div>
-                
-            <a href='https://www.cjone.com/cjmweb/join.do?coopco_cd=7010&brnd_cd=1000' className='flex p-[2px] text-[#fff] text-[15px] bg-[#fb4357]'>
-                <div className='p-[0_50px] h-[44px] border-[1px] border-[#f07469] flex items-center'>CGV + CJONE 통합회원가입</div>
-            </a>
 
-            <div className='flex flex-col w-[980px]'>
-                <div className='flex text-[16px] text-[#333] font-[500] mb-[15px]'>CJ ONE 상세 혜택</div>
-                <div className='grid grid-cols-3 gap-2'>
-                    <div className='flex flex-col w-[300px] h-[250px] border-[1px] border-[#e1e0db] text-[#222] p-[30px]'>
-                        <div className='pb-[13px] font-[600] text-[#333] text-[13px] border-b-[1px] border-[#e1e0db]'>기본적립율</div>
-                        <ul className='mt-[10px] flex flex-col'>
-                            <li className='pl-[8px] mb-2 text-[13px] bg-[0px_5px] bg-[url("./images/bulCircleSmall.gif")] bg-no-repeat'>유료 영화관람 금액의 3 ~ 5% 적립</li>
-                            <li className='pl-[8px] text-[13px] bg-[0px_5px] bg-[url("./images/bulCircleSmall.gif")] bg-no-repeat'>매점 결제 금액의 0.5% 적립</li>
-                        </ul>
-                    </div>
-                    <div className='flex flex-col w-[300px] h-[250px] border-[1px] border-[#e1e0db] text-[#222] p-[30px]'>
-                        <div className='pb-[13px] font-[600] text-[#333] text-[13px] border-b-[1px] border-[#e1e0db]'>제휴할인 시 / 적립 가능매장</div>
-                        <ul className='mt-[10px] flex flex-col'>
-                            <li className='pl-[8px] mb-2 text-[13px] bg-[0px_5px] bg-[url("./images/bulCircleSmall.gif")] bg-no-repeat'>제휴할인 + 결제금액의 0.5 ~ 5% 적립</li>
-                        </ul>
-                    </div>
-                    <div className='flex flex-col w-[300px] h-[250px] border-[1px] border-[#e1e0db] text-[#222] p-[30px]'>
-                        <div className='pb-[13px] font-[600] text-[#333] text-[13px] border-b-[1px] border-[#e1e0db]'>기타 적립안내 / 포인트 사용단위</div>
-                        <ul className='mt-[10px] flex flex-col'>
-                            <li className='pl-[8px] mb-2 text-[13px] bg-[0px_5px] bg-[url("./images/bulCircleSmall.gif")] bg-no-repeat'>단체할인 시, 무비머니, 관람권, <br />
-                            상품권 등으로 구매/결제 시 적립 제외</li>
-                            <li className='pl-[8px] mb-2 text-[13px] bg-[0px_5px] bg-[url("./images/bulCircleSmall.gif")] bg-no-repeat'>최대 1일 6회(현장 또는 온라인) 또는 1일<br />
-                            24매(온라인) 예매제한</li>
-                            <li className='pl-[8px] text-[13px] bg-[0px_5px] bg-[url("./images/bulCircleSmall.gif")] bg-no-repeat'>사용 단위 <br />
-                            - 매표, 매점 : 500P <br />
-                            - 온라인 예매 : 10P
-                            </li>
-                        </ul>
-                    </div>
+            <div id="top" className='flex flex-col w-[980px] items-center my-[20px]'>
+                <div className='flex justify-start'>
+                    <ul id="menu" className='flex w-[600px]'>
+                        <div
+                            id="join"
+                            className={`flex items-center justify-center font-[500] ${activeTab === 'join' ? 'bg-[#fb4357]' : 'bg-[#898987]'} text-[#fdfcf0] text-[13px] text-center w-[100px] h-[37px] rounded-t-[5px]`}
+                            onClick={() => setActiveTab('join')} // join 탭 클릭 시 활성화
+                        >
+                            회원가입
+                        </div>
+                        <div
+                            id="cgvJoin"
+                            className={`flex items-center justify-center font-[500] ${activeTab === 'cgvJoin' ? 'bg-[#fb4357]' : 'bg-[#898987]'} text-[#fdfcf0] text-[13px] text-center ml-[1px] w-[100px] h-[37px] rounded-t-[5px]`}
+                            onClick={() => setActiveTab('cgvJoin')} // cgvJoin 탭 클릭 시 활성화
+                        >
+                            통합회원가입
+                        </div>
+                    </ul>
                 </div>
-                <div className='flex justify-center mt-[15px] mb-[50px] text-[14px] text-[#222]'>※ CJ ONE 통합회원으로 가입되더라도 정보 제공 및 약관 동의가 되지 않은 CJ ONE 제휴 브랜드에는 개인정보가 제공되지 않습니다.</div>
+
+                <div id="content" className='flex flex-col items-center border-[1px] border-[#898987] w-[600px] h-max-fit mb-[30px]'>
+                    {activeTab === 'join' && (
+                        <div id="join" className='flex flex-col items-center justify-center'>
+                            <div className='flex justify-center font-[500] pt-[30px] mb-[10px] text-[#666] text-[14px]'>아이디 비밀번호를 입력하신 후, 회원가입 버튼을 클릭해 주세요.</div>
+                            {error && <div className="text-red-500">{error}</div>}
+                            {successMessage && <div className="text-green-500">{successMessage}</div>}
+                            <div id="id" className='mt-[13px] w-fit h-[35px]'>
+                                <input
+                                    type="text"
+                                    className='w-[264px] h-[42px] mb-[5px] border-[2px] border-[#b5b5b5] bg-[url("./images/spriteIcon.png")] bg-[8px_-230px] p-[0_5px_0_40px]'
+                                    value={userId}
+                                    placeholder='아이디'
+                                    onChange={(e) => setUserId(e.target.value)}
+                                />
+                            </div>
+                            <div id="pw" className='mt-[13px] w-fit h-[35px]'>
+                                <input
+                                    type="password"
+                                    className='w-[264px] h-[42px] mb-[5px] border-[2px] border-[#b5b5b5] bg-[url("./images/spriteIcon.png")] bg-[8px_-260px] p-[0_5px_0_40px]'
+                                    value={password}
+                                    placeholder='비밀번호'
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                            </div>
+                            <div id="pwConfirm" className='mt-[13px] w-fit h-[35px]'>
+                                <input
+                                    type="password"
+                                    className='w-[264px] h-[42px] mb-[5px] border-[2px] border-[#b5b5b5] bg-[url("./images/spriteIcon.png")] bg-[8px_-260px] p-[0_5px_0_40px]'
+                                    value={passwordConfirm}
+                                    placeholder='비밀번호 확인'
+                                    onChange={(e) => setPasswordConfirm(e.target.value)}
+                                />
+                            </div>
+                            <div className='mt-2 pb-[30px] w-fit'>
+                                <button
+                                    className='bg-[#fb4357] text-[#fdfcf0] w-[264px] h-[42px] position-static mt-[5px] p-[2px] text-center'
+                                    onClick={handleJoin}
+                                >
+                                    회원가입
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'cgvJoin' && (
+                        <div id="cgvJoin" className='flex flex-col my-[30px]'>
+                            <div className='flex justify-center text-[14px] text-[#666] font-[500] mb-[15px]'>CJ ONE 통합회원가입 바로가기</div>
+                            <div className='flex justify-center text-[#fff] text-[16px] font-[500] w-fit py-[12px] px-[18px] bg-custom-gradient shadow-custom-shadow rounded-[25px]'>
+                                CGV + CJONE 통합회원가입
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
-    )
+    );
 }
