@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Login2 from "./pages/Login2";
 import Login3 from "./pages/Login3";
 import Join from "./pages/Join";
+import Join2 from "./pages/Join2";
 import Footer from "./components/Footer";
 import Ticketing from "./pages/Ticketing";
 import Click from "./components/Click";
@@ -37,6 +38,7 @@ function App() {
           <Route path='/login2' element={<Login2 />} />
           <Route path='/login3' element={<Login3 />} />
           <Route path='/join' element={<Join />} />
+          <Route path='/join2' element={<Join2 />} />
           <Route path='/movie' element={<Movie />} />
           <Route path="/movieDetail/:movieId" element={<MovieDetail />} />
           <Route path='/ticketing' element={<Ticketing onSelectTicket={handleSelectTicket} />} />
