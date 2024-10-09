@@ -3,19 +3,17 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 export default function Login() {
-    // 로그인 상태 관리
     const [userId, setUserId] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [successMessage, setSuccessMessage] = useState(''); // 성공 메시지 상태 추가
-    const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
+    const [successMessage, setSuccessMessage] = useState('');
+    const navigate = useNavigate();
 
-    // 로그인 요청 함수
     const handleLogin = async (e) => {
-        e.preventDefault(); // 기본 폼 제출 방지
+        e.preventDefault();
         setError('');
         setSuccessMessage('');
-
+    
         try {
             const response = await axios.post('http://localhost:8080/login', {
                 userId,
@@ -23,23 +21,36 @@ export default function Login() {
             }, {
                 headers: {
                     'Content-Type': 'application/json',
+                    'accept': '*/*'
                 },
             });
-
-            // 로그인 성공 후 토큰 저장
-            const token = response.data; // 응답에서 토큰 가져오기
-            localStorage.setItem('token', token); // 로컬 스토리지에 토큰 저장
-
-            // 성공 메시지 설정 및 Home.jsx로 이동
-            alert('로그인 성공!');
-            setTimeout(() => {
-                navigate('/'); // 2초 후에 Home.jsx로 이동
-            }, 0);
+    
+            console.log('Response:', response);  // 응답 데이터 확인
+    
+            // 응답 데이터 자체가 토큰인 경우
+            if (response.status === 200 && response.data) {
+                localStorage.setItem('token', response.data);  // response.data를 토큰으로 저장
+                setSuccessMessage('로그인 성공!');
+                setTimeout(() => {
+                    navigate('/');
+                }, 1000);
+            } else {
+                setError('로그인에 실패했습니다. 아이디와 비밀번호를 확인하세요.');
+                console.error('로그인 실패: 응답 데이터가 없습니다.');
+            }
         } catch (error) {
-            setError('로그인에 실패했습니다. 아이디와 비밀번호를 확인하세요.');
-            console.error('로그인 오류:', error);
+            // 에러 핸들링
+            if (error.response) {
+                console.error('로그인 실패:', error.response.data);
+                setError(`로그인에 실패했습니다: ${error.response.data.message || '아이디와 비밀번호를 확인하세요.'}`);
+            } else {
+                console.error('로그인 오류:', error.message);
+                setError('로그인에 실패했습니다. 다시 시도하세요.');
+            }
         }
     };
+    
+    
 
     return (
         <div className='flex justify-center'>
@@ -54,7 +65,7 @@ export default function Login() {
                         <div id="login" className='flex flex-col items-center justify-center border-y-[2px] border-[#898987] w-[541px] h-[298px]'>
                             <div className='flex font-[500] text-[#666] text-[14px]'>아이디 비밀번호를 입력하신 후, 로그인 버튼을 클릭해 주세요.</div>
                             {error && <div className="text-red-500">{error}</div>}
-                            {successMessage && <div className="text-green-500">{successMessage}</div>} {/* 성공 메시지 출력 */}
+                            {successMessage && <div className="text-green-500">{successMessage}</div>}
                             <div id="id" className='mt-[13px] w-[215px] h-[35px]'>
                                 <input 
                                     type="text" 
@@ -100,9 +111,9 @@ export default function Login() {
                     <div className='flex font-[700] text-[#222222] text-[13px]'>CJ ONE 회원이 아니신가요?</div>
                     <div className='flex font-[500] text-[#222] text-[13px] pl-[20px]'>회원가입하시고 다양한 혜택을 누리세요!</div>
                     <div className='flex justify-between w-[300px] ml-[30px]'>
-                        <div className='flex justify-center items-center font-[700] w-[144px] h-[27px] p-[0_5px_0] border-[2px] border-[#fb4357] text-[#fb4357] text-[12px]'>CJ ONE 회원가입하기</div>
+                        <a href='https://www.cjone.com/cjmweb/join.do?coopco_cd=7010&brnd_cd=1000' className='flex justify-center items-center font-[700] w-[144px] h-[27px] p-[0_5px_0] border-[2px] border-[#fb4357] text-[#fb4357] text-[12px]'>CJ ONE 회원가입하기</a>
                         <div className='border-l-[1px]'></div>
-                        <div className='flex justify-center items-center font-[700] w-[144px] h-[27px] p-[0_5px_0] border-[2px] border-[#333333] text-[#333333] text-[12px]'>CJ ONE 멤버십이란?</div>
+                        <a href='https://www.cjone.com/cjmweb/about-cjone.do' className='flex justify-center items-center font-[700] w-[144px] h-[27px] p-[0_5px_0] border-[2px] border-[#333333] text-[#333333] text-[12px]'>CJ ONE 멤버십이란?</a>
                     </div>
                 </div>
             </div>

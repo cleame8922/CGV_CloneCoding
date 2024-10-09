@@ -165,6 +165,7 @@ export default function Ticketing() {
     const handleShowtimeClick = (showtime) => {
         setSelectedTime(showtime.startTime);
         setSelectedShowtime(showtime);
+        console.log(showTimes);
     };
 
     const generateDates = (releaseDate) => {
@@ -225,6 +226,16 @@ export default function Ticketing() {
             console.error('모든 필드를 선택해 주세요.'); // 선택되지 않은 필드가 있는 경우 에러 처리
         }
     }; 
+
+    const groupedShowTimes = showTimes.reduce((acc, show) => {
+        const existingGroup = acc.find(group => group[0].theaterNum === show.theaterNum);
+        if (existingGroup) {
+            existingGroup.push(show);
+        } else {
+            acc.push([show]);
+        }
+        return acc;
+    }, []);    
 
     return (
         <div className='flex flex-col items-center'>
@@ -421,22 +432,27 @@ export default function Ticketing() {
                         </div>
                         <div id="select">
                             {selectedMovie && selectedTheater && selectedDate ? (
-                                <div className='flex flex-col justify-start w-[300px] mt-[16px]'>
-                                    {showTimes.map((show, index) => (
-                                        <div key={index} className='flex flex-col mt-[10px] mb-[6px]'>
+                                <div id="set" className='flex flex-col justify-start w-[300px] mt-[2px]'>
+                                    {groupedShowTimes.map((group, groupIndex) => (
+                                        <div key={groupIndex} className='flex flex-col mt-[10px] mb-[4px]'>
                                             <div className='flex'>
-                                                <div className='flex text-[#b54d15] text-[12px] font-bold mr-[5px]'>{show.branch}</div>
-                                                <div className='flex text-[#333] text-[12px] font-bold mr-[5px]'>{show.theaterNum}</div>
-                                                <div className='flex text-[12px] text-[#666]'>{show.totalSeats}</div>
+                                                <div className='flex text-[#b54d15] text-[12px] font-bold mr-[5px]'>{group[0].branch}</div>
+                                                <div className='flex text-[#333] text-[12px] font-bold mr-[5px]'>{group[0].theaterNum}</div>
+                                                <div className='flex text-[12px] text-[#666]'>{group[0].totalSeats}</div>
                                             </div>
-                                            <div className='flex mt-[10px]'>
-                                                <div 
-                                                    className={`flex border-[2px] border-[#d6d3ce] text-[14px] font-semibold py-[2px] px-[5px] mr-[5px] justify-center items-center ${selectedTime === show.startTime ? 'border-[#000] bg-[#333] text-[#fff]' : ''}`}
-                                                    onClick={() => handleShowtimeClick(show)}
-                                                >
-                                                    {show.startTime}
-                                                </div>
-                                                <div className='flex text-[12px] text-[#3d7c35] items-center'>{show.remainSeats}</div>
+                                            <div className='flex flex-wrap border-b-[2px] border-[#cfcdc3]'>
+                                                {group.map((show, index) => (
+                                                    <div key={index} className='flex items-center my-[5px] w-1/3'>
+                                                        <div 
+                                                            className={`flex border-[1px] border-[#d6d3ce] text-[14px] font-semibold py-[1px] px-[5px] mr-[5px] justify-center items-center ${selectedTime === show.startTime ? 'border-[#000] bg-[#333] text-[#fff]' : ''}`}
+                                                            onClick={() => handleShowtimeClick(show)}
+                                                        >
+                                                            {/* show.startTime이 존재하는지 확인 후 substring 사용 */}
+                                                            {show.startTime ? show.startTime.substring(0, 5) : '정보 없음'}
+                                                        </div>
+                                                        <div className='flex text-[12px] text-[#3d7c35] items-center'>{show.remainSeats}</div>
+                                                    </div>
+                                                ))}
                                             </div>
                                         </div>
                                     ))}

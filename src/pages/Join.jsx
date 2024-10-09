@@ -124,9 +124,9 @@ export default function Join2() {
                     {activeTab === 'cgvJoin' && (
                         <div id="cgvJoin" className='flex flex-col my-[30px]'>
                             <div className='flex justify-center text-[14px] text-[#666] font-[500] mb-[15px]'>CJ ONE 통합회원가입 바로가기</div>
-                            <div className='flex justify-center text-[#fff] text-[16px] font-[500] w-fit py-[12px] px-[18px] bg-custom-gradient shadow-custom-shadow rounded-[25px]'>
+                            <a href="https://www.cjone.com/cjmweb/join.do?coopco_cd=7010&brnd_cd=1000" className='flex justify-center text-[#fff] text-[16px] font-[500] w-fit py-[12px] px-[18px] bg-custom-gradient shadow-custom-shadow rounded-[25px]'>
                                 CGV + CJONE 통합회원가입
-                            </div>
+                            </a>
                         </div>
                     )}
                 </div>
