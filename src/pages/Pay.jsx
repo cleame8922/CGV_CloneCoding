@@ -90,7 +90,6 @@ export default function Pay() {
                     merchant_uid: `order_${new Date().getTime()}`,
                     name: movie,
                     amount: totalAmount,
-                    buyer_name: "홍길동",
                 },
                 async function (rsp) {
                     if (rsp.success) {

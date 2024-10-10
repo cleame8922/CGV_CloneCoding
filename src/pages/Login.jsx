@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { AuthContext } from './AuthContext';
 
 export default function Login() {
     const [userId, setUserId] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const { setIsLoggedIn } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
@@ -25,33 +27,36 @@ export default function Login() {
                 },
             });
     
-            console.log('Response:', response);  // 응답 데이터 확인
-    
-            // 응답 데이터 자체가 토큰인 경우
-            if (response.status === 200 && response.data) {
-                localStorage.setItem('token', response.data);  // response.data를 토큰으로 저장
-                setSuccessMessage('로그인 성공!');
-                setTimeout(() => {
-                    navigate('/');
-                }, 1000);
+            // 응답이 성공적이고, response.data가 '로그인 실패'가 아닌 경우
+            if (response.status === 200) {
+                if (response.data === '로그인 실패') {
+                    // 로그인 실패 처리
+                    setError('로그인에 실패했습니다. 아이디와 비밀번호를 확인하세요.');
+                } else {
+                    const token = response.data; // response.data에서 토큰을 가져오기
+                    localStorage.setItem('token', token); // 로컬스토리지에 토큰 저장
+                    setIsLoggedIn(true); // 로그인 상태 설정
+                    alert(`${userId}님 로그인에 성공했습니다!`);
+                    // 로그인 성공 후 홈으로 이동
+                    setTimeout(() => {
+                        navigate('/');
+                    }, 1000);
+                }
             } else {
+                // 로그인 실패 처리
                 setError('로그인에 실패했습니다. 아이디와 비밀번호를 확인하세요.');
-                console.error('로그인 실패: 응답 데이터가 없습니다.');
             }
         } catch (error) {
-            // 에러 핸들링
+            // 서버에서 에러가 발생한 경우 처리
             if (error.response) {
-                console.error('로그인 실패:', error.response.data);
                 setError(`로그인에 실패했습니다: ${error.response.data.message || '아이디와 비밀번호를 확인하세요.'}`);
             } else {
-                console.error('로그인 오류:', error.message);
                 setError('로그인에 실패했습니다. 다시 시도하세요.');
             }
         }
     };
     
     
-
     return (
         <div className='flex justify-center'>
             <div id="container" className='flex flex-col flex-wrap w-[980px] p-[30px_0]'>

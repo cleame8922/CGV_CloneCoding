@@ -105,9 +105,9 @@ export default function Movie() {
                             )}
                         </div>
                         <div className='relative flex'>
-                            <div className='flex'>
+                            <NavLink to={`/movieDetail/${movie.movie_id}`} className='flex'>
                                 <img src={movie.poster_path} alt={movie.title} className='w-[197px] h-[260px]' />
-                            </div>
+                            </NavLink>
                             <div className='absolute top-[8px] left-[8px]'>
                                 {movie.age === 'ALL' && (
                                     <img src={`${process.env.PUBLIC_URL}/img/all.svg`} alt="all"  className='size-[20px]'/>

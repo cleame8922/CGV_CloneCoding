@@ -22,7 +22,7 @@ export default function MovieDetail() {
                 };
                 setMovie(movieWithFullPosterPath);
                 setLoading(false);
-                // console.log(movie.credits);
+                console.log(movie.credits[0].director);
             } catch (err) {
                 setError('영화 정보를 불러오는데 실패했습니다.');
                 setLoading(false);
@@ -31,7 +31,8 @@ export default function MovieDetail() {
         
         fetchMovieDetail();
     }, [movieId]);
-    
+
+    const directorName = movie.credits && movie.credits.length > 0 ? movie.credits[0].director : '정보 없음';
     
     return (
         <div>
@@ -62,7 +63,7 @@ export default function MovieDetail() {
                             </div>
                             <div>
                                 <div className='w-[750px] h-[80px] text-[13px] text-[#333] font-[500] mt-[18px] ml-5 overflow-hidden'>
-                                    감독 : {movie.credits?.find(credit => credit.job === 'Director')?.name || '정보 없음'} <br />
+                                    감독 : {directorName} <br />
                                     배우 : {movie.credits?.filter(credit => credit.character)
                                         .slice(0, 7) // 첫 7명만 가져오기
                                         .map(credit => credit.name)

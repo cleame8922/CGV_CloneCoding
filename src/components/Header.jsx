@@ -1,13 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../pages/AuthContext';
 
 export default function Header() {
 
-    const token = localStorage.getItem('token'); // 로컬 스토리지에서 토큰 가져오기
+    const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
 
     const handleLogout = () => {
-        localStorage.removeItem('token'); // 토큰 삭제
-        window.location.reload(); // 페이지 리로드하여 상태 갱신
+        localStorage.removeItem('token');
+        setIsLoggedIn(false);
+        alert('로그아웃 되었습니다.');
     };
     
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -80,7 +82,7 @@ export default function Header() {
                         <p className='flex items-end tracking-[0.313em] text-[16px] text-[#222]'>DEEP DIVE SPACE</p>
                     </NavLink>
                     <div id="bRight" className='flex items-center'>
-                        {token ? (
+                        {isLoggedIn ? (
                             <div id="icon2" className='flex'>
                                 <div className='flex flex-col items-center ml-7' onClick={handleLogout}>
                                     <img src={`${process.env.PUBLIC_URL}/img/loginPassword.png`} alt="loginPassword" className='size-[36px]' />
